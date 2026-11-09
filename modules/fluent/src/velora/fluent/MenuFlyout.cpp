@@ -10,6 +10,7 @@
 #include <velora/controls/ElementFactory.hpp>
 #include <velora/controls/XamlComponent.hpp>
 #include <velora/fluent/MenuFlyout.hpp>
+#include <velora/fluent/RadioMenuFlyoutItem.hpp>
 #include <velora/runtime/SchemaValue.hpp>
 #include <velora/text/Encoding.hpp>
 
@@ -36,7 +37,8 @@ const PropertyDescriptor& menuProperty(std::string_view type, std::string_view n
     static PropertyRegistry registry;
     static const bool initialized = []
     {
-        for (const auto* type : {"Velora.Fluent.MenuFlyoutItem", "Velora.Fluent.ToggleMenuFlyoutItem"})
+        for (const auto* type : {"Velora.Fluent.MenuFlyoutItem", "Velora.Fluent.ToggleMenuFlyoutItem",
+                                 "Velora.Fluent.RadioMenuFlyoutItem"})
             for (const auto& p : menuType(type).properties)
             {
                 const SchemaProperty schema{p.name, p.kind, {}, p.defaultValue, kSchemaPaint};
@@ -61,7 +63,8 @@ template <class T> std::string registerMenuType(Framework& ui)
 MenuFlyoutItem::MenuFlyoutItem() : MenuFlyoutItem(false)
 {
 }
-MenuFlyoutItem::MenuFlyoutItem(bool toggle) : UIElement(ElementKind::kUserControl), m_toggle(toggle)
+MenuFlyoutItem::MenuFlyoutItem(bool toggle, bool radio)
+    : UIElement(ElementKind::kUserControl), m_toggle(toggle), m_radio(radio)
 {
     addPropertyChanged([this](DependencyObject&, const PropertyDescriptor&, const PropertyValue&,
                               const PropertyValue&) { updateLabel(); });
@@ -71,7 +74,8 @@ ToggleMenuFlyoutItem::ToggleMenuFlyoutItem() : MenuFlyoutItem(true)
 }
 std::string MenuFlyoutItem::className() const
 {
-    return m_toggle ? "Velora.Fluent.ToggleMenuFlyoutItem" : "Velora.Fluent.MenuFlyoutItem";
+    return m_radio ? "Velora.Fluent.RadioMenuFlyoutItem"
+                   : (m_toggle ? "Velora.Fluent.ToggleMenuFlyoutItem" : "Velora.Fluent.MenuFlyoutItem");
 }
 const XamlTypeDeclaration& MenuFlyoutItem::declaration()
 {
@@ -109,6 +113,22 @@ PropertySetResult MenuFlyoutItem::setText(std::string value)
 {
     return setValue(menuProperty(className(), "Text"), std::move(value));
 }
+std::string MenuFlyoutItem::iconGlyph() const
+{
+    return getValue(menuProperty(className(), "IconGlyph")).asString();
+}
+PropertySetResult MenuFlyoutItem::setIconGlyph(std::string value)
+{
+    return setValue(menuProperty(className(), "IconGlyph"), std::move(value));
+}
+std::string MenuFlyoutItem::keyboardAcceleratorTextOverride() const
+{
+    return getValue(menuProperty(className(), "KeyboardAcceleratorTextOverride")).asString();
+}
+PropertySetResult MenuFlyoutItem::setKeyboardAcceleratorTextOverride(std::string value)
+{
+    return setValue(menuProperty(className(), "KeyboardAcceleratorTextOverride"), std::move(value));
+}
 void MenuFlyoutItem::setCommand(std::function<void()> command)
 {
     if (!isOwnerThread())
@@ -125,7 +145,10 @@ PropertySetResult ToggleMenuFlyoutItem::setIsChecked(bool value)
 }
 bool MenuFlyoutItem::validatePropertyValue(const PropertyDescriptor& p, const PropertyValue& value) const
 {
-    if (p.id == menuProperty(className(), "Text").id)
+    const auto& declaration = menuType(className());
+    const auto found =
+        std::ranges::find_if(declaration.properties, [&](const auto& d) { return d.id() == p.id; });
+    if (found != declaration.properties.end() && found->kind == ValueKind::kString)
     {
         if (!value.isString())
             return false;
@@ -139,7 +162,7 @@ bool MenuFlyoutItem::validatePropertyValue(const PropertyDescriptor& p, const Pr
             return false;
         }
     }
-    return !m_toggle || p.id != ToggleMenuFlyoutItem::isCheckedProperty().id || value.isBool();
+    return !m_toggle || p.id != menuProperty(className(), "IsChecked").id || value.isBool();
 }
 void MenuFlyoutItem::onAttached(Framework& ui, ElementId self)
 {
@@ -173,8 +196,21 @@ void MenuFlyoutItem::updateLabel()
     if (!m_ui)
         return;
     const auto keepAlive = m_ui->tree().object(m_element);
-    const bool checked = m_toggle && getValue(ToggleMenuFlyoutItem::isCheckedProperty()).asBool();
-    m_ui->set(m_button, m_ui->props().Content, (checked ? "✓  " : "    ") + text());
+    const bool checked = m_toggle && getValue(menuProperty(className(), "IsChecked")).asBool();
+    const auto set = [this](std::string_view name, PropertyValue value)
+    {
+        if (m_ui)
+        {
+            const auto target = m_ui->templateChild(m_button, name);
+            if (target)
+                m_ui->set(target, m_ui->props().Text, std::move(value));
+        }
+    };
+    m_ui->set(m_button, m_ui->props().Content, text());
+    set("Caption", text());
+    set("CheckGlyph", checked ? (m_radio ? "\xEE\xA4\x95" : "\xEE\x9C\xBE") : "");
+    set("ItemIcon", iconGlyph());
+    set("Accelerator", keyboardAcceleratorTextOverride());
 }
 void MenuFlyoutItem::invoke()
 {
@@ -204,8 +240,8 @@ void MenuFlyoutItem::invoke()
     } dismiss{owner, host, lifetime, popup};
     if (m_toggle)
     {
-        const auto& checked = ToggleMenuFlyoutItem::isCheckedProperty();
-        setValue(checked, !getValue(checked).asBool());
+        const auto& checked = menuProperty(className(), "IsChecked");
+        setValue(checked, m_radio || !getValue(checked).asBool());
     }
     if (m_ui)
         m_ui->tree().dispatch(m_element, m_ui->events().Click->id);
@@ -244,6 +280,68 @@ std::string MenuFlyoutItem::automationName() const
 std::optional<AutomationControlType> MenuFlyoutItem::automationControlType() const noexcept
 {
     return AutomationControlType::kButton;
+}
+
+RadioMenuFlyoutItem::RadioMenuFlyoutItem() : MenuFlyoutItem(true, true)
+{
+}
+const XamlTypeDeclaration& RadioMenuFlyoutItem::declaration()
+{
+    return menuType("Velora.Fluent.RadioMenuFlyoutItem");
+}
+std::string RadioMenuFlyoutItem::registerType(Framework& ui)
+{
+    return registerMenuType<RadioMenuFlyoutItem>(ui);
+}
+const PropertyDescriptor& RadioMenuFlyoutItem::textProperty()
+{
+    return menuProperty("Velora.Fluent.RadioMenuFlyoutItem", "Text");
+}
+const PropertyDescriptor& RadioMenuFlyoutItem::isCheckedProperty()
+{
+    return menuProperty("Velora.Fluent.RadioMenuFlyoutItem", "IsChecked");
+}
+const PropertyDescriptor& RadioMenuFlyoutItem::groupNameProperty()
+{
+    return menuProperty("Velora.Fluent.RadioMenuFlyoutItem", "GroupName");
+}
+bool RadioMenuFlyoutItem::isChecked() const
+{
+    return getValue(isCheckedProperty()).asBool();
+}
+PropertySetResult RadioMenuFlyoutItem::setIsChecked(bool value)
+{
+    return setValue(isCheckedProperty(), value);
+}
+std::string RadioMenuFlyoutItem::groupName() const
+{
+    return getValue(groupNameProperty()).asString();
+}
+PropertySetResult RadioMenuFlyoutItem::setGroupName(std::string value)
+{
+    return setValue(groupNameProperty(), std::move(value));
+}
+void RadioMenuFlyoutItem::onAttached(Framework& ui, ElementId self)
+{
+    MenuFlyoutItem::onAttached(ui, self);
+    normalizePropertyValues(isCheckedProperty());
+}
+void RadioMenuFlyoutItem::normalizePropertyValues(const PropertyDescriptor& property)
+{
+    if (!m_ui || !isChecked() ||
+        (property.id != isCheckedProperty().id && property.id != groupNameProperty().id))
+        return;
+    const auto keepAlive = m_ui->tree().object(m_element);
+    // Original WinUI behavior: only actual siblings with the same GroupName participate.
+    const auto siblings = m_ui->tree().children(m_ui->tree().parent(m_element));
+    for (const auto id : siblings)
+    {
+        if (!m_ui || !isChecked())
+            break;
+        const auto peer = std::dynamic_pointer_cast<RadioMenuFlyoutItem>(m_ui->tree().object(id));
+        if (peer && peer.get() != this && peer->groupName() == groupName())
+            peer->setIsChecked(false);
+    }
 }
 
 MenuFlyoutSeparator::MenuFlyoutSeparator() : UIElement(ElementKind::kUserControl)

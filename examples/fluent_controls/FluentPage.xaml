@@ -6,7 +6,7 @@
         <StackPanel Orientation="Horizontal" Spacing="24">
             <fluent:PersonPicture x:Name="Avatar" DisplayName="Ada Lovelace" BadgeNumber="7"/>
             <fluent:PersonPicture DisplayName="Grace Hopper"/>
-            <fluent:PersonPicture DisplayName="张三" BadgeGlyph="!"/>
+            <fluent:PersonPicture DisplayName="张三" BadgeGlyph="&#xE70D;"/>
             <fluent:PersonPicture IsGroup="True" BadgeNumber="120"/>
         </StackPanel>
         <fluent:NumberBox x:Name="Quantity" Header="Quantity — expressions enabled" Value="5"
@@ -23,5 +23,11 @@
             <fluent:ToggleSplitButton x:Name="Bold" Content="Bold"/>
         </StackPanel>
         <TextBlock x:Name="Status" Text="Ready — use arrows, F4, Alt+Down or Escape"/>
+        <StackPanel Orientation="Horizontal" Spacing="20">
+            <fluent:FontIcon Glyph="&#xE710;"/>
+            <fluent:SymbolIcon Symbol="57605"/>
+            <fluent:SymbolIcon Symbol="57621"/>
+            <fluent:SymbolIcon Symbol="57637"/>
+        </StackPanel>
     </StackPanel>
 </Page>

@@ -85,7 +85,7 @@ ID2D1Bitmap1* GraphicsSurface::Impl::image(ID2D1DeviceContext* dc, const std::st
 IDWriteTextLayout* GraphicsSurface::Impl::textLayout(const TextCommand& text)
 {
     // Layouts do not wrap and are leading-aligned, so the box width does not change the drawing.
-    std::string key = text.value;
+    std::string key = std::to_string(text.fontFamily.size()) + ":" + text.fontFamily + text.value;
     key += '\x1f';
     key += std::to_string(text.fontSize);
     if (const auto it = texts.find(key); it != texts.end())
@@ -94,6 +94,7 @@ IDWriteTextLayout* GraphicsSurface::Impl::textLayout(const TextCommand& text)
         return it->second.layout.Get();
     }
     FontDescriptor font;
+    font.family = text.fontFamily.empty() ? "Segoe UI" : text.fontFamily;
     font.sizeDips = text.fontSize;
     CachedText entry{createTextLayout(text.value, font, 0), clock};
     if (!entry.layout)

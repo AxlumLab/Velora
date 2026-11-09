@@ -115,6 +115,13 @@
 - 最终示例目标 `velora_fluent_gallery` 编译通过，带 `--open-menu` 启动后窗口可见、菜单模板完成创建，正常关闭退出码为 0；记录为 `build/dev/menu-family-final-build.log`、`build/dev/menu-startup.json`。这不是菜单交互或完整兼容验收。
 - Popup/Flyout 对象/菜单集合的完整 XAML 语法、源码类型反射继承、嵌套/窗口外弹出、完整 Placement/模板/动画、ICommand、子菜单/单选菜单、完整 UIA 等仍待实现；菜单新路径尚未经过完整行为回归。当前范围及来源差异见 `modules/fluent/PORTING.md`。
 
+### 当前接入：Windows 图标和单选菜单
+
+- Windows 图标按用户决定使用系统 Segoe MDL2 Assets。补齐 TextBlock/Button 的 FontFamily 绘制路径、DisplayList 字体族及 DirectWrite 缓存键；头像、群组、下拉箭头和菜单勾选/单选标记使用 MDL2，正文仍使用 Segoe UI。跨平台字体策略暂缓。
+- 新增实际 FontIcon、SymbolIcon、RadioMenuFlyoutItem，接入 Fluent 构建、类型注册及 Gallery。SymbolIcon 当前只有 14 个常用 SDK 枚举值，XAML 先用整数值；菜单 IconGlyph/快捷键文字/GroupName/IsChecked 均读取实际依赖属性。同组互斥和不反选来自固定 WinUI 源码，不恢复内部影子勾选值。
+- 只做示例目标编译和启动检查，不新增或执行回归、ASan、截图验收。字体外观、单选交互、分组和原有控件回归均留到最后统一验证；普通文字完整字体测量、完整 Symbol 枚举、快捷键注册、子菜单和 UIA 仍待完成。
+- `velora_fluent_gallery` 最终编译通过，`--open-menu` 启动正常、窗口可见，关闭退出码 0。记录为 `build/dev/icons-menu-final-build.log`、`build/dev/icons-menu-startup.json`，不把启动检查等同于上述行为验收。
+
 | 范围 | 当前事实 |
 | --- | --- |
 | 控件对象 | UIElement/BuiltinElements、createElement、shared_ptr 元素树和 virtual 布局已有实现；一部分行为仍集中在 Framework |

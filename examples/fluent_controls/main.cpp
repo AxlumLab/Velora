@@ -13,6 +13,8 @@
 #include <velora/fluent/MenuFlyout.hpp>
 #include <velora/fluent/NumberBox.hpp>
 #include <velora/fluent/PersonPicture.hpp>
+#include <velora/fluent/RadioMenuFlyoutItem.hpp>
+#include <velora/fluent/SymbolIcon.hpp>
 #include <velora/fluent/ToggleSplitButton.hpp>
 #include <windows.h>
 
@@ -43,7 +45,9 @@ class FluentWindow final : public XamlWindow
         for (const auto& error :
              {DropDownButton::registerType(ui), SplitButton::registerType(ui),
               ToggleSplitButton::registerType(ui), MenuFlyoutItem::registerType(ui),
-              ToggleMenuFlyoutItem::registerType(ui), MenuFlyoutSeparator::registerType(ui)})
+              ToggleMenuFlyoutItem::registerType(ui), MenuFlyoutSeparator::registerType(ui),
+              RadioMenuFlyoutItem::registerType(ui), FontIcon::registerType(ui),
+              SymbolIcon::registerType(ui)})
             if (!error.empty())
                 throw std::runtime_error(error);
         Demo::FluentPage_component::Names names;
@@ -57,6 +61,8 @@ class FluentWindow final : public XamlWindow
         {
             const auto item = createElement<MenuFlyoutItem>();
             item->setText(text);
+            item->setIconGlyph("\xEE\x9C\x8D");
+            item->setKeyboardAcceleratorTextOverride("Ctrl+O");
             item->setCommand([this, text] { m_controller.record(std::string("Selected: ") + text); });
             flyout->append(item);
         }
@@ -71,6 +77,16 @@ class FluentWindow final : public XamlWindow
                     m_controller.record(item->isChecked() ? "Pinned" : "Unpinned");
             });
         flyout->append(pin);
+        flyout->append(createElement<MenuFlyoutSeparator>());
+        for (const auto* name : {"Compact", "Comfortable"})
+        {
+            const auto item = createElement<RadioMenuFlyoutItem>();
+            item->setText(name);
+            item->setGroupName("Density");
+            item->setIsChecked(std::string_view(name) == "Compact");
+            item->setCommand([this, name] { m_controller.record(std::string("Density: ") + name); });
+            flyout->append(item);
+        }
         const auto drop = std::dynamic_pointer_cast<DropDownButton>(names.Actions);
         const auto split = std::dynamic_pointer_cast<SplitButton>(names.Save);
         const auto toggle = std::dynamic_pointer_cast<ToggleSplitButton>(names.Bold);

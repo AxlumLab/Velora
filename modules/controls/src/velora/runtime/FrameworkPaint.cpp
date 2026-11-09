@@ -27,7 +27,8 @@ void Framework::registerPainters()
                       [=, this](Canvas& canvas, const ElementTree&, ElementId e, float w, float h)
                       {
                           canvas.drawText({0, 0, w, h}, std::string(text(e, m_props.Text)),
-                                          static_cast<float>(number(e, m_props.FontSize)), {foreground(e)});
+                                          static_cast<float>(number(e, m_props.FontSize)), {foreground(e)},
+                                          std::string(text(e, m_props.FontFamily)));
                       });
     const auto contentPainter = [=, this](Canvas& canvas, const ElementTree&, ElementId e, float w, float h)
     {
@@ -41,8 +42,14 @@ void Framework::registerPainters()
         if (contentObject(e))
             return;
         const std::string label(text(e, m_props.Content));
-        const float tw = m_measure(label, font), th = lineHeight(font);
-        canvas.drawText({(w - tw) / 2, (h - th) / 2, tw + 2, th}, label, font, {foreground(e)});
+        const bool icon = text(e, m_props.FontFamily) == "Segoe MDL2 Assets";
+        const float tw =
+            icon ? font * static_cast<f32>(std::count_if(label.begin(), label.end(),
+                                                         [](unsigned char c) { return (c & 0xC0) != 0x80; }))
+                 : m_measure(label, font);
+        const float th = lineHeight(font);
+        canvas.drawText({(w - tw) / 2, (h - th) / 2, tw + 2, th}, label, font, {foreground(e)},
+                        std::string(text(e, m_props.FontFamily)));
     };
     bridge.setPainter(ElementKind::kButton, contentPainter);
     bridge.setPainter(ElementKind::kContentPresenter, contentPainter);

@@ -7,6 +7,7 @@
 - C++23 + XAML，面向新应用。保留 WPF/UWP 的属性、绑定、模板、资源与代码后台体验，不要求旧项目源码或 WinRT 二进制兼容。
 - 第一批产品平台为 Windows、Android。Windows 使用 Win32 + D2D + DirectWrite；Android 计划使用锁定版本的 Impeller standalone。其他平台暂不实现。
 - 视觉与交互目标为 WinUI 2.3 历史 Gallery。现有基础 Gallery 不代表完整验收。
+- Windows 图标统一使用系统安装的 Segoe MDL2 Assets；暂不设计跨平台字体替代方案。
 - WinUI 2.3 的控件逻辑、模板与资源直接内化到 modules/fluent/，成为 Velora 内部实现；controls 提供通用 UI 底座。不得把整个上游仓库镜像纳入产品源码并当作控件移植。派生文件保留 MIT 版权及来源，见 modules/fluent/PORTING.md。
 - 性能平衡启动、响应、内存、包体和功耗。Windows 用等价 UWP 负载对照，先测量再设目标。
 - 源码控件随应用构建、按需裁剪；计划支持无需重编宿主的原生插件，限定同一 SDK 构建及工具链配置。
@@ -42,7 +43,7 @@
 - 保持现有扁平 velora 命名空间。显式包含所用标准头，头文件不注入全局 using namespace。
 - 头文件放声明、必要模板、小型内联定义，非平凡实现放 .cpp。按职责拆分，不按行数拆分。
 - 源码在 modules/<module>/src/velora/，通过 velora_module 注册；不另建顶层 src。
-- 用 CMakePresets.json 构建，命令见 [docs/BUILD.md](docs/BUILD.md)。运行相关测试及 CheckStyle.py、CheckWorkspace.py。
+- 用 CMakePresets.json 构建，命令见 [docs/BUILD.md](docs/BUILD.md)。按当前用户要求，接入阶段只编译并做简单启动检查，完整回归/ASan/截图验收统一留到最后；保留已有测试。源码规则用 CheckStyle.py、CheckWorkspace.py 检查。
 - 只格式化改动的手写代码。临时工具、日志、缓存不进源码包。
 
 ## 完成报告

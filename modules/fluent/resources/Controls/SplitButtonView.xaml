@@ -29,5 +29,6 @@
         </VisualStateGroup>
     </VisualStateManager.VisualStateGroups>
     <Button x:Name="PrimaryButton" MinWidth="80" MinHeight="32" IsTabStop="False"/>
-    <Button x:Name="SecondaryButton" Grid.Column="1" Content="▾" Padding="0" MinHeight="32" IsTabStop="False"/>
+    <Button x:Name="SecondaryButton" Grid.Column="1" Content="&#xE70D;" FontFamily="Segoe MDL2 Assets"
+            FontSize="12" Width="32" Padding="0" MinHeight="32" IsTabStop="False"/>
 </Grid>

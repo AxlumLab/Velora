@@ -90,7 +90,7 @@ std::size_t estimateBytes(const std::vector<Command>& commands)
     for (const auto& command : commands)
     {
         if (const auto* text = std::get_if<TextCommand>(&command))
-            bytes += text->value.capacity();
+            bytes += text->value.capacity() + text->fontFamily.capacity();
         else if (const auto* image = std::get_if<ImageCommand>(&command))
             bytes += image->path.capacity();
         else if (const auto* path = std::get_if<PathCommand>(&command))

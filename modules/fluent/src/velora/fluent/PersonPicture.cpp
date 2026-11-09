@@ -258,6 +258,8 @@ void PersonPicture::updateParts()
     setPart("ProfileImage", p.Source, profilePicture());
     setPart("BadgeImage", p.Source, badgeImageSource());
     setPart("BadgeNumberTextBlock", p.Text, badgeLabel());
+    setPart("BadgeNumberTextBlock", p.FontFamily,
+            badgeNumber() == 0 && !badgeGlyph().empty() ? "Segoe MDL2 Assets" : "Segoe UI");
     if (m_ui && m_ui->tree().contains(m_root))
         m_ui->goToState(m_root, visualState());
     if (m_ui && m_ui->tree().contains(m_root))
@@ -273,22 +275,8 @@ void PersonPicture::resizeParts(f32 diameter)
     setPart("BadgeGrid", p.Height, static_cast<f64>(diameter * .5f));
     setPart("BadgeCircle", p.CornerRadius, static_cast<f64>(diameter / 4));
     setPart("BadgeNumberTextBlock", p.FontSize, std::max(1.0, diameter * .3));
-    struct Part
-    {
-        const char* name;
-        f32 x, y, w, h;
-    };
-    constexpr Part parts[] = {{"SingleHead", .41f, .24f, .18f, .18f}, {"SingleBody", .29f, .46f, .42f, .3f},
-                              {"GroupHeadA", .26f, .27f, .16f, .16f}, {"GroupHeadB", .56f, .27f, .16f, .16f},
-                              {"GroupBodyA", .15f, .46f, .38f, .28f}, {"GroupBodyB", .45f, .46f, .38f, .28f}};
-    for (const auto& part : parts)
-    {
-        setPart(part.name, p.CanvasLeft, static_cast<f64>(part.x * diameter));
-        setPart(part.name, p.CanvasTop, static_cast<f64>(part.y * diameter));
-        setPart(part.name, p.Width, static_cast<f64>(part.w * diameter));
-        setPart(part.name, p.Height, static_cast<f64>(part.h * diameter));
-        setPart(part.name, p.CornerRadius, static_cast<f64>(part.w * diameter / 2));
-    }
+    setPart("SingleIcon", p.FontSize, std::max(1.0, diameter * .42));
+    setPart("GroupIcon", p.FontSize, std::max(1.0, diameter * .42));
 }
 
 Size PersonPicture::measureOverride(LayoutContext& context, ElementId, const MeasureInput& input)

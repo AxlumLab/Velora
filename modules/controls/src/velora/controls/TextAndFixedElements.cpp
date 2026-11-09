@@ -10,6 +10,13 @@ namespace velora
 
 Size TextBlockElement::measureOverride(LayoutContext& context, ElementId e, const MeasureInput& input)
 {
+    if (context.text(e, context.props().FontFamily) == "Segoe MDL2 Assets")
+    {
+        const auto glyphs = context.text(e, context.props().Text);
+        const auto count =
+            std::count_if(glyphs.begin(), glyphs.end(), [](unsigned char c) { return (c & 0xC0) != 0x80; });
+        return {input.fontSize * static_cast<f32>(count), lineHeight(input.fontSize)};
+    }
     return {context.measureText(context.text(e, context.props().Text), input.fontSize),
             lineHeight(input.fontSize)};
 }

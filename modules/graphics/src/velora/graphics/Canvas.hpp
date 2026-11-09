@@ -5,7 +5,7 @@ namespace velora
 {
 class Canvas final
 {
-public:
+  public:
     void clear(Color color)
     {
         m_commands.push_back(ClearCommand{color});
@@ -22,9 +22,10 @@ public:
     {
         m_commands.push_back(PathCommand{std::move(elements), paint});
     }
-    void drawText(Rect bounds, std::string value, float fontSize, Paint paint)
+    void drawText(Rect bounds, std::string value, float fontSize, Paint paint,
+                  std::string fontFamily = "Segoe UI")
     {
-        m_commands.push_back(TextCommand{bounds, std::move(value), fontSize, paint});
+        m_commands.push_back(TextCommand{bounds, std::move(value), fontSize, paint, std::move(fontFamily)});
     }
     void drawImage(Rect bounds, std::string path, ImageFit fit = ImageFit::kContain)
     {
@@ -67,7 +68,7 @@ public:
         return DisplayList{std::move(m_commands)};
     }
 
-private:
+  private:
     std::vector<Command> m_commands;
 };
-}
+} // namespace velora

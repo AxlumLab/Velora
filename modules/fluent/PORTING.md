@@ -56,7 +56,7 @@ python scripts/StageFluentSources.py --check
 ## 当前差异与未实现范围
 
 - `Contact`、`PreferSmallImage`、联系人照片选择与异步读取/取消尚未提供；没有空实现接口。ProfilePicture、BadgeImageSource 当前使用资源/文件 URI 字符串，交由现有图片管线处理。
-- XAML 的 Ellipse 改为圆角 Border，图片使用圆形裁剪和 UniformToFill。MDL2 默认人像/群组符号暂改为简单几何图形；BadgeGlyph 使用当前文本字体。FontFamily、FontWeight 与完整原模板部件契约仍待补齐。
+- XAML 的 Ellipse 改为圆角 Border，图片使用圆形裁剪和 UniformToFill。Windows 默认人像、群组和 BadgeGlyph 已使用系统 Segoe MDL2 Assets；数字徽章继续使用正文 UI 字体。FontWeight、完整字体测量和原模板部件契约仍待补齐。
 - 保留四个头像和三个徽章状态。默认模板已有实际显示和主题切换；任意第三方模板替换、完整样式覆盖和 TemplateSettings 对象 API 尚未完成。
 - 缺少系统颜色服务的主题项采用明确的固定调色板；HighContrast 为黑白调色板，不代表完整跟随 Windows 自定义高对比色。
 - 显式非方形布局只保证显示区域为圆形，不像上游 SizeChanged 那样回写调用方 Width/Height。自动化名称目前为 en-US，未接入全部语言复数规则；Windows UIA provider 本身仍待实现。
@@ -102,4 +102,12 @@ Windows 示例 `FluentPage.xaml` 从编译 XAML 创建实际 NumberBox；注册�
 - 集合仅允许关闭且非构建中修改，拒绝重复/已挂载/非菜单项对象；构建失败回滚内容根。菜单项订阅与宿主借用在卸载时解除，菜单持有实际对象，项目状态可在重开时保留。
 - Gallery 已改用真实菜单项，含普通动作、勾选项和分隔线；`--open-menu` 在启动时直接加载整组菜单模板，方便启动检查。
 
-子菜单、RadioMenuFlyoutItem、图标/快捷键布局、访问键、完整 ICommand、可观察集合、菜单对象/Items 的 XAML 语法、完整主题与 UIA 尚待实现。只注册已有实际实现的三种菜单项源类型；MenuFlyout 通过 C++ 服务接入。以上新增行为仍须在最后统一验证，当前不能计作完整兼容。
+子菜单、访问键、完整 ICommand、可观察集合、菜单对象/Items 的 XAML 语法、完整主题与 UIA 尚待实现。单选项、图标和快捷键文字显示已在后续批次接入，见下节；MenuFlyout 继续通过 C++ 服务接入。新增行为仍须在最后统一验证，当前不能计作完整兼容。
+
+## Windows 图标与单选菜单批次（待统一验证）
+
+- 按用户决定，Windows 统一使用系统安装的 **Segoe MDL2 Assets**，不复制字体文件，不处理跨平台字体替代。TextBlock/Button 增加 FontFamily 绘制支持，字体族随 TextCommand 进入 DirectWrite，布局缓存区分字体族；MDL2 图标按 em 单元测量，普通文字的完整跨字体测量仍待补齐。
+- 人像/群组使用上游 E77B/E716，箭头使用 E70D，勾选/单选标记使用 E73E/E915。菜单将勾选、图标、正文、快捷键提示拆成模板列，正文保持 Segoe UI。IconGlyph 和 KeyboardAcceleratorTextOverride 使用实际依赖属性；快捷键文字仅显示，不代表已注册快捷键。
+- RadioMenuFlyoutItem 直接内化 `porting/RadioMenuFlyoutItem/RadioMenuFlyoutItem.cpp/.idl` 的同父节点、同 GroupName 互斥和点击不反选行为。只保留一个实际 IsChecked 值，没有上游 InternalIsChecked 桥。树外属性设置保留到挂载，打开菜单时对实际兄弟落实分组。
+- 新增实际 FontIcon、SymbolIcon，共用 IconElement 和现有绘制管线。FontIcon 提供 UTF-8 Glyph；SymbolIcon 首批支持 Windows SDK 的 14 个常用 Symbol 值并映射到 MDL2，不宣称完整枚举。C++ 使用 `Symbol` 枚举，当前编译 XAML 使用整数值；源码类型具名枚举语法待接入。字体大小、前景和字体族沿用同一对象的现有属性。
+- Gallery 包含实际图标控件、菜单图标、快捷键显示及一组单选菜单项；只做示例编译和 `--open-menu` 启动检查，行为、视觉、DPI 和完整回归最后统一执行。旧资源包需随 schema 变化正常重编，不关闭版本或未知语法诊断。

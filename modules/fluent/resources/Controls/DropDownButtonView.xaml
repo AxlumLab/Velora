@@ -19,5 +19,20 @@
             </VisualState>
         </VisualStateGroup>
     </VisualStateManager.VisualStateGroups>
-    <Button x:Name="PrimaryButton" MinWidth="100" MinHeight="32" IsTabStop="False"/>
+    <Button x:Name="PrimaryButton" MinWidth="100" MinHeight="32" IsTabStop="False">
+        <Button.Template>
+            <ControlTemplate TargetType="Button">
+                <Border Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                    <Grid ColumnDefinitions="*,16" ColumnSpacing="12">
+                        <TextBlock Text="{TemplateBinding Content}" FontSize="{TemplateBinding FontSize}"
+                                   Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="1" Text="&#xE70D;" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                                   Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center"/>
+                    </Grid>
+                </Border>
+            </ControlTemplate>
+        </Button.Template>
+    </Button>
 </Grid>

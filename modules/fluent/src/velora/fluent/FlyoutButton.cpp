@@ -221,8 +221,7 @@ void FlyoutButton::updateParts()
     if (!m_ui)
         return;
     const auto keepAlive = m_ui->tree().object(m_element);
-    m_ui->set(part("PrimaryButton"), m_ui->props().Content,
-              content() + (m_variant == Variant::kDropDown ? "  ▾" : ""));
+    m_ui->set(part("PrimaryButton"), m_ui->props().Content, content());
     if (!m_ui)
         return;
     m_ui->goToState(m_root, isFlyoutOpen() ? "FlyoutOpen" : "FlyoutClosed");

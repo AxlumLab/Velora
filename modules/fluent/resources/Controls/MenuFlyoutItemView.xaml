@@ -12,6 +12,22 @@
     <Button x:Name="ActionButton" IsTabStop="False" HorizontalAlignment="Stretch" MinHeight="32"
             Padding="12,6" BorderThickness="0" Background="Transparent"
             Foreground="{ThemeResource MenuFlyoutItemForeground}">
+        <Button.Template>
+            <ControlTemplate TargetType="Button">
+                <Border Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}">
+                    <Grid ColumnDefinitions="20,24,*,Auto" ColumnSpacing="4">
+                        <TextBlock x:Name="CheckGlyph" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                                   Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="ItemIcon" Grid.Column="1" FontFamily="Segoe MDL2 Assets" FontSize="16"
+                                   Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="Caption" Grid.Column="2" Foreground="{TemplateBinding Foreground}"
+                                   FontSize="14" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="Accelerator" Grid.Column="3" Foreground="{TemplateBinding Foreground}"
+                                   FontSize="12" Margin="20,0,0,0" VerticalAlignment="Center"/>
+                    </Grid>
+                </Border>
+            </ControlTemplate>
+        </Button.Template>
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="CommonStates">
                 <VisualState x:Name="Normal"/>

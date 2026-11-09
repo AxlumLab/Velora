@@ -1,6 +1,6 @@
 <!-- Copyright (c) Microsoft Corporation. All rights reserved. MIT License.
      Internal Velora rewrite of WinUI 2.3 PersonPicture.xaml. Ellipses use rounded Borders;
-     MDL2 fallback glyphs use geometry; WinRT template settings are updated by PersonPicture.cpp. -->
+     Windows glyphs use the installed Segoe MDL2 Assets font. -->
 <Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" x:Class="velora.PersonPictureView" x:Name="RootGrid">
     <Grid.Resources>
@@ -73,16 +73,12 @@
     </Border>
     <TextBlock x:Name="InitialsTextBlock" HorizontalAlignment="Center" VerticalAlignment="Center"
                FontSize="42" Foreground="{ThemeResource PersonPictureForegroundThemeBrush}"/>
-    <Canvas x:Name="SingleIcon">
-        <Border x:Name="SingleHead" Background="{ThemeResource PersonPictureForegroundThemeBrush}"/>
-        <Border x:Name="SingleBody" Background="{ThemeResource PersonPictureForegroundThemeBrush}"/>
-    </Canvas>
-    <Canvas x:Name="GroupIcon">
-        <Border x:Name="GroupHeadA" Background="{ThemeResource PersonPictureForegroundThemeBrush}"/>
-        <Border x:Name="GroupBodyA" Background="{ThemeResource PersonPictureForegroundThemeBrush}"/>
-        <Border x:Name="GroupHeadB" Background="{ThemeResource PersonPictureForegroundThemeBrush}"/>
-        <Border x:Name="GroupBodyB" Background="{ThemeResource PersonPictureForegroundThemeBrush}"/>
-    </Canvas>
+    <TextBlock x:Name="SingleIcon" Text="&#xE77B;" FontFamily="Segoe MDL2 Assets" FontSize="42"
+               Foreground="{ThemeResource PersonPictureForegroundThemeBrush}"
+               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    <TextBlock x:Name="GroupIcon" Text="&#xE716;" FontFamily="Segoe MDL2 Assets" FontSize="42"
+               Foreground="{ThemeResource PersonPictureForegroundThemeBrush}"
+               HorizontalAlignment="Center" VerticalAlignment="Center"/>
     <Grid x:Name="BadgeGrid" Width="50" Height="50" HorizontalAlignment="Right" VerticalAlignment="Bottom">
         <Border x:Name="BadgeCircle" CornerRadius="25" BorderThickness="2"
                 BorderBrush="{ThemeResource PersonPictureEllipseBadgeStrokeThemeBrush}"

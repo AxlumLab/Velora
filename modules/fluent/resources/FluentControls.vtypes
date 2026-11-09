@@ -1,12 +1,29 @@
 velora-xaml-types	1
+type	Velora.Fluent.FontIcon	TextBlock
+property	Glyph	String	FontIcon.Glyph	""
+end
+type	Velora.Fluent.SymbolIcon	TextBlock
+property	Symbol	Integer	SymbolIcon.Symbol	57611
+end
 type	Velora.Fluent.MenuFlyoutItem	UserControl
 property	Text	String	MenuFlyoutItem.Text	""
+property	IconGlyph	String	MenuFlyoutItem.IconGlyph	""
+property	KeyboardAcceleratorTextOverride	String	MenuFlyoutItem.KeyboardAcceleratorTextOverride	""
 end
 type	Velora.Fluent.ToggleMenuFlyoutItem	UserControl
 property	Text	String	ToggleMenuFlyoutItem.Text	""
+property	IconGlyph	String	ToggleMenuFlyoutItem.IconGlyph	""
+property	KeyboardAcceleratorTextOverride	String	ToggleMenuFlyoutItem.KeyboardAcceleratorTextOverride	""
 property	IsChecked	Boolean	ToggleMenuFlyoutItem.IsChecked	False
 end
 type	Velora.Fluent.MenuFlyoutSeparator	UserControl
+end
+type	Velora.Fluent.RadioMenuFlyoutItem	UserControl
+property	Text	String	RadioMenuFlyoutItem.Text	""
+property	IconGlyph	String	RadioMenuFlyoutItem.IconGlyph	""
+property	KeyboardAcceleratorTextOverride	String	RadioMenuFlyoutItem.KeyboardAcceleratorTextOverride	""
+property	IsChecked	Boolean	RadioMenuFlyoutItem.IsChecked	False
+property	GroupName	String	RadioMenuFlyoutItem.GroupName	""
 end
 type	Velora.Fluent.DropDownButton	UserControl
 property	Content	String	DropDownButton.Content	""

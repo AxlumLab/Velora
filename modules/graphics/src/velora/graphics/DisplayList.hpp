@@ -81,6 +81,7 @@ struct TextCommand
     std::string value;
     float fontSize = 24;
     Paint paint;
+    std::string fontFamily = "Segoe UI";
 };
 enum class ImageFit
 {
@@ -111,15 +112,17 @@ struct CommandList
 
 class DisplayList final
 {
-public:
-    explicit DisplayList(std::vector<Command> commands) : m_commands(std::move(commands)) {}
+  public:
+    explicit DisplayList(std::vector<Command> commands) : m_commands(std::move(commands))
+    {
+    }
 
     const std::vector<Command>& commands() const noexcept
     {
         return m_commands;
     }
 
-private:
+  private:
     std::vector<Command> m_commands;
 };
-}
+} // namespace velora

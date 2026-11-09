@@ -50,6 +50,7 @@ inline constexpr unsigned kSchemaMeasure = 1, kSchemaArrange = 2, kSchemaPaint =
     X(BorderThickness, "BorderThickness", Thickness, "", "0", kSchemaMeasure)                                \
     X(CornerRadius, "CornerRadius", CornerRadius, "", "0", kSchemaPaint)                                     \
     X(FontSize, "FontSize", Double, "", "14", kSchemaMeasure)                                                \
+    X(FontFamily, "FontFamily", String, "", "Segoe UI", kSchemaMeasure | kSchemaPaint)                       \
     X(Text, "Text", String, "", "", kSchemaMeasure)                                                          \
     X(PlaceholderText, "PlaceholderText", String, "", "", kSchemaPaint)                                      \
     X(Stretch, "Stretch", Enum, "Uniform|UniformToFill|Fill", "Uniform", kSchemaPaint)                       \
@@ -180,13 +181,14 @@ inline constexpr std::string_view kSchemaGridProperties[] = {
     "RowDefinitions", "ColumnDefinitions", "RowSpacing",  "ColumnSpacing"};
 inline constexpr std::string_view kSchemaBorderProperties[] = {"Background", "BorderBrush", "BorderThickness",
                                                                "CornerRadius", "Padding"};
-inline constexpr std::string_view kSchemaTextBlockProperties[] = {"Text", "FontSize", "Foreground"};
+inline constexpr std::string_view kSchemaTextBlockProperties[] = {"Text", "FontSize", "FontFamily",
+                                                                  "Foreground"};
 inline constexpr std::string_view kSchemaTextBoxProperties[] = {
     "Text",        "PlaceholderText", "FontSize",     "Foreground", "Background",
     "BorderBrush", "BorderThickness", "CornerRadius", "Padding",    "IsEnabled"};
 inline constexpr std::string_view kSchemaButtonProperties[] = {
-    "Content",         "FontSize",     "Foreground", "Background", "BorderBrush",
-    "BorderThickness", "CornerRadius", "Padding",    "IsEnabled"};
+    "FontFamily",  "Content",         "FontSize",     "Foreground", "Background",
+    "BorderBrush", "BorderThickness", "CornerRadius", "Padding",    "IsEnabled"};
 inline constexpr std::string_view kSchemaImageProperties[] = {"Source", "Stretch"};
 inline constexpr std::string_view kSchemaContentPresenterProperties[] = {
     "Content",     "FontSize",        "Foreground",   "Background",

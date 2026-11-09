@@ -23,6 +23,10 @@ class MenuFlyoutItem : public UIElement
     static const PropertyDescriptor& textProperty();
     [[nodiscard]] std::string text() const;
     PropertySetResult setText(std::string value);
+    [[nodiscard]] std::string iconGlyph() const;
+    PropertySetResult setIconGlyph(std::string value);
+    [[nodiscard]] std::string keyboardAcceleratorTextOverride() const;
+    PropertySetResult setKeyboardAcceleratorTextOverride(std::string value);
     void setCommand(std::function<void()> command);
     void invoke();
     void onAttached(Framework&, ElementId) override;
@@ -33,13 +37,15 @@ class MenuFlyoutItem : public UIElement
     [[nodiscard]] std::optional<AutomationControlType> automationControlType() const noexcept override;
 
   protected:
-    explicit MenuFlyoutItem(bool toggle);
+    explicit MenuFlyoutItem(bool toggle, bool radio = false);
     bool validatePropertyValue(const PropertyDescriptor&, const PropertyValue&) const override;
 
   private:
     friend class MenuFlyout;
+    friend class RadioMenuFlyoutItem;
     void updateLabel();
     const bool m_toggle;
+    const bool m_radio;
     Framework* m_ui = nullptr;
     ElementId m_element = 0, m_button = 0;
     EventSubscription m_click;
