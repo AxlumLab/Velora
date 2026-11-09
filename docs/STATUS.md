@@ -122,6 +122,13 @@
 - 只做示例目标编译和启动检查，不新增或执行回归、ASan、截图验收。字体外观、单选交互、分组和原有控件回归均留到最后统一验证；普通文字完整字体测量、完整 Symbol 枚举、快捷键注册、子菜单和 UIA 仍待完成。
 - `velora_fluent_gallery` 最终编译通过，`--open-menu` 启动正常、窗口可见，关闭退出码 0。记录为 `build/dev/icons-menu-final-build.log`、`build/dev/icons-menu-startup.json`，不把启动检查等同于上述行为验收。
 
+### 当前接入：MenuBar 与 AppBar 按钮族
+
+- 新增 MenuBar、MenuBarItem、AppBarButton、AppBarToggleButton 实际 C++ 控件及编译模板。MenuBar 持有实际标题项并允许 append/clear；标题项复用 MenuFlyout，菜单栏与 AppBar 按钮均进入正式 XAML 类型目录和 Gallery。
+- 已实现菜单栏点击开闭、悬停切换、左右/Home/End 导航和上下展开路径；Popup 增加仅限菜单栏祖先区域的输入透传及左右键路由。状态来自实际 Flyout，未新建影子展开值。AppBar 共用图标/标签模板、紧凑布局、Click 和先勾选后通知的 Toggle 行为。
+- 示例目标编译通过，`--open-menubar` 启动时加载菜单栏及菜单内容，窗口可见，关闭退出码 0。证据为 `build/dev/menubar-appbar-build.log`、`build/dev/menubar-appbar-startup.json`。仅编译和一次启动检查，没有新增/执行回归、ASan 或截图验收。
+- 上述新交互尚待统一验收；F10/Alt 访问键、完整 RTL/主题/模板状态、可观察集合与 Items XAML、AppBar 完整属性/命令、CommandBar 溢出及完整 UIA 仍待实现。详见 Fluent PORTING.md，不把启动成功计为完整控件兼容。
+
 | 范围 | 当前事实 |
 | --- | --- |
 | 控件对象 | UIElement/BuiltinElements、createElement、shared_ptr 元素树和 virtual 布局已有实现；一部分行为仍集中在 Framework |

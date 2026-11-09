@@ -6,6 +6,8 @@
 
 当前接入期仅做编译和简单启动检查，完整回归/ASan/截图统一在集成末尾执行；保留已有测试。Windows 图标统一采用系统 Segoe MDL2 Assets。图标和菜单族已接入 FontIcon、首批 SymbolIcon、RadioMenuFlyoutItem 与图标/快捷键提示列，具体未验收范围见 STATUS.md。
 
+继续按族接入 MenuBar/MenuBarItem 和 AppBarButton/AppBarToggleButton，复用同一 Popup、图标和按钮行为；本批编译/启动通过，交互验收仍留到统一验证。后续补 CommandBar 溢出、复杂集合/导航能力，不将同名类、模板存在或启动成功视为完整移植。
+
 ## WinUI 2.3 完整兼容与控件移植执行原则（2026-11-09）
 
 用户明确要求完整覆盖 WinUI 2.3，并移植其控件逻辑代码。目标包括控件属性/事件语义、布局、模板、资源、视觉状态、输入、焦点、辅助功能与生命周期；不能仅用 Gallery 截图或同名类验收。沿用普通 C++23 对象模型，不恢复旧对象 ABI；既有 C++/WinRT 源码和二进制直接兼容不属于已承诺能力。

@@ -145,7 +145,7 @@ void Framework::pointerMove(float x, float y)
 void Framework::pointerDown(float x, float y)
 {
     m_dismissedPopupPress = false;
-    if (m_popup && !hit(m_popup->root, x, y, 0, 0))
+    if (m_popup && !hitTest(x, y))
     {
         m_dismissedPopupPress = true;
         closePopup();
@@ -368,6 +368,12 @@ void Framework::key(Key key, bool shift, bool ctrl, bool alt)
     args.shift = shift;
     args.ctrl = ctrl;
     args.alt = alt;
+    if (m_popup && m_popup->passThrough && (key == Key::kLeft || key == Key::kRight))
+    {
+        if (raiseRouted(m_popup->passThrough, m_events.KeyDown, &args))
+            return;
+        args.originalSource = 0;
+    }
     if (raiseRouted(m_tree.focused(), m_events.KeyDown, &args))
         return;
     if (key == Key::kTab)

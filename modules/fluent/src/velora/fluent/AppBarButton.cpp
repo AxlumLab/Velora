@@ -1,0 +1,83 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See modules/fluent/LICENSE-WinUI2.3.txt.
+// Internal implementation of the system AppBar button behaviors; templates derive from
+// WinUI 2.3 CommonStyles/AppBarButton and AppBarToggleButton resources.
+#include <utility>
+#include <velora/controls/ElementFactory.hpp>
+#include <velora/fluent/AppBarButton.hpp>
+namespace velora
+{
+AppBarButton::AppBarButton() : FlyoutButton(Variant::kAppBarButton)
+{
+}
+AppBarButton::AppBarButton(Variant variant) : FlyoutButton(variant)
+{
+}
+AppBarToggleButton::AppBarToggleButton() : AppBarButton(Variant::kAppBarToggleButton)
+{
+}
+#define VELORA_APPBAR(type)                                                                                  \
+    const XamlTypeDeclaration& type::declaration()                                                           \
+    {                                                                                                        \
+        return typeDeclaration("Velora.Fluent." #type);                                                      \
+    }                                                                                                        \
+    const PropertyDescriptor& type::labelProperty()                                                          \
+    {                                                                                                        \
+        return propertyFor("Velora.Fluent." #type, "Label");                                                 \
+    }                                                                                                        \
+    std::string type::registerType(Framework& ui)                                                            \
+    {                                                                                                        \
+        return registerControl(ui, declaration(), [] { return createElement<type>(); });                     \
+    }
+VELORA_APPBAR(AppBarButton)
+VELORA_APPBAR(AppBarToggleButton)
+#undef VELORA_APPBAR
+std::string AppBarButton::label() const
+{
+    return content();
+}
+PropertySetResult AppBarButton::setLabel(std::string value)
+{
+    return setContent(std::move(value));
+}
+std::string AppBarButton::iconGlyph() const
+{
+    return getValue(propertyFor(className(), "IconGlyph")).asString();
+}
+PropertySetResult AppBarButton::setIconGlyph(std::string value)
+{
+    return setValue(propertyFor(className(), "IconGlyph"), std::move(value));
+}
+bool AppBarButton::isCompact() const
+{
+    return getValue(propertyFor(className(), "IsCompact")).asBool();
+}
+PropertySetResult AppBarButton::setIsCompact(bool value)
+{
+    return setValue(propertyFor(className(), "IsCompact"), value);
+}
+const PropertyDescriptor& AppBarToggleButton::isCheckedProperty()
+{
+    return propertyFor("Velora.Fluent.AppBarToggleButton", "IsChecked");
+}
+bool AppBarToggleButton::isChecked() const
+{
+    return getValue(isCheckedProperty()).asBool();
+}
+PropertySetResult AppBarToggleButton::setIsChecked(bool value)
+{
+    return setValue(isCheckedProperty(), value);
+}
+u64 AppBarToggleButton::addIsCheckedChanged(std::function<void(bool)> handler)
+{
+    if (!handler)
+        return 0;
+    return addPropertyChanged(
+        [this, handler = std::move(handler)](DependencyObject&, const PropertyDescriptor& p,
+                                             const PropertyValue&, const PropertyValue& value)
+        {
+            if (isInTree() && p.id == isCheckedProperty().id)
+                handler(value.asBool());
+        });
+}
+} // namespace velora

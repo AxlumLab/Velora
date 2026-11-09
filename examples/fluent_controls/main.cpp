@@ -8,8 +8,10 @@
 #include <string_view>
 #include <velora/application/XamlApplication.hpp>
 #include <velora/application/XamlWindow.hpp>
+#include <velora/fluent/AppBarButton.hpp>
 #include <velora/fluent/DropDownButton.hpp>
 #include <velora/fluent/FluentPackage.hpp>
+#include <velora/fluent/MenuBar.hpp>
 #include <velora/fluent/MenuFlyout.hpp>
 #include <velora/fluent/NumberBox.hpp>
 #include <velora/fluent/PersonPicture.hpp>
@@ -22,7 +24,7 @@ using namespace velora;
 class FluentWindow final : public XamlWindow
 {
   public:
-    explicit FluentWindow(XamlApplication& app, bool previewMenu) : XamlWindow(app)
+    explicit FluentWindow(XamlApplication& app, bool previewMenu, bool previewMenuBar) : XamlWindow(app)
     {
         std::array<wchar_t, 32768> path{};
         const auto length = GetModuleFileNameW(nullptr, path.data(), static_cast<DWORD>(path.size()));
@@ -34,7 +36,7 @@ class FluentWindow final : public XamlWindow
         WindowOptions options;
         options.title = "Velora Fluent controls";
         options.width = 680;
-        options.height = 640;
+        options.height = 760;
         if (!Create(options))
             return;
         auto& ui = GetFramework();
@@ -46,8 +48,9 @@ class FluentWindow final : public XamlWindow
              {DropDownButton::registerType(ui), SplitButton::registerType(ui),
               ToggleSplitButton::registerType(ui), MenuFlyoutItem::registerType(ui),
               ToggleMenuFlyoutItem::registerType(ui), MenuFlyoutSeparator::registerType(ui),
-              RadioMenuFlyoutItem::registerType(ui), FontIcon::registerType(ui),
-              SymbolIcon::registerType(ui)})
+              RadioMenuFlyoutItem::registerType(ui), FontIcon::registerType(ui), SymbolIcon::registerType(ui),
+              MenuBar::registerType(ui), MenuBarItem::registerType(ui), AppBarButton::registerType(ui),
+              AppBarToggleButton::registerType(ui)})
             if (!error.empty())
                 throw std::runtime_error(error);
         Demo::FluentPage_component::Names names;
@@ -56,6 +59,35 @@ class FluentWindow final : public XamlWindow
             throw std::runtime_error(loaded.error);
         m_controller.setPicture(std::dynamic_pointer_cast<PersonPicture>(names.Avatar));
         m_controller.setStatusElement(names.Status);
+        ui.on(ui.tree().element(*names.AppBarSave), ui.events().Click,
+              [this] { m_controller.record("AppBar Save"); });
+        const auto appBarPin = std::dynamic_pointer_cast<AppBarToggleButton>(names.AppBarPin);
+        if (!appBarPin)
+            throw std::runtime_error("AppBarToggleButton factory mismatch");
+        const std::weak_ptr<AppBarToggleButton> weakAppBarPin = appBarPin;
+        ui.on(ui.tree().element(*appBarPin), ui.events().Click,
+              [this, weakAppBarPin]
+              {
+                  if (const auto item = weakAppBarPin.lock())
+                      m_controller.record(item->isChecked() ? "AppBar pinned" : "AppBar unpinned");
+              });
+        const auto bar = std::dynamic_pointer_cast<MenuBar>(names.ApplicationMenu);
+        if (!bar)
+            throw std::runtime_error("MenuBar factory mismatch");
+        for (const auto* header : {"File", "Edit", "View"})
+        {
+            const auto entry = createElement<MenuBarItem>();
+            entry->setHeader(header);
+            for (const auto* caption : {"First action", "Second action"})
+            {
+                const auto action = createElement<MenuFlyoutItem>();
+                action->setText(caption);
+                action->setCommand([this, header, caption]
+                                   { m_controller.record(std::string(header) + ": " + caption); });
+                entry->menu()->append(action);
+            }
+            bar->append(entry);
+        }
         auto flyout = std::make_shared<MenuFlyout>();
         for (const auto* text : {"Open item", "Save copy"})
         {
@@ -106,10 +138,15 @@ class FluentWindow final : public XamlWindow
               });
         m_page = ui.tree().element(*loaded.root);
         SetRoot(m_page);
-        if (previewMenu)
+        if (previewMenu || previewMenuBar)
         {
             ui.update(GetAppWindow()->getWidth(), GetAppWindow()->getHeight());
-            if (!drop->openFlyout())
+            if (previewMenuBar)
+            {
+                if (!bar->items().front()->openFlyout())
+                    throw std::runtime_error(bar->items().front()->menu()->lastError());
+            }
+            else if (!drop->openFlyout())
                 throw std::runtime_error(flyout->lastError());
         }
     }
@@ -130,22 +167,26 @@ class FluentWindow final : public XamlWindow
 class FluentApp final : public XamlApplication
 {
   public:
-    explicit FluentApp(bool previewMenu) : m_previewMenu(previewMenu)
+    explicit FluentApp(bool previewMenu, bool previewMenuBar)
+        : m_previewMenu(previewMenu), m_previewMenuBar(previewMenuBar)
     {
     }
     void OnLaunched() override
     {
-        m_window = std::make_unique<FluentWindow>(*this, m_previewMenu);
+        m_window = std::make_unique<FluentWindow>(*this, m_previewMenu, m_previewMenuBar);
         m_window->Show();
     }
 
   private:
     bool m_previewMenu = false;
+    bool m_previewMenuBar = false;
     std::unique_ptr<FluentWindow> m_window;
 };
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR arguments, int)
 {
-    FluentApp app(std::string_view(arguments).find("--open-menu") != std::string_view::npos);
+    const std::string_view args(arguments);
+    const bool previewMenuBar = args.find("--open-menubar") != std::string_view::npos;
+    FluentApp app(!previewMenuBar && args.find("--open-menu") != std::string_view::npos, previewMenuBar);
     return app.Run();
 }

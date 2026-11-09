@@ -246,7 +246,17 @@ ElementId Framework::hit(ElementId e, float x, float y, float originX, float ori
 ElementId Framework::hitTest(float x, float y) const
 {
     if (m_popup)
-        return hit(m_popup->root, x, y, 0, 0);
+    {
+        if (const auto target = hit(m_popup->root, x, y, 0, 0))
+            return target;
+        if (m_popup->passThrough && popupAnchorAvailable(m_popup->passThrough))
+        {
+            const auto parent = m_tree.visualParent(m_popup->passThrough);
+            const auto origin = parent ? bounds(parent) : Box{};
+            return hit(m_popup->passThrough, x, y, origin.x, origin.y);
+        }
+        return 0;
+    }
     const auto& roots = m_tree.visualRoots();
     for (auto it = roots.rbegin(); it != roots.rend(); ++it)
         if (const ElementId found = hit(*it, x, y, 0, 0))

@@ -23,17 +23,19 @@ bool Framework::popupAnchorAvailable(ElementId element) const
     }
     return true;
 }
-bool Framework::openPopup(ElementId anchor, ElementId root, std::function<void()> closed)
+bool Framework::openPopup(ElementId anchor, ElementId root, std::function<void()> closed,
+                          ElementId passThrough)
 {
     if (!isOwnerThread() || m_destroying || !popupAnchorAvailable(anchor) || !m_tree.contains(root) ||
-        m_tree.parent(root) || root == anchor || isWithin(anchor, root))
+        m_tree.parent(root) || root == anchor || isWithin(anchor, root) ||
+        (passThrough && (!m_tree.contains(passThrough) || !isWithin(anchor, passThrough))))
         return false;
     const auto alive = m_lifetime;
     closePopup(false);
     if (!*alive || m_popup || !popupAnchorAvailable(anchor) || !m_tree.contains(root))
         return false;
     const auto restore = isWithin(focused(), anchor) ? anchor : focused();
-    m_popup = PopupState{anchor, root, restore, std::move(closed)};
+    m_popup = PopupState{anchor, root, restore, std::move(closed), passThrough};
     m_tree.onRemoved(root,
                      [this, root]
                      {

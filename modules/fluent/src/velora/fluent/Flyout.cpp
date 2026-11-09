@@ -43,7 +43,7 @@ void Flyout::hide()
         m_lifetime.reset();
     }
 }
-bool Flyout::showAt(Framework& ui, ElementId anchor, std::function<void(bool)> changed)
+bool Flyout::showAt(Framework& ui, ElementId anchor, std::function<void(bool)> changed, ElementId passThrough)
 {
     if (isOpen() && m_ui == &ui && m_anchor == anchor)
         return true;
@@ -84,19 +84,20 @@ bool Flyout::showAt(Framework& ui, ElementId anchor, std::function<void(bool)> c
         m_root = root;
         m_anchor = anchor;
         const auto weak = weak_from_this();
-        const bool opened =
-            ui.openPopup(anchor, root,
-                         [weak, root, changed]
-                         {
-                             if (const auto owner = weak.lock(); owner && owner->m_root == root)
-                             {
-                                 owner->m_ui = nullptr;
-                                 owner->m_root = owner->m_anchor = 0;
-                                 owner->m_lifetime.reset();
-                             }
-                             if (changed)
-                                 changed(false);
-                         });
+        const bool opened = ui.openPopup(
+            anchor, root,
+            [weak, root, changed]
+            {
+                if (const auto owner = weak.lock(); owner && owner->m_root == root)
+                {
+                    owner->m_ui = nullptr;
+                    owner->m_root = owner->m_anchor = 0;
+                    owner->m_lifetime.reset();
+                }
+                if (changed)
+                    changed(false);
+            },
+            passThrough);
         if (!opened || m_root != root)
             throw std::runtime_error("Flyout anchor is unavailable or opening was cancelled");
         if (changed)

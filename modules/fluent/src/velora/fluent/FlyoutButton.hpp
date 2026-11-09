@@ -24,7 +24,7 @@ class FlyoutButton : public UIElement
     void setFlyout(std::shared_ptr<Flyout> flyout);
     [[nodiscard]] std::shared_ptr<Flyout> flyout() const noexcept;
     [[nodiscard]] bool isFlyoutOpen() const noexcept;
-    bool openFlyout();
+    virtual bool openFlyout();
     void closeFlyout();
     void invokePrimary();
     void onAttached(Framework&, ElementId) override;
@@ -39,9 +39,14 @@ class FlyoutButton : public UIElement
     {
         kDropDown,
         kSplit,
-        kToggleSplit
+        kToggleSplit,
+        kMenuBarItem,
+        kAppBarButton,
+        kAppBarToggleButton
     };
     explicit FlyoutButton(Variant variant);
+    virtual ElementId flyoutPassThrough() const noexcept;
+    Framework* attachedFramework() const noexcept;
     static const XamlTypeDeclaration& typeDeclaration(std::string_view name);
     static const PropertyDescriptor& propertyFor(std::string_view type, std::string_view name);
     static std::string registerControl(Framework&, const XamlTypeDeclaration&,
@@ -52,6 +57,7 @@ class FlyoutButton : public UIElement
     void updateParts();
     ElementId part(std::string_view name) const;
     bool canInvoke() const;
+    std::string_view contentPropertyName() const noexcept;
     const Variant m_variant;
     Framework* m_ui = nullptr;
     ElementId m_element = 0, m_root = 0;

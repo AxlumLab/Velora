@@ -35,7 +35,8 @@ const PropertyDescriptor& FlyoutButton::propertyFor(std::string_view type, std::
     static const bool initialized = []
     {
         for (const auto* name :
-             {"Velora.Fluent.DropDownButton", "Velora.Fluent.SplitButton", "Velora.Fluent.ToggleSplitButton"})
+             {"Velora.Fluent.DropDownButton", "Velora.Fluent.SplitButton", "Velora.Fluent.ToggleSplitButton",
+              "Velora.Fluent.MenuBarItem", "Velora.Fluent.AppBarButton", "Velora.Fluent.AppBarToggleButton"})
             for (const auto& p : typeDeclaration(name).properties)
             {
                 const SchemaProperty schema{p.name, p.kind, {}, p.defaultValue, kSchemaPaint};
@@ -62,17 +63,37 @@ FlyoutButton::FlyoutButton(Variant variant) : UIElement(ElementKind::kUserContro
 }
 std::string FlyoutButton::className() const
 {
+    if (m_variant == Variant::kAppBarButton)
+        return "Velora.Fluent.AppBarButton";
+    if (m_variant == Variant::kAppBarToggleButton)
+        return "Velora.Fluent.AppBarToggleButton";
+    if (m_variant == Variant::kMenuBarItem)
+        return "Velora.Fluent.MenuBarItem";
     return m_variant == Variant::kDropDown ? "Velora.Fluent.DropDownButton"
            : m_variant == Variant::kSplit  ? "Velora.Fluent.SplitButton"
                                            : "Velora.Fluent.ToggleSplitButton";
 }
 std::string FlyoutButton::content() const
 {
-    return getValue(propertyFor(className(), "Content")).asString();
+    return getValue(propertyFor(className(), contentPropertyName())).asString();
 }
 PropertySetResult FlyoutButton::setContent(std::string value)
 {
-    return setValue(propertyFor(className(), "Content"), std::move(value));
+    return setValue(propertyFor(className(), contentPropertyName()), std::move(value));
+}
+std::string_view FlyoutButton::contentPropertyName() const noexcept
+{
+    if (m_variant == Variant::kAppBarButton || m_variant == Variant::kAppBarToggleButton)
+        return "Label";
+    return m_variant == Variant::kMenuBarItem ? "Header" : "Content";
+}
+ElementId FlyoutButton::flyoutPassThrough() const noexcept
+{
+    return 0;
+}
+Framework* FlyoutButton::attachedFramework() const noexcept
+{
+    return m_ui;
 }
 std::shared_ptr<Flyout> FlyoutButton::flyout() const noexcept
 {
@@ -114,12 +135,14 @@ bool FlyoutButton::openFlyout()
     m_ui->focus(m_element);
     if (!canInvoke())
         return false;
-    return flyout->showAt(*m_ui, m_element,
-                          [weak](bool)
-                          {
-                              if (const auto object = weak.lock())
-                                  static_cast<FlyoutButton&>(*object).updateParts();
-                          });
+    return flyout->showAt(
+        *m_ui, m_element,
+        [weak](bool)
+        {
+            if (const auto object = weak.lock())
+                static_cast<FlyoutButton&>(*object).updateParts();
+        },
+        flyoutPassThrough());
 }
 void FlyoutButton::closeFlyout()
 {
@@ -138,9 +161,12 @@ void FlyoutButton::invokePrimary()
         m_ui->focus(m_element);
     if (!canInvoke())
         return;
-    if (m_variant == Variant::kDropDown)
+    if (m_variant == Variant::kMenuBarItem && isFlyoutOpen())
+        closeFlyout();
+    else if (m_variant == Variant::kDropDown || m_variant == Variant::kMenuBarItem ||
+             (m_variant == Variant::kAppBarButton && m_flyout))
         openFlyout();
-    else if (m_variant == Variant::kToggleSplit)
+    else if (m_variant == Variant::kToggleSplit || m_variant == Variant::kAppBarToggleButton)
     {
         const auto& checked = propertyFor(className(), "IsChecked");
         setValue(checked, !getValue(checked).asBool());
@@ -155,8 +181,13 @@ ElementId FlyoutButton::part(std::string_view name) const
 }
 bool FlyoutButton::validatePropertyValue(const PropertyDescriptor& d, const PropertyValue& v) const
 {
-    if (d.id == propertyFor(className(), "Content").id)
+    const auto& properties = typeDeclaration(className()).properties;
+    for (const auto& property : properties)
     {
+        if (property.id() != d.id)
+            continue;
+        if (property.kind == ValueKind::kBoolean)
+            return v.isBool();
         if (!v.isString())
             return false;
         try
@@ -169,19 +200,23 @@ bool FlyoutButton::validatePropertyValue(const PropertyDescriptor& d, const Prop
             return false;
         }
     }
-    if (m_variant == Variant::kToggleSplit && d.id == propertyFor(className(), "IsChecked").id)
-        return v.isBool();
     return true;
 }
 void FlyoutButton::onAttached(Framework& ui, ElementId self)
 {
     m_ui = &ui;
     m_element = self;
-    const auto uri = m_variant == Variant::kDropDown ? "ms-appx-framework:///Controls/DropDownButtonView.vxbf"
-                                                     : "ms-appx-framework:///Controls/SplitButtonView.vxbf";
+    const bool appBar = m_variant == Variant::kAppBarButton || m_variant == Variant::kAppBarToggleButton;
+    const auto uri =
+        m_variant == Variant::kMenuBarItem
+            ? "ms-appx-framework:///Controls/MenuBarItemView.vxbf"
+            : (m_variant == Variant::kDropDown ? "ms-appx-framework:///Controls/DropDownButtonView.vxbf"
+                                               : "ms-appx-framework:///Controls/SplitButtonView.vxbf");
     ComponentLoadOptions options;
     options.parent = this;
-    const auto loaded = loadComponent(ui, *ResourceUri::parse(uri), options);
+    const auto loaded = loadComponent(
+        ui, *ResourceUri::parse(appBar ? "ms-appx-framework:///Controls/AppBarButtonView.vxbf" : uri),
+        options);
     if (!loaded.ok)
         throw std::runtime_error("Fluent button template: " + loaded.error);
     m_root = ui.tree().element(*loaded.root);
@@ -218,16 +253,32 @@ void FlyoutButton::onDetached() noexcept
 }
 void FlyoutButton::updateParts()
 {
-    if (!m_ui)
+    if (!m_ui || !part("PrimaryButton"))
         return;
     const auto keepAlive = m_ui->tree().object(m_element);
     m_ui->set(part("PrimaryButton"), m_ui->props().Content, content());
     if (!m_ui)
         return;
     m_ui->goToState(m_root, isFlyoutOpen() ? "FlyoutOpen" : "FlyoutClosed");
-    if (m_ui && m_variant == Variant::kToggleSplit)
+    if (m_ui && (m_variant == Variant::kToggleSplit || m_variant == Variant::kAppBarToggleButton))
         m_ui->goToState(m_root,
                         getValue(propertyFor(className(), "IsChecked")).asBool() ? "Checked" : "Unchecked");
+    if (m_ui && (m_variant == Variant::kAppBarButton || m_variant == Variant::kAppBarToggleButton))
+    {
+        const auto set =
+            [this](const PropertyDescriptor* property, PropertyValue value, std::string_view name)
+        {
+            if (m_ui)
+                if (const auto child = m_ui->templateChild(part("PrimaryButton"), name))
+                    m_ui->set(child, property, std::move(value));
+        };
+        const auto& p = elementProperties().props;
+        set(p.Text, getValue(propertyFor(className(), "IconGlyph")), "IconGlyph");
+        set(p.Visibility, !getValue(propertyFor(className(), "IsCompact")).asBool(), "LabelText");
+        if (m_ui)
+            m_ui->set(part("PrimaryButton"), p.MinHeight,
+                      getValue(propertyFor(className(), "IsCompact")).asBool() ? 48.0 : 68.0);
+    }
 }
 void FlyoutButton::onKeyDown(InputContext&, KeyEventArgs& args)
 {

@@ -1,4 +1,20 @@
 velora-xaml-types	1
+type	Velora.Fluent.AppBarButton	UserControl
+property	Label	String	AppBarButton.Label	""
+property	IconGlyph	String	AppBarButton.IconGlyph	""
+property	IsCompact	Boolean	AppBarButton.IsCompact	False
+end
+type	Velora.Fluent.AppBarToggleButton	UserControl
+property	Label	String	AppBarToggleButton.Label	""
+property	IconGlyph	String	AppBarToggleButton.IconGlyph	""
+property	IsCompact	Boolean	AppBarToggleButton.IsCompact	False
+property	IsChecked	Boolean	AppBarToggleButton.IsChecked	False
+end
+type	Velora.Fluent.MenuBar	UserControl
+end
+type	Velora.Fluent.MenuBarItem	UserControl
+property	Header	String	MenuBarItem.Header	""
+end
 type	Velora.Fluent.FontIcon	TextBlock
 property	Glyph	String	FontIcon.Glyph	""
 end

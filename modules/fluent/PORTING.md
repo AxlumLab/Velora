@@ -111,3 +111,15 @@ Windows 示例 `FluentPage.xaml` 从编译 XAML 创建实际 NumberBox；注册�
 - RadioMenuFlyoutItem 直接内化 `porting/RadioMenuFlyoutItem/RadioMenuFlyoutItem.cpp/.idl` 的同父节点、同 GroupName 互斥和点击不反选行为。只保留一个实际 IsChecked 值，没有上游 InternalIsChecked 桥。树外属性设置保留到挂载，打开菜单时对实际兄弟落实分组。
 - 新增实际 FontIcon、SymbolIcon，共用 IconElement 和现有绘制管线。FontIcon 提供 UTF-8 Glyph；SymbolIcon 首批支持 Windows SDK 的 14 个常用 Symbol 值并映射到 MDL2，不宣称完整枚举。C++ 使用 `Symbol` 枚举，当前编译 XAML 使用整数值；源码类型具名枚举语法待接入。字体大小、前景和字体族沿用同一对象的现有属性。
 - Gallery 包含实际图标控件、菜单图标、快捷键显示及一组单选菜单项；只做示例编译和 `--open-menu` 启动检查，行为、视觉、DPI 和完整回归最后统一执行。旧资源包需随 schema 变化正常重编，不关闭版本或未知语法诊断。
+
+## MenuBar 与 AppBar 按钮批次（待统一验证）
+
+新增 MenuBar、MenuBarItem、AppBarButton、AppBarToggleButton 四种实际源码类型、编译模板与 Gallery 入口。MenuBar/MenuBarItem 直接参考 `porting/MenuBar/` 的固定 2.3 C++/XAML；AppBar 按钮模板派生自 `CommonStyles/AppBarButton_themeresources.xaml` 和 `AppBarToggleButton_themeresources.xaml`，系统控件行为在 Velora 实现。来源哈希仍见 `porting/Sources.json`，派生代码/模板保留 MIT。
+
+- MenuBar 集合持有实际 MenuBarItem，支持树外挂载及挂载后 append/clear，拒绝重复和已挂载对象。模板使用现有横向布局；Header、Label、IconGlyph、IsCompact、IsChecked 读取对应实际依赖属性，内容别名不建立第二份值。
+- MenuBarItem 复用 FlyoutButton 和 MenuFlyout，菜单不为空时才展开。实现点击开闭、上下键展开、左右键循环/Home/End 导航、跳过隐藏/禁用标题，以及菜单已展开时的标题悬停切换。展开状态从实际 Flyout 计算，父关联是弱引用；卸载和失败挂载沿用同一树的清理。
+- Popup 增加受限的祖先 pass-through 区域：菜单内容优先命中，其余只允许菜单栏区域接收输入；左右键可路由到该菜单栏。其余外部区域仍关闭并消费手势，不把菜单透传扩展成全窗口点击穿透。菜单切换继续使用同一窗口的单个弹出根，不实现第二套弹出树或嵌套菜单。
+- AppBar 按钮使用系统 MDL2 图标和下方标签；IsCompact 隐藏标签并缩小最小高度，Toggle 类型在 Click 前更新 IsChecked，普通类型可关联 Flyout。Click 和可解除的勾选通知复用现有事件/属性系统。
+- 示例 `--open-menubar` 可在启动时创建菜单栏及其内容；普通 `--open-menu` 保留。菜单栏和 AppBar 按钮本身可以由编译 XAML 创建，Items、Menu/Flyout 对象目前通过 C++ 接入。
+
+本批仅编译并启动检查。完整键盘/悬停交互、模板状态叠加、主题/DPI/辅助功能及回归尚未统一验收；F10/Alt 访问键、RTL、滚动/变换中的透传边界、可观察集合、Items 的 XAML 语法、AppBar 完整 LabelPosition/IconSource/ICommand、CommandBar 的溢出容器等仍待实现，不能据此宣布完整 WinUI 2.3 兼容。
