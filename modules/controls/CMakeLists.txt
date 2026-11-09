@@ -7,6 +7,7 @@ velora_module(controls
     SOURCES
         velora/controls/UIElement.cpp
         velora/controls/ElementFactory.cpp
+        velora/controls/EventSubscription.cpp
         velora/controls/ControlTypes.cpp
         velora/controls/ElementSchema.cpp
         velora/controls/XamlComponent.cpp

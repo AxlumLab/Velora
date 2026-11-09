@@ -10,6 +10,7 @@
 #include <unordered_map>
 #include <vector>
 #include <velora/controls/LayoutTypes.hpp>
+#include <velora/controls/EventSubscription.hpp>
 #include <velora/globals.hpp>
 #include <velora/runtime/BindingEngine.hpp>
 #include <velora/runtime/ElementTree.hpp>
@@ -320,6 +321,11 @@ class Framework
     u64 addHandler(ElementId element, const EventDescriptor* event, ElementTree::RoutedHandler handler,
                    bool handledEventsToo = false);
     bool removeHandler(ElementId element, u64 token);
+    // Independent registration, automatically removed by the returned UI-thread scope owner.
+    // Does not replace on() or other subscriptions. Empty on invalid target/event/handler/thread.
+    [[nodiscard]] EventSubscription subscribeEvent(ElementId element, const EventDescriptor* event,
+                                                   ElementTree::RoutedHandler handler,
+                                                   bool handledEventsToo = false);
 
     // {Binding}: `path` is relative to the element's DataContext (see BindingEngine).
     void bind(ElementId element, const PropertyDescriptor* property, std::string_view path,
@@ -467,7 +473,8 @@ class Framework
     std::unordered_map<ElementId, ElementId> m_contentPresenters;
     void contentChanged(ElementId owner);
     void setContentValue(ElementId owner, PropertyValue value, PropertySource source);
-    std::shared_ptr<void> m_lifetime = std::make_shared<u8>(0);
+    friend class EventSubscription;
+    std::shared_ptr<bool> m_lifetime = std::make_shared<bool>(true);
     std::thread::id m_ownerThread = std::this_thread::get_id();
     Compositor& m_compositor;
     TextMeasurer m_measure;

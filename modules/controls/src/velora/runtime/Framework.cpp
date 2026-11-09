@@ -120,6 +120,7 @@ Framework::Framework(Compositor& compositor, TextMeasurer measure)
 Framework::~Framework()
 {
     // Expire non-owning content references before removing UI state.
+    *m_lifetime = false;
     m_lifetime.reset();
     // Detach bindings, events and visuals while their framework services still exist.
     while (!m_tree.roots().empty())

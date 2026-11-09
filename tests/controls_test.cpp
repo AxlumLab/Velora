@@ -8,6 +8,7 @@
 #include <string>
 #include <string_view>
 #include <thread>
+#include <utility>
 #include <vector>
 #include <velora/composition/Compositor.hpp>
 #include <velora/controls/BuiltinElements.hpp>
@@ -242,6 +243,85 @@ void toggleBindingLifetime()
     check(!toggle->isOn() && f.ui.bindingErrors().empty(), "removed target has no live source subscription");
 }
 
+void scopedEvents()
+{
+    Fixture f;
+    const auto id = f.add(ElementKind::kCheckBox);
+    const auto* event = f.ui.events().Checked;
+    int calls = 0;
+    const auto raise = [&] { f.ui.tree().dispatch(id, event->id); };
+    {
+        auto first = f.ui.subscribeEvent(id, event,
+                                         [&](ElementId sender, RoutedEventArgs& args)
+                                         {
+                                             check(sender == id && args.originalSource == id,
+                                                   "subscription receives sender and source");
+                                             ++calls;
+                                         });
+        auto second = f.ui.subscribeEvent(id, event, [&](ElementId, RoutedEventArgs&) { calls += 10; });
+        raise();
+        check(calls == 11, "scoped subscriptions coexist without replacement");
+        auto moved = std::move(first);
+        first.reset();
+        second = std::move(moved);
+        raise();
+        check(calls == 12, "move assignment revokes the previous subscription exactly once");
+    }
+    raise();
+    check(calls == 12, "scope exit unregisters callbacks");
+
+    EventSubscription later;
+    auto earlier = f.ui.subscribeEvent(id, event, [&](ElementId, RoutedEventArgs&) { later.reset(); });
+    later = f.ui.subscribeEvent(id, event, [&](ElementId, RoutedEventArgs&) { ++calls; });
+    raise();
+    check(calls == 12, "revoked callbacks in the current route snapshot are skipped");
+    earlier.reset();
+    EventSubscription self;
+    self = f.ui.subscribeEvent(id, event,
+                               [&](ElementId, RoutedEventArgs&)
+                               {
+                                   ++calls;
+                                   self.reset();
+                               });
+    raise();
+    raise();
+    check(calls == 13, "a subscription can revoke itself during delivery");
+
+    auto handled =
+        f.ui.subscribeEvent(id, event, [](ElementId, RoutedEventArgs& args) { args.handled = true; });
+    auto skipped = f.ui.subscribeEvent(id, event, [&](ElementId, RoutedEventArgs&) { calls += 100; });
+    auto observed = f.ui.subscribeEvent(id, event, [&](ElementId, RoutedEventArgs&) { ++calls; }, true);
+    raise();
+    check(calls == 14, "scoped subscriptions respect Handled and handledEventsToo");
+    handled.reset();
+    skipped.reset();
+    observed.reset();
+
+    auto held = std::make_shared<int>(42);
+    std::weak_ptr<int> weak = held;
+    auto removed = f.ui.subscribeEvent(id, event, [held](ElementId, RoutedEventArgs&) {});
+    held.reset();
+    check(!weak.expired(), "event registration owns its callback captures");
+    f.ui.tree().remove(id);
+    check(weak.expired(), "element removal releases callback captures while the scope token survives");
+    removed.reset();
+    removed.reset();
+
+    EventSubscription surviving;
+    std::shared_ptr<void> retainedLifetime;
+    {
+        Fixture temporary;
+        const auto target = temporary.add(ElementKind::kToggleSwitch);
+        retainedLifetime = temporary.ui.lifetime().lock();
+        surviving = temporary.ui.subscribeEvent(target, temporary.ui.events().Toggled,
+                                                [](ElementId, RoutedEventArgs&) {});
+    }
+    surviving.reset();
+    check(true, "subscription reset is safe after host destruction even with a retained lifetime token");
+    auto invalid = f.ui.subscribeEvent(id, nullptr, {});
+    invalid.reset();
+}
+
 void rangeObjectApi()
 {
     Fixture f;
@@ -470,6 +550,7 @@ int main()
     toggleSwitch();
     toggleObjectApi();
     toggleBindingLifetime();
+    scopedEvents();
     rangeObjectApi();
     rangeBindingLifetime();
     slider();

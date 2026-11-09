@@ -48,6 +48,13 @@ bool Framework::removeHandler(ElementId element, u64 token)
     return isOwnerThread() && m_tree.removeHandler(element, token);
 }
 
+EventSubscription Framework::subscribeEvent(ElementId element, const EventDescriptor* event,
+                                            ElementTree::RoutedHandler handler, bool handledEventsToo)
+{
+    const u64 token = addHandler(element, event, std::move(handler), handledEventsToo);
+    return token ? EventSubscription(*this, element, token) : EventSubscription{};
+}
+
 bool Framework::raiseRouted(ElementId target, const EventDescriptor* event)
 {
     if (!target || !m_tree.contains(target))

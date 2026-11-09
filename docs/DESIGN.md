@@ -59,6 +59,21 @@ toggle->setIsOn(false); // 挂载后触发宿主事件及 TwoWay 写回
 
 当前范围行为保留原实现的破坏性截断：Maximum 至少为 Minimum，Value 位于两者之间，非有限值和负步长被拒绝；放宽范围不会自动恢复之前被截断的原始值。这不是完整 WinUI coercion 语义的完成声明，仍须对照参考环境补齐。绑定源发布越界值时只截断目标，不递归改写源；之后的用户写入及范围变化继续使用 TwoWay 写回。
 
+### 事件订阅生命周期
+
+`Framework::subscribeEvent(element, event, handler, handledEventsToo)` 返回可移动、不可复制的 `EventSubscription`。调用 `reset()`、离开作用域或移动赋值覆盖旧订阅时解除对应注册，不替换同一事件的其他处理器。处理器接收 sender 和 `RoutedEventArgs`，默认跳过已处理事件；观察已处理事件需显式传入 `true`。既有 `on()` 仍是替换式接口，且其回调会将事件标为已处理。
+
+```cpp
+auto subscription = ui.subscribeEvent(id, ui.events().Toggled,
+    [](velora::ElementId sender, velora::RoutedEventArgs& args)
+    {
+        // 响应事件；需要停止冒泡时设置 args.handled。
+    }, true);
+// subscription 必须保留到需要停止观察时，通常作为页面或控件成员。
+```
+
+订阅不持有控件或宿主。移除元素会释放处理器及其捕获对象；订阅句柄可晚于元素和宿主销毁。宿主存活时，订阅的移动、reset 和析构遵循 UI 线程亲和性，跨线程解除订阅会 fail-fast；当前未实现自动投递销毁。此接口仍在 Framework 上，控件对象事件访问器、输入和绘制 virtual 扩展继续待实现。
+
 ## 5. 后端与发布
 
 Android 后端适配绘图命令和文本测量，平台层另行接入 surface 重建、触摸、IME、前后台及屏幕参数变化。首先打通窗口、文本、输入和资源回收，再验收控件。Impeller standalone 可被非 Flutter 应用使用，但目前不承诺 API 稳定；必须锁定上游提交和构建参数，通过 tpkg 管理。[官方说明](https://github.com/flutter/flutter/blob/master/engine/src/flutter/impeller/toolkit/interop/README.md)
