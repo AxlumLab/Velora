@@ -32,11 +32,11 @@ struct EventDescriptor
 
 class EventRegistry
 {
-public:
+  public:
     const EventDescriptor& define(std::string owner, std::string name, std::string signature);
     const EventDescriptor* find(std::string_view owner, std::string_view name) const;
 
-private:
+  private:
     int m_next = 1;
     std::unordered_map<std::string, EventDescriptor> m_values; // key "owner.name"
 };
@@ -60,15 +60,9 @@ struct ElementTreeStats
 // object() keeps its values after the element is removed.
 // Routed event data (R05.4, UWP RoutedEventArgs). OriginalSource is the element the event was
 // raised on; Handled stops delivery to handlers that did not ask for handled events too.
-struct RoutedEventArgs
-{
-    u64 originalSource = 0;
-    bool handled = false;
-};
-
 class ElementTree final : private IPropertyInvalidation
 {
-public:
+  public:
     using EventHandler = std::function<bool()>;
     // `sender` is the element whose handler runs (the bubbling position).
     using RoutedHandler = std::function<void(u64 sender, RoutedEventArgs& args)>;
@@ -165,11 +159,13 @@ public:
     // A routed handler (UIElement.AddHandler): called while the event bubbles through `id`; with
     // handledEventsToo it also sees events an earlier handler marked Handled. Token as addHandler.
     u64 addRoutedHandler(ElementId id, int eventType, RoutedHandler handler, bool handledEventsToo = false);
-    // Raises a routed event: bubbles from the target (or the pointer capture owner) to the root.
+    // Raises a routed event: bubbles from the target to the root. Pointer capture is resolved
+    // by the input host, so it cannot redirect focus, key or control-state events.
     // args.originalSource is set to the origin when empty. `classHandledAt` is an element on the
     // route whose class handling marks the event Handled before its instance handlers run (UWP
     // OnPointerPressed of ButtonBase and friends); 0 for none. Returns args.handled.
-    bool raise(ElementId target, int eventType, RoutedEventArgs& args, ElementId classHandledAt = 0);
+    bool raise(ElementId target, int eventType, RoutedEventArgs& args, ElementId classHandledAt = 0,
+               const RoutedHandler& classHandler = {});
     // Raise with a fresh args; a bool handler returning true marks the event Handled.
     // Token callback exceptions are contained; legacy on() exceptions propagate as before.
     bool dispatch(ElementId target, int eventType);
@@ -194,7 +190,7 @@ public:
     }
     ElementTreeStats stats() const;
 
-private:
+  private:
     struct HandlerRegistration
     {
         int type;
@@ -241,7 +237,7 @@ private:
 // Realization window over up to kMaxItems logical rows; it never owns per-item elements.
 class VirtualList final
 {
-public:
+  public:
     static constexpr std::size_t kMaxItems = 100000;
     void setCount(std::size_t value)
     {
@@ -277,7 +273,7 @@ public:
         return std::min(m_visible, count_ - std::min(m_first, count_));
     }
 
-private:
+  private:
     void clamp()
     {
         if (m_first > count_)

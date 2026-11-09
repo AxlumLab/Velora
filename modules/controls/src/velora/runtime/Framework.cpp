@@ -78,7 +78,8 @@ Framework::Framework(Compositor& compositor, TextMeasurer measure)
     for (auto [member, name] :
          {std::pair{&m_events.PointerPressed, "PointerPressed"},
           std::pair{&m_events.PointerReleased, "PointerReleased"}, std::pair{&m_events.KeyDown, "KeyDown"},
-          std::pair{&m_events.GotFocus, "GotFocus"}, std::pair{&m_events.LostFocus, "LostFocus"}})
+          std::pair{&m_events.GotFocus, "GotFocus"}, std::pair{&m_events.LostFocus, "LostFocus"},
+          std::pair{&m_events.PointerMoved, "PointerMoved"}})
         *member = &m_eventRegistry.define("UIElement", name, "void(RoutedEventArgs&)");
     m_bindings = std::make_unique<BindingEngine>(m_tree, *m_props.DataContext);
     m_tree.subscribe(

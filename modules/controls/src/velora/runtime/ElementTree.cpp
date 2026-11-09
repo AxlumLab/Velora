@@ -369,7 +369,9 @@ bool ElementTree::onRemoved(ElementId id, std::function<void()> callback)
 {
     struct Callback
     {
-        explicit Callback(std::function<void()> f) : run(std::move(f)) {}
+        explicit Callback(std::function<void()> f) : run(std::move(f))
+        {
+        }
         Callback(const Callback&) = delete;
         Callback& operator=(const Callback&) = delete;
         ~Callback()
@@ -479,10 +481,11 @@ bool ElementTree::dispatch(ElementId target, int eventType)
     return raise(target, eventType, args);
 }
 
-bool ElementTree::raise(ElementId target, int eventType, RoutedEventArgs& args, ElementId classHandledAt)
+bool ElementTree::raise(ElementId target, int eventType, RoutedEventArgs& args, ElementId classHandledAt,
+                        const RoutedHandler& classHandler)
 {
     const auto lifetime = m_dispatchLifetime;
-    const ElementId origin = m_capture ? m_capture : target;
+    const ElementId origin = target;
     if (!args.originalSource)
         args.originalSource = origin;
     struct RouteEntry
@@ -496,6 +499,14 @@ bool ElementTree::raise(ElementId target, int eventType, RoutedEventArgs& args, 
         route.push_back({id, node->handlers});
     for (const auto& entry : route)
     {
+        if (!*lifetime || !contains(origin))
+            return args.handled;
+        if (!contains(entry.id))
+            continue;
+        if (classHandler)
+            classHandler(entry.id, args);
+        if (!*lifetime || !contains(origin))
+            return args.handled;
         if (entry.id == classHandledAt)
             args.handled = true;
         for (const auto& registration : entry.handlers)

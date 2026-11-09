@@ -10,6 +10,32 @@ UIElement::UIElement(std::optional<ElementKind> kind) noexcept : m_kind(kind)
 
 UIElement::~UIElement() = default;
 
+void UIElement::onPointerPressed(InputContext&, PointerEventArgs&)
+{
+}
+
+void UIElement::onPointerMoved(InputContext&, PointerEventArgs&)
+{
+}
+
+void UIElement::onPointerReleased(InputContext&, PointerEventArgs&)
+{
+}
+
+void UIElement::onKeyDown(InputContext&, KeyEventArgs&)
+{
+}
+
+bool UIElement::renderOverride(Canvas&, Size) const
+{
+    return false;
+}
+
+bool UIElement::isFocusable() const noexcept
+{
+    return m_kind && isInteractive(*m_kind);
+}
+
 std::string UIElement::className() const
 {
     return m_kind ? "Velora.UI." + std::string(schemaType(*m_kind).name) : std::string();

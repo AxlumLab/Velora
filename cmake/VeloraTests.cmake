@@ -36,6 +36,8 @@ velora_add_core_test(velora_type_registry_test tests/type_registry_test.cpp velo
 velora_add_core_test(velora_dependency_property_test tests/dependency_property_test.cpp velora::controls)
 # R05: typed controls, object-first creation, layout overrides, routed events, type hierarchy.
 velora_add_core_test(velora_controls_core_test tests/controls_core_test.cpp velora::controls)
+velora_add_core_test(velora_custom_control_test tests/custom_control_test.cpp velora::controls)
+target_sources(velora_custom_control_test PRIVATE examples/custom_control/ValuePad.cpp)
 
 if(WIN32)
     velora_add_core_test(velora_platform_window_test tests/platform_window_test.cpp velora::platform ole32 uuid)

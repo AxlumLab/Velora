@@ -53,7 +53,7 @@ ui.on(id, ui.events().Toggled, [] { /* 响应有效值变化 */ });
 toggle->setIsOn(false); // 挂载后触发宿主事件及 TwoWay 写回
 ```
 
-`isOnProperty()` 可用于既有依赖属性层级 API；CheckBox/RadioButton 对应 `ToggleButtonElement::isChecked/setIsChecked/isCheckedProperty`。工厂应用与 XAML 相同的默认值，不创建代理或第二套状态。目前事件仍通过 Framework 注册，三态 CheckBox、普通控件完整继承层次、virtual 输入/绘制仍待实现。
+`isOnProperty()` 可用于既有依赖属性层级 API；CheckBox/RadioButton 对应 `ToggleButtonElement::isChecked/setIsChecked/isCheckedProperty`。工厂应用与 XAML 相同的默认值，不创建代理或第二套状态。目前事件仍通过 Framework 注册，三态 CheckBox、普通控件完整继承层次仍待实现。基本 virtual 输入/绘制入口见下节。
 
 `SliderElement` 与 `ProgressBarElement` 继承 `RangeBaseElement`，公开 `minimum/maximum/value`、对应 setter 和静态属性描述符；Slider 另有 `stepFrequency/setStepFrequency`。范围校验在对象中执行，覆盖普通属性写入、表达式发布和清除属性后的回退。依赖属性提供受保护的校验与值规范化扩展点，在一批通知前调整关联值；不会创建第二份属性存储，也不会因截断值而解除表达式。
 
@@ -72,7 +72,17 @@ auto subscription = ui.subscribeEvent(id, ui.events().Toggled,
 // subscription 必须保留到需要停止观察时，通常作为页面或控件成员。
 ```
 
-订阅不持有控件或宿主。移除元素会释放处理器及其捕获对象；订阅句柄可晚于元素和宿主销毁。宿主存活时，订阅的移动、reset 和析构遵循 UI 线程亲和性，跨线程解除订阅会 fail-fast；当前未实现自动投递销毁。此接口仍在 Framework 上，控件对象事件访问器、输入和绘制 virtual 扩展继续待实现。
+订阅不持有控件或宿主。移除元素会释放处理器及其捕获对象；订阅句柄可晚于元素和宿主销毁。宿主存活时，订阅的移动、reset 和析构遵循 UI 线程亲和性，跨线程解除订阅会 fail-fast；当前未实现自动投递销毁。此接口仍在 Framework 上，控件对象事件访问器继续待实现。
+
+### 源码控件的输入与绘制
+
+`UIElement` 提供 `onPointerPressed/onPointerMoved/onPointerReleased/onKeyDown`，沿既有路由在当前 sender 的实例处理器前调用。输入参数是 `PointerEventArgs` 或 `KeyEventArgs`；实例订阅可通过 `dynamic_cast` 读取对应参数。指针 x/y 按当前 sender 的局部坐标更新，windowX/windowY 保留窗口 DIP 坐标；键盘参数包含 Key、Shift、Ctrl。设置 handled 消费自定义输入，默认实例订阅跳过，handledEventsToo 仍可观察。内建控件的现有宿主行为继续作为过渡期实现，尚未整体迁入控件类。
+
+短期借用的 `InputContext` 提供当前元素的 bounds、focus、capturePointer/hasPointerCapture/releasePointer，不得保存到回调之外。调用 virtual 前宿主持有实际对象，允许回调移除自身及释放调用方引用；已移除源不再继续实例分发。指针捕获只在指针入口选择目标，键盘、焦点及控件状态事件按各自来源路由。自定义类覆盖 `isFocusable()` 后可参与 Tab 导航，仍受 IsTabStop、可见性和祖先启用状态约束。
+
+`renderOverride(Canvas&, Size) const` 在已有背景之后、子视觉之前记录局部绘图命令，返回 true 接管内容绘制，false 使用注册的默认 painter。属性有效值变化通过现有 VisualBridge 触发重绘，快照仍为不可变 DisplayList。渲染回调不得改变树或属性；本轮不提供额外 overlay、文本编辑、触摸多指或指针取消 API。
+
+`examples/custom_control/ValuePad` 是实际源码示例，使用同一依赖属性保存数值，支持拖动、键盘、Tab 和虚拟绘制。它暂时沿用 UserControl schema 身份，通过 C++ 工厂挂载；开放类型注册与正式自定义 XAML 编译仍是 2A 待办，不能把示例类当作已完成的控件 SDK。
 
 ## 5. 后端与发布
 

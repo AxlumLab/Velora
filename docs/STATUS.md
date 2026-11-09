@@ -28,7 +28,7 @@
 | --- | --- | --- |
 | Windows 宿主与绘图 | 窗口、D2D/DWrite、调度、基础 DPI/生命周期已有实测 | 完整文本编辑、真实 IME 组合输入和平台边界仍需完善 |
 | 属性/绑定/资源/编译 | 主路径可运行，正式 XAML、生成代码、包及安装消费已有回归 | 统一可扩展元数据、类型工厂、全部模板语义未完成 |
-| 控件与 C++ API | 基础布局和交互可用，实际类仍偏布局实现 | 常用类型化 API、事件对象接口、virtual 输入/绘制、真实控件继承体系 |
+| 控件与 C++ API | 基础布局和交互可用，已接入基本 virtual 输入/绘制 | 常用类型化 API、事件对象接口、完整输入语义、真实控件继承体系 |
 | 视觉与兼容 | 基础 Gallery 和少量 WinUI XAML 摘录 | 绝大多数复合控件、完整默认模板和状态、完整历史对照清单 |
 | 辅助功能 | 有内部 AutomationNode/动作抽象 | 没有 Win32 UIA provider/WM_GETOBJECT 接入，不能宣称屏幕阅读器可用 |
 | 发布 SDK | 静态应用及资源嵌入可构建 | UI 线程销毁、共享插件 SDK、裁剪与性能预算仍未交付 |
@@ -57,8 +57,18 @@
 
 - 新增 `Framework::subscribeEvent` 与可移动的 `EventSubscription`，基于既有事件注册表提供 RAII 退订；不新建事件树或控件对象。与替换式 `on()` 区分，多个订阅可独立共存，支持 sender、originalSource、Handled 和 handledEventsToo。
 - `reset()`、作用域退出和移动赋值释放旧注册；回调中退订会使当前分发快照跳过已撤销的处理器。元素移除释放处理器捕获对象；句柄可晚于元素和 Framework 销毁，宿主生命周期标记被外部保留也不会导致访问已析构宿主。
-- 句柄遵循 UI 线程亲和性，宿主存活时跨线程退订会 fail-fast。尚未实现自动投递销毁、控件对象上的事件访问器以及 virtual 输入/绘制，不将此项计为完整控件 SDK。
+- 句柄遵循 UI 线程亲和性，宿主存活时跨线程退订会 fail-fast。自动投递销毁及控件对象上的事件访问器仍待实现；基本 virtual 输入/绘制后续已接入，见下一节。
 - 本轮完整 `dev-debug` 构建（含新公开头独立编译）及 **39/39** 回归通过（81.46s）；相关 `asan` controls/framework 重建并 **2/2** 通过（0.36s）。CheckStyle、CheckWorkspace、改动测试与新源文件格式检查、git diff 空白检查通过。未重跑 Release、全套 ASan 或真实窗口输入验收。证据在 `build/dev/events-build.log`、`build/dev/events-results.xml`、`build/asan/events-results.xml`。
+
+### 后续推进：源码控件输入与绘制
+
+- `UIElement` 增加基本指针按下/移动/释放、KeyDown、焦点资格和绘制 virtual 入口。`InputContext` 提供当前元素的坐标、焦点及捕获服务；路由输入携带局部/窗口 DIP 坐标和键盘修饰键。对象回调先于当前 sender 的实例处理器，并遵循 Handled/handledEventsToo。
+- 指针捕获由指针入口决定目标，通用事件不再被捕获对象重定向；新增回归覆盖捕获期间的焦点、键盘和 Toggle 状态事件来源。回调临时持有实际对象，允许输入回调中移除树节点并释放调用方最后引用。
+- `renderOverride` 可接管内容绘制，背景、子视觉、属性无效化和不可变 DisplayList 继续沿用现有管线。新增 `ValuePad` 示例及共用源码的回归测试，验证布局、拖动、键盘、Tab、禁用祖先、重绘和卸载。没有增加影子属性或新元素树。
+- Windows 独立示例实际启动，通过 Win32 消息检查拖动、捕获后的区域外移动、释放、End/Left；截图确认最终显示 `Value 99`，WM_CLOSE 后退出码为 0。截图在 `build/dev/extensions-native/01-start.png`、`02-after-input.png`，会话记录在同目录 `session.json`。这是单主指针消息验收，不代表触摸、多指或全部输入设备验收。
+- 示例暂沿用 UserControl schema 身份，C++ 工厂挂载，不支持正式自定义 XAML 类型注册。内建输入行为仍有 Framework 分派；完整卸载扩展、自动 UI 线程销毁、指针取消及多指输入仍待实现，不将 1C 或最终 SDK 标记为完成。
+- 本轮完整 `dev-debug` 构建（含新公开头独立编译及独立示例）与 **40/40** 回归通过（90.37s）；相关 `asan` custom_control/controls_core/controls/framework/visual_bridge 五项重建并 **5/5** 通过（1.28s）。源码布局、工作区、15 个改动 C++ 文件格式与 git diff 空白检查通过。未重跑 Release、完整 ASan 或真实 IME 验收。
+- 首轮构建曾重叠使用同一 dev 输出目录，随后出现 LNK1163 COMDAT 链接错误；结束重叠构建、清除两份受影响对象并重编后完整通过。失败记录保留在 `build/dev/extensions-full-build.log`、`extensions-rebuild.log`；最终证据为 `build/dev/extensions-object-rebuild.log`、`extensions-results.xml`、`build/asan/extensions-results.xml`。
 
 | 范围 | 当前事实 |
 | --- | --- |

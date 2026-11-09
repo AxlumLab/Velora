@@ -1,5 +1,6 @@
 #include "velora/runtime/FrameworkInternal.hpp"
 
+#include <velora/controls/InputContext.hpp>
 #include <velora/globals.hpp>
 
 namespace velora
@@ -55,10 +56,15 @@ EventSubscription Framework::subscribeEvent(ElementId element, const EventDescri
     return token ? EventSubscription(*this, element, token) : EventSubscription{};
 }
 
-bool Framework::raiseRouted(ElementId target, const EventDescriptor* event)
+bool Framework::raiseRouted(ElementId target, const EventDescriptor* event, RoutedEventArgs* input)
 {
     if (!target || !m_tree.contains(target))
         return false;
+    if (input)
+        for (ElementId current = target; current; current = m_tree.parent(current))
+            if (!m_tree.property(current, *m_props.IsEnabled).asBool() ||
+                !m_tree.property(current, *m_props.Visibility).asBool())
+                return true;
     // Class handling: the nearest enabled interactive control on the route consumes pointer
     // presses and releases (UWP ButtonBase/TextBox/Slider OnPointerPressed), before its own
     // instance handlers, so they and its ancestors see them only with handledEventsToo.
@@ -67,13 +73,54 @@ bool Framework::raiseRouted(ElementId target, const EventDescriptor* event)
         for (ElementId e = target; e && !handledAt; e = m_tree.parent(e))
             if (interactive(m_tree.kind(e)) && m_tree.property(e, *m_props.IsEnabled).asBool())
                 handledAt = e;
-    RoutedEventArgs args;
+    const auto alive = m_lifetime;
+    RoutedEventArgs empty;
+    auto& args = input ? *input : empty;
     args.originalSource = target;
-    return m_tree.raise(target, event->id, args, handledAt);
+    bool overridden = false;
+    const auto classHandler = [&](ElementId sender, RoutedEventArgs& routed)
+    {
+        auto* pointer = dynamic_cast<PointerEventArgs*>(&routed);
+        if (pointer)
+        {
+            const Box box = bounds(sender);
+            pointer->x = pointer->windowX - box.x;
+            pointer->y = pointer->windowY - box.y;
+        }
+        if (routed.handled)
+            return;
+        const auto object = m_tree.object(sender);
+        if (!object)
+            return;
+        auto& element = static_cast<UIElement&>(*object);
+        InputContext context(*this, sender);
+        if (pointer)
+        {
+            if (event == m_events.PointerPressed)
+                element.onPointerPressed(context, *pointer);
+            else if (event == m_events.PointerMoved)
+                element.onPointerMoved(context, *pointer);
+            else if (event == m_events.PointerReleased)
+                element.onPointerReleased(context, *pointer);
+        }
+        else if (auto* key = dynamic_cast<KeyEventArgs*>(&routed))
+            element.onKeyDown(context, *key);
+        overridden = overridden || routed.handled;
+    };
+    const bool handled = m_tree.raise(target, event->id, args, handledAt, classHandler);
+    // Existing built-in class handling marks pointer events Handled for instance subscribers;
+    // its implementation still runs below. An override may consume input before that fallback.
+    return !*alive || overridden || (!handledAt && handled) || !m_tree.contains(target);
 }
 
 void Framework::pointerMove(float x, float y)
 {
+    PointerEventArgs args;
+    args.windowX = x;
+    args.windowY = y;
+    if (raiseRouted(m_tree.pointerCapture() ? m_tree.pointerCapture() : hitTest(x, y), m_events.PointerMoved,
+                    &args))
+        return;
     scrollBarMove(x, y);
     if (m_scrollDrag.viewer)
         return;
@@ -98,7 +145,12 @@ void Framework::pointerDown(float x, float y)
 {
     if (scrollBarDown(x, y))
         return;
-    raiseRouted(hitTest(x, y), m_events.PointerPressed);
+    PointerEventArgs args;
+    args.windowX = x;
+    args.windowY = y;
+    if (raiseRouted(m_tree.pointerCapture() ? m_tree.pointerCapture() : hitTest(x, y),
+                    m_events.PointerPressed, &args))
+        return;
     ElementId target = hitTest(x, y);
     while (target && !interactive(m_tree.kind(target)))
         target = m_tree.parent(target);
@@ -140,7 +192,14 @@ void Framework::pointerDown(float x, float y)
 
 void Framework::pointerUp(float x, float y)
 {
-    raiseRouted(m_tree.pointerCapture() ? m_tree.pointerCapture() : hitTest(x, y), m_events.PointerReleased);
+    const auto alive = m_lifetime;
+    PointerEventArgs args;
+    args.windowX = x;
+    args.windowY = y;
+    const bool handled = raiseRouted(m_tree.pointerCapture() ? m_tree.pointerCapture() : hitTest(x, y),
+                                     m_events.PointerReleased, &args);
+    if (!*alive)
+        return;
     if (m_scrollDrag.viewer)
     {
         m_scrollDrag = {};
@@ -162,6 +221,8 @@ void Framework::pointerUp(float x, float y)
     if (!m_tree.contains(button))
         return;
     set(button, m_props.IsPressed, PropertyValue(false));
+    if (handled)
+        return;
     if (!bounds(button).contains(x, y))
         return;
     // Toggle controls change state first (raising Checked/Unchecked/Toggled), then Click, as
@@ -245,25 +306,14 @@ bool Framework::moveFocus(bool forward)
 {
     const auto tabStop = [&](ElementId e)
     {
-        const auto kind = m_tree.kind(e);
-        if (!kind)
+        const auto* element = m_tree.uiElement(e);
+        if (!element || !element->isFocusable())
             return false;
-        switch (*kind)
-        {
-        case ElementKind::kTextBox:
-        case ElementKind::kButton:
-        case ElementKind::kCheckBox:
-        case ElementKind::kRadioButton:
-        case ElementKind::kToggleSwitch:
-        case ElementKind::kSlider:
-            break;
-        default:
-            return false;
-        }
         if (!m_tree.property(e, *m_props.IsTabStop).asBool())
             return false;
         for (ElementId a = e; a; a = m_tree.parent(a))
-            if (!m_tree.property(a, *m_props.Visibility).asBool() || !m_tree.property(a, *m_props.IsEnabled).asBool())
+            if (!m_tree.property(a, *m_props.Visibility).asBool() ||
+                !m_tree.property(a, *m_props.IsEnabled).asBool())
                 return false;
         return true;
     };
@@ -281,7 +331,8 @@ bool Framework::moveFocus(bool forward)
     if (stops.empty())
         return false;
     // TabIndex orders the stops; equal indices keep tree order (UWP).
-    std::ranges::stable_sort(stops, {}, [&](ElementId e) { return m_tree.property(e, *m_props.TabIndex).asInt(); });
+    std::ranges::stable_sort(stops, {},
+                             [&](ElementId e) { return m_tree.property(e, *m_props.TabIndex).asInt(); });
     const auto at = std::ranges::find(stops, m_tree.focused());
     usize next = 0;
     if (at == stops.end())
@@ -297,7 +348,12 @@ bool Framework::moveFocus(bool forward)
 
 void Framework::key(Key key, bool shift, bool ctrl)
 {
-    raiseRouted(m_tree.focused(), m_events.KeyDown);
+    KeyEventArgs args;
+    args.key = key;
+    args.shift = shift;
+    args.ctrl = ctrl;
+    if (raiseRouted(m_tree.focused(), m_events.KeyDown, &args))
+        return;
     if (key == Key::kTab)
     {
         moveFocus(!shift);

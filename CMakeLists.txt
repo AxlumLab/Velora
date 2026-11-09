@@ -22,10 +22,11 @@ if(VELORA_BUILD_TESTS)
     include(cmake/VeloraTests.cmake)
 endif()
 
-# Examples: N04 Application startup and the control gallery, both with compiled XAML
+# Examples: compiled XAML startup/gallery and a C++ source-control extension.
 if(WIN32 AND VELORA_ENABLE_ANTLR)
     add_subdirectory(examples/n04_startup)
     add_subdirectory(examples/gallery)
+    add_subdirectory(examples/custom_control)
 endif()
 
 include(cmake/VeloraInstall.cmake)

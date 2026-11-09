@@ -5,10 +5,11 @@
 #include <string>
 #include <string_view>
 #include <vector>
+#include <velora/controls/InputEvents.hpp>
 #include <velora/controls/LayoutTypes.hpp>
-#include <velora/types/TypeId.hpp>
 #include <velora/runtime/FrameworkSchema.hpp>
 #include <velora/runtime/property/DependencyObject.hpp>
+#include <velora/types/TypeId.hpp>
 
 // The controls core (R05.1): every element of a UI tree is a UIElement — a DependencyObject that
 // knows its type and implements its own layout.
@@ -33,6 +34,8 @@ namespace velora
 {
 
 class LayoutContext;
+class InputContext;
+class Canvas;
 using ElementId = u64;
 
 // What MeasureOverride gets: the slot inside margin and explicit size, the same slot without padding
@@ -48,7 +51,7 @@ struct MeasureInput
 
 class UIElement : public DependencyObject
 {
-public:
+  public:
     // `kind` is empty for elements of a type the built-in schema does not know (generic trees).
     explicit UIElement(std::optional<ElementKind> kind = std::nullopt) noexcept;
     virtual ~UIElement();
@@ -71,13 +74,25 @@ public:
     virtual void arrangeOverride(LayoutContext& context, ElementId self, Box content,
                                  const std::vector<ElementId>& children);
 
+    // Class input handling runs before this sender's instance handlers, along the same route.
+    // Set handled to consume input. The host keeps this object alive during the callback.
+    virtual void onPointerPressed(InputContext& context, PointerEventArgs& args);
+    virtual void onPointerMoved(InputContext& context, PointerEventArgs& args);
+    virtual void onPointerReleased(InputContext& context, PointerEventArgs& args);
+    virtual void onKeyDown(InputContext& context, KeyEventArgs& args);
+    // Custom controls opt into Tab navigation here; IsTabStop and ancestor state still apply.
+    [[nodiscard]] virtual bool isFocusable() const noexcept;
+    // Local-coordinate content, below children and after the background. Return true to replace
+    // the registered built-in painter. Do not mutate the tree or properties while rendering.
+    virtual bool renderOverride(Canvas& canvas, Size size) const;
+
     // True while a UI tree hosts this element. An element is in at most one tree (C-3.6).
     [[nodiscard]] bool isInTree() const noexcept
     {
         return m_host != nullptr;
     }
 
-private:
+  private:
     friend class ElementTree;
     std::optional<ElementKind> m_kind;
     const void* m_host = nullptr; // the hosting ElementTree, set and cleared by it

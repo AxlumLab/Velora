@@ -9,8 +9,8 @@
 #include <thread>
 #include <unordered_map>
 #include <vector>
-#include <velora/controls/LayoutTypes.hpp>
 #include <velora/controls/EventSubscription.hpp>
+#include <velora/controls/LayoutTypes.hpp>
 #include <velora/globals.hpp>
 #include <velora/runtime/BindingEngine.hpp>
 #include <velora/runtime/ElementTree.hpp>
@@ -35,25 +35,6 @@ inline float lineHeight(float fontSize)
 {
     return fontSize * 1.33f;
 }
-
-enum class Key
-{
-    kLeft,
-    kRight,
-    kHome,
-    kEnd,
-    kBackspace,
-    kDelete,
-    kEnter,
-    kA,
-    // Scrolling keys, handled by the ScrollViewer around the focused element.
-    kUp,
-    kDown,
-    kPageUp,
-    kPageDown,
-    // Focus navigation: Tab moves to the next tab stop, Shift+Tab to the previous one.
-    kTab
-};
 
 enum class Theme
 {
@@ -194,6 +175,7 @@ class Framework
         // handledEventsToo.
         const EventDescriptor* PointerPressed = nullptr;
         const EventDescriptor* PointerReleased = nullptr;
+        const EventDescriptor* PointerMoved = nullptr;
         const EventDescriptor* KeyDown = nullptr;
         const EventDescriptor* GotFocus = nullptr;
         const EventDescriptor* LostFocus = nullptr;
@@ -427,7 +409,7 @@ class Framework
     // Framework-side state of a new element of `kind` (scroll offsets, list viewports, page domain).
     void initializeElement(ElementId id, ElementKind kind);
     // Raises a routed input event with the class handling of the elements on the route.
-    bool raiseRouted(ElementId target, const EventDescriptor* event);
+    bool raiseRouted(ElementId target, const EventDescriptor* event, RoutedEventArgs* input = nullptr);
     void registerPainters();
     void applyWindowBackground();
     // ScrollViewer input (framework_scroll.cpp).

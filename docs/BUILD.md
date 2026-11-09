@@ -4,6 +4,8 @@
 
 ## 1. 核心检查
 
+新增源码控件示例可在 Windows `dev-debug` 构建后运行 `build/dev/examples/custom_control/Debug/velora_custom_control.exe`。拖动数值区、Tab 聚焦、方向键或 Shift+方向键修改值。此示例专门验证 C++ 控件扩展，暂通过程序构建元素树；正式自定义类型的 XAML 注册尚未实现。
+
 要求 CMake 3.25+、Ninja、支持当前 C++23 用法的编译器。Python 3 用于源码检查。
 
 ```sh
@@ -14,7 +16,7 @@ python scripts/CheckStyle.py
 python scripts/CheckWorkspace.py
 ```
 
-该配置关闭 ANTLR，因此不需要 tpkg 依赖，包含核心库、公开头独立编译以及 17 项非 Windows 行为测试。在 Windows 上会额外启用 Windows 专用测试，需要可用 Windows SDK 与交互桌面。Linux 的 graphics/platform 路径不可作为产品后端使用，核心通过不表示 Linux UI 已实现。
+该配置关闭 ANTLR，因此不需要 tpkg 依赖，包含核心库、公开头独立编译以及 18 项非 Windows 行为测试（包含源码控件用例）。在 Windows 上会额外启用 Windows 专用测试，需要可用 Windows SDK 与交互桌面。Linux 的 graphics/platform 路径不可作为产品后端使用，核心通过不表示 Linux UI 已实现。
 
 如果 Ninja 未在 PATH，配置时传入实际路径：
 

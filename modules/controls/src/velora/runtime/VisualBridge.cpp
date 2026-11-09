@@ -229,8 +229,12 @@ void VisualBridge::repaint(ElementId element, VisualId visual)
         else
             canvas.drawRect({0, 0, width, height}, {argb(background)});
     }
-    if (const Painter* painter = painterFor(element, false))
-        (*painter)(canvas, m_tree, element, width, height);
+    const auto object = m_tree.object(element);
+    const bool custom =
+        object && static_cast<const UIElement&>(*object).renderOverride(canvas, {width, height});
+    if (!custom)
+        if (const Painter* painter = painterFor(element, false))
+            (*painter)(canvas, m_tree, element, width, height);
     m_compositor.setContent(visual, std::move(canvas).finish());
     if (const Painter* overlayPainter = painterFor(element, true))
     {
