@@ -1,0 +1,15 @@
+<!-- Internal Velora Flyout presenter. System-provided WinUI 2.3 Flyout surface behavior is
+     implemented in FrameworkPopup.cpp; no upstream activation runtime is used. -->
+<Border xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" x:Class="velora.FlyoutView"
+        Padding="8" BorderThickness="1" CornerRadius="4" MinWidth="160"
+        Background="{ThemeResource FlyoutPresenterBackground}"
+        BorderBrush="{ThemeResource FlyoutPresenterBorderBrush}">
+    <Border.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="ms-appx-framework:///Themes/FlyoutButtonResources.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Border.Resources>
+</Border>

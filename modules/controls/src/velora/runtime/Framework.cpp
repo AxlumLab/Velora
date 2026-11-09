@@ -103,6 +103,11 @@ Framework::Framework(Compositor& compositor, TextMeasurer measure)
                 elementPropertyChanged(element, d);
             if (!m_tree.contains(element))
                 return;
+            if (m_popup && (&d == m_props.IsEnabled || &d == m_props.Visibility) &&
+                isWithin(m_popup->anchor, element) && !m_tree.property(element, d).asBool())
+                closePopup(false);
+            if (!m_tree.contains(element))
+                return;
             if (&d == m_props.IsPressed || &d == m_props.IsPointerOver || &d == m_props.IsEnabled)
                 updateCommonState(element);
             if (const auto it = m_templateBindings.find(element); it != m_templateBindings.end())
@@ -120,6 +125,8 @@ Framework::Framework(Compositor& compositor, TextMeasurer measure)
 
 Framework::~Framework()
 {
+    m_destroying = true;
+    closePopup(false);
     // Expire non-owning content references before removing UI state.
     *m_lifetime = false;
     m_lifetime.reset();
@@ -177,6 +184,12 @@ ElementId Framework::insert(std::shared_ptr<UIElement> element, ElementId parent
 
 void Framework::initializeElement(ElementId id, ElementKind kind)
 {
+    m_tree.onRemoved(id,
+                     [this, id]
+                     {
+                         if (m_popup && m_popup->anchor == id)
+                             closePopup(false);
+                     });
     const SchemaType& type = schemaType(kind);
     if (kind == ElementKind::kScrollViewer)
     {

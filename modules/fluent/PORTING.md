@@ -37,7 +37,7 @@ python scripts/StageFluentSources.py --check
 
 模板输入中的 CalendarView、DatePicker、Slider、ContentDialog 等目录没有完整 C++ 控件逻辑；上游依赖 Windows 系统控件。复制目录不能取得这些实现，须由 Velora 实现行为并对照模板/API 验收。`Contracts/Microsoft.UI.Xaml.idl` 中的 experimental/版本条件也要逐项审查，固定提交中的全部源码不能直接算作 2.3 正式公开 API。
 
-下一批先从 Toggle/Range 基础类、主题/模板与弹出层补齐开始，再接入 NumberBox/SplitButton/DropDownButton，随后推进集合/虚拟化及导航控件。每批以可运行控件和相关回归为交付，已导入输入不计为可用控件。
+按共享底座与控件族批量接通：NumberBox、弹出按钮族之后推进菜单，再处理集合/虚拟化及导航。按用户最新要求，开发期只编译和启动检查，最后统一回归；未执行的行为验证继续列为缺口，已导入输入不计为可用控件。
 
 ## PersonPicture 首个实现切片
 
@@ -76,3 +76,30 @@ python scripts/StageFluentSources.py --check
 - 内部 automation 名称来自 Header、类型为 Edit；完整 RangeValue/Value pattern 和 Windows UIA provider 未完成。
 
 Windows 示例 `FluentPage.xaml` 从编译 XAML 创建实际 NumberBox；注册接口为 `NumberBox::registerType`。挂载使用当前 Fluent 编译资源包，失败回滚；卸载解除模板事件订阅并清除借用宿主，重新挂载创建新部件。该切片尚不计为完整 WinUI 2.3 NumberBox 兼容。
+
+## Flyout 按钮族批次
+
+本批一起接通 DropDownButton、SplitButton、ToggleSplitButton，以及它们共享的 Flyout/Popup 路径。按钮逻辑直接内化 `porting/DropDownButton/DropDownButton.cpp`、`porting/SplitButton/SplitButton.cpp`、`ToggleSplitButton.cpp`，模板与资源来自对应 XAML 和 CommonStyles 的 FlyoutPresenter 资源；原始哈希见 `porting/Sources.json`，派生文件保留 MIT。系统提供的 Flyout 底座在 Velora 自行实现，不构建原仓或 WinRT 投影。
+
+- 三个源类型都由编译 XAML 创建实际对象，直接 C++ 工厂也可用。共享 `FlyoutButton` 行为基类；ToggleSplitButton 在 C++ 上继承 SplitButton。类型目录目前只支持内建基类，因此三个声明仍分别继承 UserControl，尚未表达源码类型间的反射继承关系。
+- Content 和 IsChecked 使用实际依赖属性；ToggleSplitButton 主动作先切换再发送 Click，次动作只打开 Flyout。Checked 通知可以通过属性 token 解除，初次挂载前设置不会发送激活事件。Click 使用现有 Framework routed event，可通过 `subscribeEvent` 订阅；XAML 的自定义事件声明和 ICommand/CommandParameter 尚未接入。
+- Enter/Space 触发主动作，F4/Alt+Down 打开 Flyout；实际次按钮可以单独激活。鼠标激活后焦点归复合控件，关闭后可继续键盘操作。当前按 KeyDown 执行；完整 KeyUp、手柄、设备类型/触摸、取消捕获及所有视觉状态差异仍待补齐。
+- `Framework::openPopup` 接管一个独立顶层内容根，沿用同一树与合成器，以内容期望大小放在锚点下方，靠边时翻到上方并限制在窗口内；内容裁剪在 Flyout 圆角 presenter。现阶段每个窗口只允许一个弹出根，替换时先关闭旧根。没有额外 HWND，不支持窗口外弹出、嵌套菜单或完整 Placement API。
+- 外部主指针按下关闭且消费整次手势；Escape 关闭；Tab/Shift+Tab 在内容内循环。窗口失焦/最小化、锚点卸载、移除、禁用或隐藏会清理弹出根。关闭先清理服务状态，再移除内容、恢复有效焦点并通知；内容重建、回调中关闭/重开和宿主销毁均按此生命周期处理。
+- `Flyout` 是 UI 线程上的共享 C++ 服务对象，用 `std::make_shared<Flyout>(factory)` 创建，再交给按钮的 `setFlyout`。工厂返回新建且无逻辑父节点的内容根，返回后转移树内生命周期，每次打开重新创建。工厂抛出前须自行回滚部分工作，编译组件加载器已有该事务保证；服务会清理自己的 presenter 并通过 `lastError()` 保留诊断。共享 Flyout 可以在控件/窗口之间移动，身份包含 Framework，不能只比较 ElementId。
+- Flyout 对象、内容对象属性、关联资源作用域/DataContext 的完整继承，以及 Popup/Flyout 对象的 XAML 语法仍待接入。当前示例在 C++ 中提供内容工厂；不注册假的 XAML Popup 类型。Presenter 与按钮模板仍走正式编译资源包。
+- 有真实开闭/勾选模板状态和 Light/Dark/HighContrast presenter 资源；系统调色板、完整默认模板/字体/动画、自定义模板替换、全部状态叠加，以及菜单式内容的完整主题继承尚未复刻。内部 automation 提供 Button 名称/类型，完整 ExpandCollapse/Toggle pattern 与 Windows UIA provider 仍待实现。
+
+本批交付是共用底座与三个可运行控件，不计为 WinUI 2.3 按钮族全量兼容。Gallery 同页展示三个实际源类型、共享 Flyout 内容、主动作和勾选反馈，后续按控件族继续推进。
+
+## MenuFlyout 菜单族接入（待统一验证）
+
+菜单族使用同一个 Flyout 服务，包含 MenuFlyoutItem、ToggleMenuFlyoutItem、MenuFlyoutSeparator。原仓中这部分只有系统控件的主题/模板，C++ 行为在 Velora 内实现；不能声称移植了仓库中不存在的系统控件 C++。资源派生自 `porting/MenuFlyout/MenuFlyout_themeresources.xaml`，MIT 与原始哈希保留。
+
+- MenuFlyout 的集合直接保存实际 UIElement 菜单项，打开时插入同一树，关闭时解除挂载；勾选值保留在各实际对象的依赖属性里，没有菜单模型向另一套控件对象投影。
+- 普通项/勾选项有 Text，勾选项另有 IsChecked；C++ `setCommand` 提供动作回调，Click 仍走 Framework routed event。调用时先切换勾选再通知；完成或异常时关闭原弹出根，回调中新开的弹出根不被旧调用关闭。
+- 实现 Up/Down、Home/End、Enter/Space 的菜单路径，并复用 Popup 的 Tab/Escape。分隔线不可聚焦，禁用项沿用现有输入过滤。当前仅编译/启动过，未完成这一批的交互回归。
+- 集合仅允许关闭且非构建中修改，拒绝重复/已挂载/非菜单项对象；构建失败回滚内容根。菜单项订阅与宿主借用在卸载时解除，菜单持有实际对象，项目状态可在重开时保留。
+- Gallery 已改用真实菜单项，含普通动作、勾选项和分隔线；`--open-menu` 在启动时直接加载整组菜单模板，方便启动检查。
+
+子菜单、RadioMenuFlyoutItem、图标/快捷键布局、访问键、完整 ICommand、可观察集合、菜单对象/Items 的 XAML 语法、完整主题与 UIA 尚待实现。只注册已有实际实现的三种菜单项源类型；MenuFlyout 通过 C++ 服务接入。以上新增行为仍须在最后统一验证，当前不能计作完整兼容。

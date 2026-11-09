@@ -1,4 +1,23 @@
 velora-xaml-types	1
+type	Velora.Fluent.MenuFlyoutItem	UserControl
+property	Text	String	MenuFlyoutItem.Text	""
+end
+type	Velora.Fluent.ToggleMenuFlyoutItem	UserControl
+property	Text	String	ToggleMenuFlyoutItem.Text	""
+property	IsChecked	Boolean	ToggleMenuFlyoutItem.IsChecked	False
+end
+type	Velora.Fluent.MenuFlyoutSeparator	UserControl
+end
+type	Velora.Fluent.DropDownButton	UserControl
+property	Content	String	DropDownButton.Content	""
+end
+type	Velora.Fluent.SplitButton	UserControl
+property	Content	String	SplitButton.Content	""
+end
+type	Velora.Fluent.ToggleSplitButton	UserControl
+property	Content	String	ToggleSplitButton.Content	""
+property	IsChecked	Boolean	ToggleSplitButton.IsChecked	False
+end
 type	Velora.Fluent.PersonPicture	UserControl
 property	DisplayName	String	PersonPicture.DisplayName	""
 property	Initials	String	PersonPicture.Initials	""

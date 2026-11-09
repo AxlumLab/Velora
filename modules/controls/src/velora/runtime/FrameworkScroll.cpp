@@ -81,6 +81,8 @@ bool Framework::scrollStep(ElementId viewer, bool vertical, double delta)
 
 void Framework::wheel(float x, float y, float delta)
 {
+    if (m_popup && !hit(m_popup->root, x, y, 0, 0))
+        return;
     // The innermost scroller that can still move takes the wheel; at its end the wheel chains
     // to the next one out, as in WinUI. A viewer that cannot scroll vertically scrolls sideways.
     for (ElementId e = hitTest(x, y); e; e = m_tree.parent(e))

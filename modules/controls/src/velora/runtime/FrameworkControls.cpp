@@ -125,14 +125,14 @@ bool Framework::controlKey(Key key)
     if (!focused || !m_tree.property(focused, *m_props.IsEnabled).asBool())
         return false;
     const auto kind = m_tree.kind(focused);
-    if (kind == ElementKind::kButton && key == Key::kEnter)
+    if (kind == ElementKind::kButton && (key == Key::kEnter || key == Key::kSpace))
     {
         m_tree.dispatch(focused, m_events.Click->id); // keyboard activation, as a click
         return true;
     }
     if (pressable(kind) && kind != ElementKind::kButton)
     {
-        if (key != Key::kEnter)
+        if (key != Key::kEnter && key != Key::kSpace)
             return false;
         toggle(focused);
         if (kind != ElementKind::kToggleSwitch && m_tree.contains(focused))

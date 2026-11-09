@@ -72,6 +72,12 @@ bool Framework::setMounted(ElementId element, bool mounted)
         m_tree.setVisualParent(element, 0);
         return true;
     }
+    if (m_popup && isWithin(m_popup->anchor, element))
+    {
+        closePopup(false);
+        if (!m_tree.contains(element))
+            return false;
+    }
     // Input state of the subtree goes away with it; a TextBox composition is committed by focus().
     if (isWithin(m_tree.focused(), element))
         focus(0);

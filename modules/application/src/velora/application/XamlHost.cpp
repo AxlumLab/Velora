@@ -36,6 +36,10 @@ std::optional<Key> keyOf(u32 code)
         return Key::kEnter; // VK_RETURN
     case 0x1B:
         return Key::kEscape; // VK_ESCAPE
+    case 0x20:
+        return Key::kSpace;
+    case 0x73:
+        return Key::kF4;
     case 'A':
         return Key::kA;
     case 0x26:
@@ -172,7 +176,11 @@ void XamlHost::dispatch(AppEvent& event)
         resizeViewport();
         break;
     case AppEventKind::kMinimized:
+        ui.closePopup(false);
         m_suspended = true;
+        break;
+    case AppEventKind::kFocusLost:
+        ui.closePopup(false);
         break;
     case AppEventKind::kRestored:
         m_suspended = false;
@@ -199,7 +207,7 @@ void XamlHost::dispatch(AppEvent& event)
         break;
     case AppEventKind::kKeyDown:
         if (const auto key = keyOf(event.code))
-            ui.key(*key, shift, control);
+            ui.key(*key, shift, control, (event.modifiers & kAppModifierAlt) != 0);
         break;
     case AppEventKind::kTextCommit:
         ui.textInput(event.text);

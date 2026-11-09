@@ -263,6 +263,11 @@ class Framework
     [[nodiscard]] bool isMounted(ElementId element) const;
     // True when `element` is `ancestor` or below it in the logical tree.
     [[nodiscard]] bool isWithin(ElementId element, ElementId ancestor) const;
+    // One light-dismiss popup per window. Success transfers the top-level root's lifetime
+    // to this service; close removes it. Content remains in the same tree/compositor.
+    bool openPopup(ElementId anchor, ElementId root, std::function<void()> closed = {});
+    void closePopup(bool restoreFocus = true);
+    [[nodiscard]] ElementId popupRoot() const noexcept;
 
     // ThemeResource values: applied for the current theme now and again on every theme change.
     void setThemed(ElementId element, const PropertyDescriptor* property, Themed value,
@@ -365,7 +370,7 @@ class Framework
     // TextChanged is raised for user edits only, never when Text is set programmatically.
     void textInput(std::string_view utf8);
     void textEditing(std::string_view utf8, std::size_t cursor);
-    void key(Key key, bool shift = false, bool ctrl = false);
+    void key(Key key, bool shift = false, bool ctrl = false, bool alt = false);
     // Tab navigation (R10.5): the next (or previous) tab stop — an enabled, visible TextBox, Button,
     // CheckBox, RadioButton, ToggleSwitch or Slider in mounted content with IsTabStop — ordered by
     // TabIndex, then tree order, wrapping at the ends. False when there is none.
@@ -554,6 +559,16 @@ class Framework
     std::unordered_map<ElementId, Size> m_desired;
     float m_width = -1, m_height = -1;
     ElementId m_pressed = 0;
+    struct PopupState
+    {
+        ElementId anchor = 0, root = 0, restore = 0;
+        std::function<void()> closed;
+    };
+    std::optional<PopupState> m_popup;
+    bool m_dismissedPopupPress = false;
+    bool m_destroying = false;
+    bool popupAnchorAvailable(ElementId element) const;
+    void layoutPopup();
     // ScrollViewer state: the thumb being dragged, the viewer whose bar is expanded, and the
     // offsets last reported through ViewChanged.
     struct ScrollDrag

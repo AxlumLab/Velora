@@ -50,9 +50,12 @@ void Framework::layout(float width, float height)
         m_height = height;
         for (const ElementId root : m_tree.visualRoots())
         {
+            if (!m_tree.contains(root) || root == popupRoot())
+                continue;
             measure(root, {width, height});
             arrange(root, {0, 0, width, height});
         }
+        layoutPopup();
         const auto clear = [&](auto&& self, ElementId e) -> void
         {
             m_tree.clearDirty(e);
@@ -242,6 +245,8 @@ ElementId Framework::hit(ElementId e, float x, float y, float originX, float ori
 
 ElementId Framework::hitTest(float x, float y) const
 {
+    if (m_popup)
+        return hit(m_popup->root, x, y, 0, 0);
     const auto& roots = m_tree.visualRoots();
     for (auto it = roots.rbegin(); it != roots.rend(); ++it)
         if (const ElementId found = hit(*it, x, y, 0, 0))

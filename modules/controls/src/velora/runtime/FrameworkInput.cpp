@@ -1,4 +1,5 @@
 #include "velora/runtime/FrameworkInternal.hpp"
+#include <utility>
 
 #include <velora/controls/InputContext.hpp>
 #include <velora/globals.hpp>
@@ -143,6 +144,13 @@ void Framework::pointerMove(float x, float y)
 
 void Framework::pointerDown(float x, float y)
 {
+    m_dismissedPopupPress = false;
+    if (m_popup && !hit(m_popup->root, x, y, 0, 0))
+    {
+        m_dismissedPopupPress = true;
+        closePopup();
+        return;
+    }
     if (scrollBarDown(x, y))
         return;
     PointerEventArgs args;
@@ -192,6 +200,8 @@ void Framework::pointerDown(float x, float y)
 
 void Framework::pointerUp(float x, float y)
 {
+    if (std::exchange(m_dismissedPopupPress, false))
+        return;
     const auto alive = m_lifetime;
     PointerEventArgs args;
     args.windowX = x;
@@ -326,7 +336,7 @@ bool Framework::moveFocus(bool forward)
             self(self, child);
     };
     for (const ElementId root : m_tree.visualRoots())
-        if (isMounted(root))
+        if (isMounted(root) && (!m_popup || root == m_popup->root))
             walk(walk, root);
     if (stops.empty())
         return false;
@@ -346,12 +356,18 @@ bool Framework::moveFocus(bool forward)
     return true;
 }
 
-void Framework::key(Key key, bool shift, bool ctrl)
+void Framework::key(Key key, bool shift, bool ctrl, bool alt)
 {
+    if (m_popup && key == Key::kEscape)
+    {
+        closePopup();
+        return;
+    }
     KeyEventArgs args;
     args.key = key;
     args.shift = shift;
     args.ctrl = ctrl;
+    args.alt = alt;
     if (raiseRouted(m_tree.focused(), m_events.KeyDown, &args))
         return;
     if (key == Key::kTab)

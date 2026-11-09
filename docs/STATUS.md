@@ -106,6 +106,15 @@
 - Windows 实际窗口验证 `2+3*4` → Enter 显示 `14` → Up/PageUp 显示 `25` → 无效草稿 Escape 恢复 `25` → 点击增量显示 `26`；关闭退出码 0。截图与会话为 `build/dev/fluent-numberbox-native/`。
 - 完整 Debug 构建（含新增公开头独立编译）及 **42/42** 回归通过（109.45s，含 SDK 安装消费），日志 `build/dev/numberbox-full-build.log`、`numberbox-full-tests.log`、`numberbox-results.xml`；相关 ASan framework/controls_core/fluent_controls **3/3** 通过（1.20s），实际加载 Fluent 模板，日志 `build/asan/numberbox-tests.log`。格式 8 个改动 C++ 文件、来源哈希、CheckStyle、CheckWorkspace 和 diff 检查通过。未重跑 Release、完整 ASan 或真实 IME。
 
+### 当前批量接通：弹出按钮族与菜单族
+
+- 按最新要求改为按共享底座/控件族批量推进，不再逐个控件收尾。已接入窗口内单层 Popup/Flyout、DropDownButton、SplitButton、ToggleSplitButton；普通 C++ 行为、类型声明、编译模板、Gallery 共用现有树、属性、事件与合成器。
+- Popup 处理期望尺寸、下方/上方放置、窗口内限制、外部按下关闭且不穿透、Escape、内容内 Tab、焦点恢复，以及锚点卸载/移除/禁用/隐藏、窗口失焦/最小化的清理。按钮族区分主动作与次动作，Toggle 主动作先更新勾选；补齐鼠标激活后的复合控件键盘焦点、F4/Alt+Down/Space。
+- 继续接入 MenuFlyoutItem、ToggleMenuFlyoutItem 和 MenuFlyoutSeparator，MenuFlyout 持有实际菜单项对象；支持 C++ 命令回调和菜单键盘路径，状态通过实际依赖属性保留。示例已经换用这组实际菜单项；`--open-menu` 启动时直接创建菜单与全部模板。
+- 用户调整验证策略前，按钮族相关 Debug/ASan 定向回归及 Windows 消息检查已执行；发现并修复鼠标激活后 F4 焦点问题。按随后指示停止继续回归、ASan 和截图验收，新增菜单族仅做示例编译和启动检查，完整测试留至集成末尾。保留已有 `fluent_buttons_test`，没有删除测试或改松断言。
+- 最终示例目标 `velora_fluent_gallery` 编译通过，带 `--open-menu` 启动后窗口可见、菜单模板完成创建，正常关闭退出码为 0；记录为 `build/dev/menu-family-final-build.log`、`build/dev/menu-startup.json`。这不是菜单交互或完整兼容验收。
+- Popup/Flyout 对象/菜单集合的完整 XAML 语法、源码类型反射继承、嵌套/窗口外弹出、完整 Placement/模板/动画、ICommand、子菜单/单选菜单、完整 UIA 等仍待实现；菜单新路径尚未经过完整行为回归。当前范围及来源差异见 `modules/fluent/PORTING.md`。
+
 | 范围 | 当前事实 |
 | --- | --- |
 | 控件对象 | UIElement/BuiltinElements、createElement、shared_ptr 元素树和 virtual 布局已有实现；一部分行为仍集中在 Framework |

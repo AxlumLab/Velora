@@ -1,0 +1,26 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved. MIT License.
+     Derived from CommonStyles/FlyoutPresenter_themeresources.xaml and SplitButton.xaml.
+     Fixed palette until the system color service is available. -->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="WinUIButton.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Default">
+            <SolidColorBrush x:Key="FlyoutPresenterBackground" Color="#FF2B2B2B"/>
+            <SolidColorBrush x:Key="FlyoutPresenterBorderBrush" Color="#FF767676"/>
+            <SolidColorBrush x:Key="SplitButtonCheckedBackground" Color="#FF004578"/>
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Light">
+            <SolidColorBrush x:Key="FlyoutPresenterBackground" Color="#FFFFFFFF"/>
+            <SolidColorBrush x:Key="FlyoutPresenterBorderBrush" Color="#FF767676"/>
+            <SolidColorBrush x:Key="SplitButtonCheckedBackground" Color="#FFCCE4F7"/>
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="HighContrast">
+            <SolidColorBrush x:Key="FlyoutPresenterBackground" Color="#FF000000"/>
+            <SolidColorBrush x:Key="FlyoutPresenterBorderBrush" Color="#FFFFFFFF"/>
+            <SolidColorBrush x:Key="SplitButtonCheckedBackground" Color="#FF000080"/>
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
+</ResourceDictionary>

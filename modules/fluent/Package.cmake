@@ -10,7 +10,9 @@ if(TARGET velorac)
             WinUICornerRadius
             WinUIButton
             WinUITextBox
-            PersonPictureResources)
+            PersonPictureResources
+            FlyoutButtonResources
+            MenuFlyoutResources)
         add_custom_command(
             OUTPUT "${_stage}/Themes/${_dictionary}.vxbf"
             COMMAND "${CMAKE_COMMAND}" -E make_directory "${_compiled}" "${_stage}/Themes"
@@ -21,7 +23,7 @@ if(TARGET velorac)
             VERBATIM)
         list(APPEND _staged "${_stage}/Themes/${_dictionary}.vxbf")
     endforeach()
-    foreach(_control IN ITEMS PersonPicture NumberBox)
+    foreach(_control IN ITEMS PersonPicture NumberBox Flyout DropDownButton SplitButton MenuFlyoutItem MenuFlyoutSeparator)
         add_custom_command(
             OUTPUT "${_stage}/Controls/${_control}View.vxbf"
             COMMAND "${CMAKE_COMMAND}" -E make_directory "${_stage}/Controls"

@@ -16,5 +16,12 @@
             <Button Content="Toggle group" Click="toggleGroup"/>
             <Button Content="Increment badge" Click="incrementBadge"/>
         </StackPanel>
+        <TextBlock Text="Flyout button family" FontSize="20"/>
+        <StackPanel Orientation="Horizontal" Spacing="12">
+            <fluent:DropDownButton x:Name="Actions" Content="Actions"/>
+            <fluent:SplitButton x:Name="Save" Content="Save"/>
+            <fluent:ToggleSplitButton x:Name="Bold" Content="Bold"/>
+        </StackPanel>
+        <TextBlock x:Name="Status" Text="Ready — use arrows, F4, Alt+Down or Escape"/>
     </StackPanel>
 </Page>

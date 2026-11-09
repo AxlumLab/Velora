@@ -31,6 +31,7 @@ velora_module(controls
         velora/runtime/Framework.cpp
         velora/runtime/FrameworkLayout.cpp
         velora/runtime/FrameworkInput.cpp
+        velora/runtime/FrameworkPopup.cpp
         velora/runtime/FrameworkControls.cpp
         velora/runtime/FrameworkScroll.cpp
         velora/runtime/FrameworkPaint.cpp

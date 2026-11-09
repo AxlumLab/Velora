@@ -20,7 +20,9 @@ enum class Key
     kPageUp,
     kPageDown,
     kTab,
-    kEscape
+    kEscape,
+    kSpace,
+    kF4
 };
 
 struct RoutedEventArgs
@@ -43,6 +45,7 @@ struct KeyEventArgs : RoutedEventArgs
     Key key = Key::kEnter;
     bool shift = false;
     bool ctrl = false;
+    bool alt = false;
 };
 
 } // namespace velora
