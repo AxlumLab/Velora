@@ -1,0 +1,10 @@
+<Page x:Class="N04Example.MainWindow"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel Margin="20" Spacing="10">
+        <TextBlock x:Name="Title" Text="Hello Velora N04" FontSize="24"/>
+        <TextBox x:Name="NameInput" PlaceholderText="Enter your name"/>
+        <Button x:Name="GreetButton" Content="Greet" Click="OnGreetClick"/>
+        <TextBlock x:Name="Greeting" FontSize="16"/>
+    </StackPanel>
+</Page>

@@ -1,0 +1,9 @@
+<Page x:Class="VxbfTest.Broken"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Padding="12">
+    <StackPanel>
+        <TextBlock x:Name="Before" Text="created, then rolled back"/>
+        <Border Background="{StaticResource Missing}"/>
+    </StackPanel>
+</Page>

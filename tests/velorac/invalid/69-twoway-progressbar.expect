@@ -1,0 +1,1 @@
+2:43 TwoWay binding needs a target that reports changes; in this subset that is TextBox.Text, CheckBox.IsChecked, RadioButton.IsChecked, ToggleSwitch.IsOn or Slider.Value

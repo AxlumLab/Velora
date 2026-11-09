@@ -1,0 +1,7 @@
+<Page x:Class="Test.Page" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="using:Test">
+  <Page.Resources>
+    <SolidColorBrush x:Key="A" Color="{StaticResource B}"/>
+    <SolidColorBrush x:Key="B" Color="{StaticResource A}"/>
+  </Page.Resources>
+  <Border Background="{StaticResource A}"/>
+</Page>

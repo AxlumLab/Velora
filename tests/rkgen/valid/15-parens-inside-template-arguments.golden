@@ -1,0 +1,6 @@
+class Button @3
+  field public 'std::function<void(int)>' onClick get= set= readonly=0 transient=0 @7
+  method public 'std::function<void(int)>' Callback() const @6
+struct Handlers @10
+  field public 'std::function<bool(const Event&)>' filter get= set= readonly=0 transient=0 @12
+  field public 'int' priority get= set= readonly=0 transient=0 @13

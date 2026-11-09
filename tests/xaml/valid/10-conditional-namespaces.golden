@@ -1,0 +1,18 @@
+element ResourceDictionary ns=presentation @1:1-11:22
+  attr xmlns xmlns "http://schemas.microsoft.com/winfx/2006/xaml/presentation" @2:5-2:70
+  attr xmlns:x xmlns "http://schemas.microsoft.com/winfx/2006/xaml" @3:5-3:59
+  attr xmlns:contract7Present xmlns "http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)" @4:5-4:151
+  attr xmlns:contract7NotPresent xmlns "http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,7)" @5:5-5:157
+  element Style ns=presentation @6:3-9:11
+    attr x:Key directive "CardStyle" @6:10-6:27
+    attr TargetType property "Border" @6:28-6:47
+    element contract7Present:Setter ns=presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7) @7:5-7:65
+      attr Property property "CornerRadius" @7:30-7:53
+      attr Value property "4" @7:54-7:63
+    element contract7NotPresent:Setter ns=presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,7) @8:5-8:68
+      attr Property property "CornerRadius" @8:33-8:56
+      attr Value property "0" @8:57-8:66
+  element Border ns=presentation @10:3-10:100
+    attr contract7Present:CornerRadius property if=IsApiContractPresent(Windows.Foundation.UniversalApiContract,7) "4" @10:11-10:44
+    attr contract7NotPresent:CornerRadius property if=IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,7) "0" @10:45-10:81
+    attr CornerRadius property "2" @10:82-10:98

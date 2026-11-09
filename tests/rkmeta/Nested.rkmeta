@@ -1,0 +1,9 @@
+rkmeta	5
+type	7108258058511438959	rkgen_test::nested::InventoryItem	struct	9	0
+field	9389467369269335546	itemId	rkgen_test::nested::InventoryItem::itemId	public	0	11	int			0	0
+field	5869439070946946247	count	rkgen_test::nested::InventoryItem::count	public	0	12	int	GetCount	SetCount	0	0
+field	10405328701488088556	debugName	rkgen_test::nested::InventoryItem::debugName	public	0	13	const char*			0	0
+type	3689653712202451648	rkgen_test::nested::Inventory	class	19	0
+field	2710427160902222410	selected	rkgen_test::nested::Inventory::selected	public	0	22	InventoryItem*			0	0
+method	9099926927728471838	Select	rkgen_test::nested::Inventory::Select	public	0	none	23	void Select(const InventoryItem&)
+method	17855606050600732260	GetSelected	rkgen_test::nested::Inventory::GetSelected	public	0	none	24	const InventoryItem& GetSelected() const

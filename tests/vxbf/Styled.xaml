@@ -1,0 +1,9 @@
+<Page x:Class="VxbfTest.Styled"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel>
+        <Border x:Name="Card" Background="{ThemeResource CardBrush}" Padding="{StaticResource CardPadding}"/>
+        <TextBlock x:Name="Label" Text="{Binding Name}"/>
+        <TextBox x:Name="Editor" Text="{Binding Name, Mode=TwoWay}"/>
+    </StackPanel>
+</Page>

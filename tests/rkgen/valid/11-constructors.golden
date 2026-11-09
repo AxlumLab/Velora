@@ -1,0 +1,11 @@
+class demo::Player @3
+  field public 'int' id get= set= readonly=0 transient=0 @10
+  rkctor public '' Player('int' id) @6
+  rkctor public '' Player('const Name&' name, 'int' level) @7
+  ctor public '' Player('float' scale) @8
+  ctor public '' Player() @9
+struct demo::Point @13
+  field public 'int' x get= set= readonly=0 transient=0 @17
+  field public 'int' y get= set= readonly=0 transient=0 @18
+  ctor public '' Point('int' x, 'int' y) @15
+  rkctor public '' Point() @16

@@ -1,0 +1,9 @@
+class demo::Player @6 no_spawn
+  base Entity
+  field public 'int' hp get= set= readonly=0 transient=0 @10
+  method public 'int' GetHp() const @11
+  method public 'void' Heal('int' amount) @12
+  method public static 'Player*' Spawn() @13
+class demo::Npc @16
+  field public 'int' mood get=GetMood set= readonly=0 transient=0 @20
+  method public 'int' GetMood() const @21

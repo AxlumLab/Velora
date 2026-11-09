@@ -1,0 +1,22 @@
+element Page ns=presentation @1:1-6:8
+  attr xmlns xmlns "http://schemas.microsoft.com/winfx/2006/xaml/presentation" @1:7-1:72
+  attr xmlns:x xmlns "http://schemas.microsoft.com/winfx/2006/xaml" @2:7-2:61
+  element TextBlock ns=presentation @3:3-3:107
+    attr Text property "{Binding UserName, Converter={StaticResource NameConverter}, FallbackValue='(none)'}" @3:14-3:105
+      markup Binding @3:20-3:104
+        positional "UserName" @3:29-3:37
+        arg Converter @3:49-3:79
+          markup StaticResource @3:49-3:79
+            positional "NameConverter" @3:65-3:78
+        arg FallbackValue "(none)" @3:95-3:103
+  element TextBlock ns=presentation @4:3-4:114
+    attr Text property "{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.KnobOffset}" @4:14-4:112
+      markup Binding @4:20-4:111
+        arg RelativeSource @4:44-4:76
+          markup RelativeSource @4:44-4:76
+            positional "TemplatedParent" @4:60-4:75
+        arg Path "TemplateSettings.KnobOffset" @4:83-4:110
+  element Border ns=presentation @5:3-5:68
+    attr Background property "{ThemeResource ResourceKey=CardBackground}" @5:11-5:66
+      markup ThemeResource @5:23-5:65
+        arg ResourceKey "CardBackground" @5:50-5:64

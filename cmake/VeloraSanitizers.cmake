@@ -1,0 +1,22 @@
+include_guard(GLOBAL)
+option(VELORA_ENABLE_SANITIZERS "Instrument all producers and consumers with AddressSanitizer" OFF)
+if(NOT VELORA_ENABLE_SANITIZERS)
+    return()
+endif()
+
+if(MSVC)
+    # /RTC and Edit-and-Continue conflict with ASan, including CMake's Debug defaults.
+    foreach(_flags IN ITEMS CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE
+            CMAKE_CXX_FLAGS_RELWITHDEBINFO CMAKE_CXX_FLAGS_MINSIZEREL)
+        string(REGEX REPLACE "/RTC[^ ]*" "" ${_flags} "${${_flags}}")
+        string(REPLACE "/ZI" "/Zi" ${_flags} "${${_flags}}")
+    endforeach()
+    add_compile_options(/fsanitize=address /Zi)
+    add_link_options(/INCREMENTAL:NO)
+    get_filename_component(VELORA_ASAN_RUNTIME_DIRECTORY "${CMAKE_CXX_COMPILER}" DIRECTORY)
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    add_compile_options(-fsanitize=address,undefined -fno-omit-frame-pointer)
+    add_link_options(-fsanitize=address,undefined)
+else()
+    message(FATAL_ERROR "VELORA_ENABLE_SANITIZERS is unsupported by this compiler")
+endif()

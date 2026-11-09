@@ -1,0 +1,16 @@
+element Page ns=presentation @1:1-14:8
+  attr xmlns xmlns "http://schemas.microsoft.com/winfx/2006/xaml/presentation" @1:7-1:72
+  attr xmlns:x xmlns "http://schemas.microsoft.com/winfx/2006/xaml" @2:7-2:61
+  element StackPanel ns=presentation @3:3-13:16
+    element TextBlock ns=presentation @4:5-7:17
+      text "Hello, " @4:16-6:7
+      element Run ns=presentation @6:7-6:25
+        attr Text property "bold" @6:12-6:23
+      text " world" @6:25-7:5
+    element TextBlock ns=presentation xml:space=preserve @8:5-9:23
+      attr xml:space xml "preserve" @8:16-8:36
+      text "  keep   these\n  spaces  " @8:37-9:11
+    element TextBlock ns=presentation @10:5-11:24
+      attr Text property "tab and newline in attribute" @10:16-11:22
+    element TextBlock ns=presentation @12:5-12:57
+      cdata "  cdata   keeps  " @12:16-12:45

@@ -1,0 +1,11 @@
+<Page x:Class="VxbfTest.XBound"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel>
+        <TextBlock x:Name="Once" Text="{x:Bind Model.Title}"/>
+        <TextBlock x:Name="Live" Text="{x:Bind Model.Title, Mode=OneWay}"/>
+        <TextBox x:Name="Edit" Text="{x:Bind Model.Title, Mode=TwoWay}"/>
+        <CheckBox x:Name="Flag" IsChecked="{x:Bind Model.Enabled, Mode=TwoWay}"/>
+        <TextBlock x:Name="Sized" FontSize="{x:Bind Model.Size, Mode=OneWay}" Text="sized"/>
+    </StackPanel>
+</Page>

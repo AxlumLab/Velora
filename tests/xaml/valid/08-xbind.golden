@@ -1,0 +1,59 @@
+element Page ns=presentation @1:1-10:8
+  attr xmlns xmlns "http://schemas.microsoft.com/winfx/2006/xaml/presentation" @1:7-1:72
+  attr xmlns:x xmlns "http://schemas.microsoft.com/winfx/2006/xaml" @2:7-2:61
+  element StackPanel ns=presentation @3:3-9:16
+    element TextBox ns=presentation @4:5-4:100
+      attr Text property "{x:Bind ViewModel.UserName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" @4:14-4:98
+        markup x:Bind @4:20-4:97
+          positional "ViewModel.UserName" @4:28-4:46
+          arg Mode "TwoWay" @4:53-4:59
+          arg UpdateSourceTrigger "PropertyChanged" @4:81-4:96
+          bind @4:28-4:46
+            path @4:28-4:46
+              member "ViewModel" @4:28-4:37
+              member "UserName" @4:38-4:46
+    element TextBlock ns=presentation @5:5-5:58
+      attr Text property "{x:Bind ViewModel.Items[0].Title}" @5:16-5:56
+        markup x:Bind @5:22-5:55
+          positional "ViewModel.Items[0].Title" @5:30-5:54
+          bind @5:30-5:54
+            path @5:30-5:54
+              member "ViewModel" @5:30-5:39
+              member "Items" @5:40-5:45
+              index "0" @5:46-5:47
+              member "Title" @5:49-5:54
+    element TextBlock ns=presentation @6:5-6:76
+      attr Text property "{x:Bind ViewModel.Lookup['key'].Value, Mode=OneWay}" @6:16-6:74
+        markup x:Bind @6:22-6:73
+          positional "ViewModel.Lookup[key].Value" @6:30-6:59
+          arg Mode "OneWay" @6:66-6:72
+          bind @6:30-6:59
+            path @6:30-6:59
+              member "ViewModel" @6:30-6:39
+              member "Lookup" @6:40-6:46
+              index "key" @6:47-6:52
+              member "Value" @6:54-6:59
+    element TextBlock ns=presentation @7:5-7:93
+      attr Text property "{x:Bind Format(ViewModel.Count, 'items: {0}', 2, 1.5, true, x:Null)}" @7:16-7:91
+        markup x:Bind @7:22-7:90
+          positional "Format(ViewModel.Count, 'items: {0}', 2, 1.5, true, x:Null)" @7:30-7:89
+          bind-call @7:30-7:89
+            path @7:30-7:36
+              member "Format" @7:30-7:36
+            path @7:37-7:52
+              member "ViewModel" @7:37-7:46
+              member "Count" @7:47-7:52
+            literal string "items: {0}" @7:54-7:66
+            literal int "2" @7:68-7:69
+            literal float "1.5" @7:71-7:74
+            literal bool "true" @7:76-7:80
+            literal null "x:Null" @7:82-7:88
+    element TextBlock ns=presentation @8:5-8:73
+      attr Text property "{x:Bind Path=ViewModel.Title, FallbackValue='?'}" @8:16-8:71
+        markup x:Bind @8:22-8:70
+          arg Path "ViewModel.Title" @8:35-8:50
+          arg FallbackValue "?" @8:66-8:69
+          bind @8:35-8:50
+            path @8:35-8:50
+              member "ViewModel" @8:35-8:44
+              member "Title" @8:45-8:50

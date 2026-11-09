@@ -1,0 +1,1241 @@
+comment " Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. " @1:1-1:156
+element ResourceDictionary ns=presentation @2:1-584:22
+  attr xmlns xmlns "http://schemas.microsoft.com/winfx/2006/xaml/presentation" @3:3-3:68
+  attr xmlns:x xmlns "http://schemas.microsoft.com/winfx/2006/xaml" @4:3-4:57
+  attr xmlns:contract7Present xmlns "http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)" @5:3-5:149
+  attr xmlns:contract6Present xmlns "http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,6)" @6:3-6:149
+  attr xmlns:contract6NotPresent xmlns "http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,6)" @7:3-7:155
+  property-element ResourceDictionary.ThemeDictionaries ns=presentation @8:5-189:44
+    element ResourceDictionary ns=presentation @9:9-68:30
+      attr x:Key directive "Default" @9:29-9:44
+      element x:Double ns=x @10:13-10:73
+        attr x:Key directive "ToggleSwitchOnStrokeThickness" @10:23-10:60
+        text "0" @10:61-10:62
+      element x:Double ns=x @11:13-11:82
+        attr x:Key directive "ToggleSwitchOuterBorderStrokeThickness" @11:23-11:69
+        text "1" @11:70-11:71
+      element StaticResource ns=presentation @12:13-12:120
+        attr x:Key directive "ToggleSwitchContentForeground" @12:29-12:66
+        attr ResourceKey property "SystemControlForegroundBaseHighBrush" @12:67-12:117
+      element StaticResource ns=presentation @13:13-13:131
+        attr x:Key directive "ToggleSwitchContentForegroundDisabled" @13:29-13:74
+        attr ResourceKey property "SystemControlDisabledBaseMediumLowBrush" @13:75-13:128
+      element StaticResource ns=presentation @14:13-14:119
+        attr x:Key directive "ToggleSwitchHeaderForeground" @14:29-14:65
+        attr ResourceKey property "SystemControlForegroundBaseHighBrush" @14:66-14:116
+      element StaticResource ns=presentation @15:13-15:130
+        attr x:Key directive "ToggleSwitchHeaderForegroundDisabled" @15:29-15:73
+        attr ResourceKey property "SystemControlDisabledBaseMediumLowBrush" @15:74-15:127
+      element StaticResource ns=presentation @16:13-16:115
+        attr x:Key directive "ToggleSwitchContainerBackground" @16:29-16:68
+        attr ResourceKey property "SystemControlTransparentBrush" @16:69-16:112
+      element StaticResource ns=presentation @17:13-17:126
+        attr x:Key directive "ToggleSwitchContainerBackgroundPointerOver" @17:29-17:79
+        attr ResourceKey property "SystemControlTransparentBrush" @17:80-17:123
+      element StaticResource ns=presentation @18:13-18:122
+        attr x:Key directive "ToggleSwitchContainerBackgroundPressed" @18:29-18:75
+        attr ResourceKey property "SystemControlTransparentBrush" @18:76-18:119
+      element StaticResource ns=presentation @19:13-19:123
+        attr x:Key directive "ToggleSwitchContainerBackgroundDisabled" @19:29-19:76
+        attr ResourceKey property "SystemControlTransparentBrush" @19:77-19:120
+      element StaticResource ns=presentation @20:13-20:103
+        attr x:Key directive "ToggleSwitchFillOff" @20:29-20:56
+        attr ResourceKey property "SystemControlTransparentBrush" @20:57-20:100
+      element StaticResource ns=presentation @21:13-21:114
+        attr x:Key directive "ToggleSwitchFillOffPointerOver" @21:29-21:67
+        attr ResourceKey property "SystemControlTransparentBrush" @21:68-21:111
+      element StaticResource ns=presentation @22:13-22:121
+        attr x:Key directive "ToggleSwitchFillOffPressed" @22:29-22:63
+        attr ResourceKey property "SystemControlHighlightBaseMediumLowBrush" @22:64-22:118
+      element StaticResource ns=presentation @23:13-23:111
+        attr x:Key directive "ToggleSwitchFillOffDisabled" @23:29-23:64
+        attr ResourceKey property "SystemControlTransparentBrush" @23:65-23:108
+      element StaticResource ns=presentation @24:13-24:114
+        attr x:Key directive "ToggleSwitchStrokeOff" @24:29-24:58
+        attr ResourceKey property "SystemControlForegroundBaseMediumBrush" @24:59-24:111
+      element StaticResource ns=presentation @25:13-25:128
+        attr x:Key directive "ToggleSwitchStrokeOffPointerOver" @25:29-25:69
+        attr ResourceKey property "SystemControlHighlightBaseMediumHighBrush" @25:70-25:125
+      element StaticResource ns=presentation @26:13-26:119
+        attr x:Key directive "ToggleSwitchStrokeOffPressed" @26:29-26:65
+        attr ResourceKey property "SystemControlForegroundBaseHighBrush" @26:66-26:116
+      element StaticResource ns=presentation @27:13-27:123
+        attr x:Key directive "ToggleSwitchStrokeOffDisabled" @27:29-27:66
+        attr ResourceKey property "SystemControlDisabledBaseMediumLowBrush" @27:67-27:120
+      element StaticResource ns=presentation @28:13-28:106
+        attr x:Key directive "ToggleSwitchFillOn" @28:29-28:55
+        attr ResourceKey property "SystemControlHighlightAccentBrush" @28:56-28:103
+      element StaticResource ns=presentation @29:13-29:107
+        attr x:Key directive "ToggleSwitchFillOnPointerOver" @29:29-29:66
+        attr ResourceKey property "SystemAccentColorLight1" @29:67-29:104
+      element StaticResource ns=presentation @30:13-30:102
+        attr x:Key directive "ToggleSwitchFillOnPressed" @30:29-30:62
+        attr ResourceKey property "SystemAccentColorDark1" @30:63-30:99
+      element StaticResource ns=presentation @31:13-31:114
+        attr x:Key directive "ToggleSwitchFillOnDisabled" @31:29-31:63
+        attr ResourceKey property "SystemControlDisabledBaseLowBrush" @31:64-31:111
+      element StaticResource ns=presentation @32:13-32:110
+        attr x:Key directive "ToggleSwitchStrokeOn" @32:29-32:57
+        attr ResourceKey property "SystemControlHighlightBaseHighBrush" @32:58-32:107
+      element StaticResource ns=presentation @33:13-33:109
+        attr x:Key directive "ToggleSwitchStrokeOnPointerOver" @33:29-33:68
+        attr ResourceKey property "SystemAccentColorLight1" @33:69-33:106
+      element StaticResource ns=presentation @34:13-34:104
+        attr x:Key directive "ToggleSwitchStrokeOnPressed" @34:29-34:64
+        attr ResourceKey property "SystemAccentColorDark1" @34:65-34:101
+      element StaticResource ns=presentation @35:13-35:122
+        attr x:Key directive "ToggleSwitchStrokeOnDisabled" @35:29-35:65
+        attr ResourceKey property "SystemControlDisabledBaseMediumLowBrush" @35:66-35:119
+      element StaticResource ns=presentation @36:13-36:113
+        attr x:Key directive "ToggleSwitchKnobFillOff" @36:29-36:60
+        attr ResourceKey property "SystemControlHighlightBaseHighBrush" @36:61-36:110
+      element StaticResource ns=presentation @37:13-37:124
+        attr x:Key directive "ToggleSwitchKnobFillOffPointerOver" @37:29-37:71
+        attr ResourceKey property "SystemControlHighlightBaseHighBrush" @37:72-37:121
+      element StaticResource ns=presentation @38:13-38:120
+        attr x:Key directive "ToggleSwitchKnobFillOffPressed" @38:29-38:67
+        attr ResourceKey property "SystemControlHighlightBaseHighBrush" @38:68-38:117
+      element StaticResource ns=presentation @39:13-39:125
+        attr x:Key directive "ToggleSwitchKnobFillOffDisabled" @39:29-39:68
+        attr ResourceKey property "SystemControlDisabledBaseMediumLowBrush" @39:69-39:122
+      element StaticResource ns=presentation @40:13-40:118
+        attr x:Key directive "ToggleSwitchKnobFillOn" @40:29-40:59
+        attr ResourceKey property "SystemControlHighlightAltChromeWhiteBrush" @40:60-40:115
+      element StaticResource ns=presentation @41:13-41:126
+        attr x:Key directive "ToggleSwitchKnobFillOnPointerOver" @41:29-41:70
+        attr ResourceKey property "SystemControlHighlightChromeWhiteBrush" @41:71-41:123
+      element StaticResource ns=presentation @42:13-42:125
+        attr x:Key directive "ToggleSwitchKnobFillOnPressed" @42:29-42:66
+        attr ResourceKey property "SystemControlHighlightAltChromeWhiteBrush" @42:67-42:122
+      element StaticResource ns=presentation @43:13-43:124
+        attr x:Key directive "ToggleSwitchKnobFillOnDisabled" @43:29-43:67
+        attr ResourceKey property "SystemControlPageBackgroundBaseLowBrush" @43:68-43:121
+      element SolidColorBrush ns=presentation @45:13-45:98
+        attr x:Key directive "ToggleSwitchCurtainBackgroundThemeBrush" @45:30-45:77
+        attr Color property "#FF5729C1" @45:78-45:95
+      element SolidColorBrush ns=presentation @46:13-46:108
+        attr x:Key directive "ToggleSwitchCurtainDisabledBackgroundThemeBrush" @46:30-46:85
+        attr Color property "Transparent" @46:86-46:105
+      element SolidColorBrush ns=presentation @47:13-47:109
+        attr x:Key directive "ToggleSwitchCurtainPointerOverBackgroundThemeBrush" @47:30-47:88
+        attr Color property "#FF6E46CA" @47:89-47:106
+      element SolidColorBrush ns=presentation @48:13-48:105
+        attr x:Key directive "ToggleSwitchCurtainPressedBackgroundThemeBrush" @48:30-48:84
+        attr Color property "#FF7E4FEC" @48:85-48:102
+      element SolidColorBrush ns=presentation @49:13-49:99
+        attr x:Key directive "ToggleSwitchDisabledForegroundThemeBrush" @49:30-49:78
+        attr Color property "#66FFFFFF" @49:79-49:96
+      element SolidColorBrush ns=presentation @50:13-50:91
+        attr x:Key directive "ToggleSwitchForegroundThemeBrush" @50:30-50:70
+        attr Color property "#FFFFFFFF" @50:71-50:88
+      element SolidColorBrush ns=presentation @51:13-51:105
+        attr x:Key directive "ToggleSwitchHeaderDisabledForegroundThemeBrush" @51:30-51:84
+        attr Color property "#66FFFFFF" @51:85-51:102
+      element SolidColorBrush ns=presentation @52:13-52:97
+        attr x:Key directive "ToggleSwitchHeaderForegroundThemeBrush" @52:30-52:76
+        attr Color property "#FFFFFFFF" @52:77-52:94
+      element SolidColorBrush ns=presentation @53:13-53:98
+        attr x:Key directive "ToggleSwitchOuterBorderBorderThemeBrush" @53:30-53:77
+        attr Color property "#59FFFFFF" @53:78-53:95
+      element SolidColorBrush ns=presentation @54:13-54:106
+        attr x:Key directive "ToggleSwitchOuterBorderDisabledBorderThemeBrush" @54:30-54:85
+        attr Color property "#33FFFFFF" @54:86-54:103
+      element SolidColorBrush ns=presentation @55:13-55:96
+        attr x:Key directive "ToggleSwitchThumbBackgroundThemeBrush" @55:30-55:75
+        attr Color property "#FFFFFFFF" @55:76-55:93
+      element SolidColorBrush ns=presentation @56:13-56:92
+        attr x:Key directive "ToggleSwitchThumbBorderThemeBrush" @56:30-56:71
+        attr Color property "#FFFFFFFF" @56:72-56:89
+      element SolidColorBrush ns=presentation @57:13-57:104
+        attr x:Key directive "ToggleSwitchThumbDisabledBackgroundThemeBrush" @57:30-57:83
+        attr Color property "#FF7E7E7E" @57:84-57:101
+      element SolidColorBrush ns=presentation @58:13-58:100
+        attr x:Key directive "ToggleSwitchThumbDisabledBorderThemeBrush" @58:30-58:79
+        attr Color property "#FF7E7E7E" @58:80-58:97
+      element SolidColorBrush ns=presentation @59:13-59:107
+        attr x:Key directive "ToggleSwitchThumbPointerOverBackgroundThemeBrush" @59:30-59:86
+        attr Color property "#FFFFFFFF" @59:87-59:104
+      element SolidColorBrush ns=presentation @60:13-60:103
+        attr x:Key directive "ToggleSwitchThumbPointerOverBorderThemeBrush" @60:30-60:82
+        attr Color property "#FFFFFFFF" @60:83-60:100
+      element SolidColorBrush ns=presentation @61:13-61:103
+        attr x:Key directive "ToggleSwitchThumbPressedBackgroundThemeBrush" @61:30-61:82
+        attr Color property "#FFFFFFFF" @61:83-61:100
+      element SolidColorBrush ns=presentation @62:13-62:103
+        attr x:Key directive "ToggleSwitchThumbPressedForegroundThemeBrush" @62:30-62:82
+        attr Color property "#FFFFFFFF" @62:83-62:100
+      element SolidColorBrush ns=presentation @63:13-63:96
+        attr x:Key directive "ToggleSwitchTrackBackgroundThemeBrush" @63:30-63:75
+        attr Color property "#42FFFFFF" @63:76-63:93
+      element SolidColorBrush ns=presentation @64:13-64:94
+        attr x:Key directive "ToggleSwitchTrackBorderThemeBrush" @64:30-64:71
+        attr Color property "Transparent" @64:72-64:91
+      element SolidColorBrush ns=presentation @65:13-65:104
+        attr x:Key directive "ToggleSwitchTrackDisabledBackgroundThemeBrush" @65:30-65:83
+        attr Color property "#1FFFFFFF" @65:84-65:101
+      element SolidColorBrush ns=presentation @66:13-66:107
+        attr x:Key directive "ToggleSwitchTrackPointerOverBackgroundThemeBrush" @66:30-66:86
+        attr Color property "#4AFFFFFF" @66:87-66:104
+      element SolidColorBrush ns=presentation @67:13-67:103
+        attr x:Key directive "ToggleSwitchTrackPressedBackgroundThemeBrush" @67:30-67:82
+        attr Color property "#59FFFFFF" @67:83-67:100
+    element ResourceDictionary ns=presentation @69:9-128:30
+      attr x:Key directive "HighContrast" @69:29-69:49
+      element StaticResource ns=presentation @70:13-70:120
+        attr x:Key directive "ToggleSwitchContentForeground" @70:29-70:66
+        attr ResourceKey property "SystemControlForegroundBaseHighBrush" @70:67-70:117
+      element StaticResource ns=presentation @71:13-71:131
+        attr x:Key directive "ToggleSwitchContentForegroundDisabled" @71:29-71:74
+        attr ResourceKey property "SystemControlDisabledBaseMediumLowBrush" @71:75-71:128
+      element StaticResource ns=presentation @72:13-72:119
+        attr x:Key directive "ToggleSwitchHeaderForeground" @72:29-72:65
+        attr ResourceKey property "SystemControlForegroundBaseHighBrush" @72:66-72:116
+      element StaticResource ns=presentation @73:13-73:130
+        attr x:Key directive "ToggleSwitchHeaderForegroundDisabled" @73:29-73:73
+        attr ResourceKey property "SystemControlDisabledBaseMediumLowBrush" @73:74-73:127
+      element StaticResource ns=presentation @74:13-74:115
+        attr x:Key directive "ToggleSwitchContainerBackground" @74:29-74:68
+        attr ResourceKey property "SystemControlTransparentBrush" @74:69-74:112
+      element StaticResource ns=presentation @75:13-75:126
+        attr x:Key directive "ToggleSwitchContainerBackgroundPointerOver" @75:29-75:79
+        attr ResourceKey property "SystemControlTransparentBrush" @75:80-75:123
+      element StaticResource ns=presentation @76:13-76:122
+        attr x:Key directive "ToggleSwitchContainerBackgroundPressed" @76:29-76:75
+        attr ResourceKey property "SystemControlTransparentBrush" @76:76-76:119
+      element StaticResource ns=presentation @77:13-77:123
+        attr x:Key directive "ToggleSwitchContainerBackgroundDisabled" @77:29-77:76
+        attr ResourceKey property "SystemControlTransparentBrush" @77:77-77:120
+      element StaticResource ns=presentation @78:13-78:103
+        attr x:Key directive "ToggleSwitchFillOff" @78:29-78:56
+        attr ResourceKey property "SystemControlTransparentBrush" @78:57-78:100
+      element StaticResource ns=presentation @79:13-79:114
+        attr x:Key directive "ToggleSwitchFillOffPointerOver" @79:29-79:67
+        attr ResourceKey property "SystemControlTransparentBrush" @79:68-79:111
+      element StaticResource ns=presentation @80:13-80:121
+        attr x:Key directive "ToggleSwitchFillOffPressed" @80:29-80:63
+        attr ResourceKey property "SystemControlHighlightBaseMediumLowBrush" @80:64-80:118
+      element StaticResource ns=presentation @81:13-81:111
+        attr x:Key directive "ToggleSwitchFillOffDisabled" @81:29-81:64
+        attr ResourceKey property "SystemControlTransparentBrush" @81:65-81:108
+      element StaticResource ns=presentation @82:13-82:114
+        attr x:Key directive "ToggleSwitchStrokeOff" @82:29-82:58
+        attr ResourceKey property "SystemControlForegroundBaseMediumBrush" @82:59-82:111
+      element StaticResource ns=presentation @83:13-83:128
+        attr x:Key directive "ToggleSwitchStrokeOffPointerOver" @83:29-83:69
+        attr ResourceKey property "SystemControlHighlightBaseMediumHighBrush" @83:70-83:125
+      element StaticResource ns=presentation @84:13-84:119
+        attr x:Key directive "ToggleSwitchStrokeOffPressed" @84:29-84:65
+        attr ResourceKey property "SystemControlForegroundBaseHighBrush" @84:66-84:116
+      element StaticResource ns=presentation @85:13-85:123
+        attr x:Key directive "ToggleSwitchStrokeOffDisabled" @85:29-85:66
+        attr ResourceKey property "SystemControlDisabledBaseMediumLowBrush" @85:67-85:120
+      element StaticResource ns=presentation @86:13-86:106
+        attr x:Key directive "ToggleSwitchFillOn" @86:29-86:55
+        attr ResourceKey property "SystemControlHighlightAccentBrush" @86:56-86:103
+      element StaticResource ns=presentation @87:13-87:128
+        attr x:Key directive "ToggleSwitchFillOnPointerOver" @87:29-87:66
+        attr ResourceKey property "SystemControlHighlightAltListAccentHighBrush" @87:67-87:125
+      element StaticResource ns=presentation @88:13-88:117
+        attr x:Key directive "ToggleSwitchFillOnPressed" @88:29-88:62
+        attr ResourceKey property "SystemControlHighlightBaseMediumBrush" @88:63-88:114
+      element StaticResource ns=presentation @89:13-89:114
+        attr x:Key directive "ToggleSwitchFillOnDisabled" @89:29-89:63
+        attr ResourceKey property "SystemControlDisabledBaseLowBrush" @89:64-89:111
+      element StaticResource ns=presentation @90:13-90:110
+        attr x:Key directive "ToggleSwitchStrokeOn" @90:29-90:57
+        attr ResourceKey property "SystemControlHighlightBaseHighBrush" @90:58-90:107
+      element StaticResource ns=presentation @91:13-91:127
+        attr x:Key directive "ToggleSwitchStrokeOnPointerOver" @91:29-91:68
+        attr ResourceKey property "SystemControlHighlightListAccentHighBrush" @91:69-91:124
+      element StaticResource ns=presentation @92:13-92:119
+        attr x:Key directive "ToggleSwitchStrokeOnPressed" @92:29-92:64
+        attr ResourceKey property "SystemControlHighlightBaseMediumBrush" @92:65-92:116
+      element StaticResource ns=presentation @93:13-93:122
+        attr x:Key directive "ToggleSwitchStrokeOnDisabled" @93:29-93:65
+        attr ResourceKey property "SystemControlDisabledBaseMediumLowBrush" @93:66-93:119
+      element StaticResource ns=presentation @94:13-94:114
+        attr x:Key directive "ToggleSwitchKnobFillOff" @94:29-94:60
+        attr ResourceKey property "SystemControlForegroundBaseHighBrush" @94:61-94:111
+      element StaticResource ns=presentation @95:13-95:124
+        attr x:Key directive "ToggleSwitchKnobFillOffPointerOver" @95:29-95:71
+        attr ResourceKey property "SystemControlHighlightBaseHighBrush" @95:72-95:121
+      element StaticResource ns=presentation @96:13-96:120
+        attr x:Key directive "ToggleSwitchKnobFillOffPressed" @96:29-96:67
+        attr ResourceKey property "SystemControlHighlightBaseHighBrush" @96:68-96:117
+      element StaticResource ns=presentation @97:13-97:125
+        attr x:Key directive "ToggleSwitchKnobFillOffDisabled" @97:29-97:68
+        attr ResourceKey property "SystemControlDisabledBaseMediumLowBrush" @97:69-97:122
+      element StaticResource ns=presentation @98:13-98:118
+        attr x:Key directive "ToggleSwitchKnobFillOn" @98:29-98:59
+        attr ResourceKey property "SystemControlHighlightAltChromeWhiteBrush" @98:60-98:115
+      element StaticResource ns=presentation @99:13-99:126
+        attr x:Key directive "ToggleSwitchKnobFillOnPointerOver" @99:29-99:70
+        attr ResourceKey property "SystemControlHighlightChromeWhiteBrush" @99:71-99:123
+      element StaticResource ns=presentation @100:13-100:125
+        attr x:Key directive "ToggleSwitchKnobFillOnPressed" @100:29-100:66
+        attr ResourceKey property "SystemControlHighlightAltChromeWhiteBrush" @100:67-100:122
+      element StaticResource ns=presentation @101:13-101:124
+        attr x:Key directive "ToggleSwitchKnobFillOnDisabled" @101:29-101:67
+        attr ResourceKey property "SystemControlPageBackgroundBaseLowBrush" @101:68-101:121
+      element x:Double ns=x @103:13-103:73
+        attr x:Key directive "ToggleSwitchOnStrokeThickness" @103:23-103:60
+        text "1" @103:61-103:62
+      element x:Double ns=x @104:13-104:82
+        attr x:Key directive "ToggleSwitchOuterBorderStrokeThickness" @104:23-104:69
+        text "1" @104:70-104:71
+      element SolidColorBrush ns=presentation @105:13-105:130
+        attr x:Key directive "ToggleSwitchCurtainBackgroundThemeBrush" @105:30-105:77
+        attr Color property "{ThemeResource SystemColorHighlightColor}" @105:78-105:127
+          markup ThemeResource @105:85-105:126
+            positional "SystemColorHighlightColor" @105:100-105:125
+      element SolidColorBrush ns=presentation @106:13-106:139
+        attr x:Key directive "ToggleSwitchCurtainDisabledBackgroundThemeBrush" @106:30-106:85
+        attr Color property "{ThemeResource SystemColorButtonFaceColor}" @106:86-106:136
+          markup ThemeResource @106:93-106:135
+            positional "SystemColorButtonFaceColor" @106:108-106:134
+      element SolidColorBrush ns=presentation @107:13-107:141
+        attr x:Key directive "ToggleSwitchCurtainPointerOverBackgroundThemeBrush" @107:30-107:88
+        attr Color property "{ThemeResource SystemColorHighlightColor}" @107:89-107:138
+          markup ThemeResource @107:96-107:137
+            positional "SystemColorHighlightColor" @107:111-107:136
+      element SolidColorBrush ns=presentation @108:13-108:137
+        attr x:Key directive "ToggleSwitchCurtainPressedBackgroundThemeBrush" @108:30-108:84
+        attr Color property "{ThemeResource SystemColorHighlightColor}" @108:85-108:134
+          markup ThemeResource @108:92-108:133
+            positional "SystemColorHighlightColor" @108:107-108:132
+      element SolidColorBrush ns=presentation @109:13-109:130
+        attr x:Key directive "ToggleSwitchDisabledForegroundThemeBrush" @109:30-109:78
+        attr Color property "{ThemeResource SystemColorGrayTextColor}" @109:79-109:127
+          markup ThemeResource @109:86-109:126
+            positional "SystemColorGrayTextColor" @109:101-109:125
+      element SolidColorBrush ns=presentation @110:13-110:124
+        attr x:Key directive "ToggleSwitchForegroundThemeBrush" @110:30-110:70
+        attr Color property "{ThemeResource SystemColorButtonTextColor}" @110:71-110:121
+          markup ThemeResource @110:78-110:120
+            positional "SystemColorButtonTextColor" @110:93-110:119
+      element SolidColorBrush ns=presentation @111:13-111:136
+        attr x:Key directive "ToggleSwitchHeaderDisabledForegroundThemeBrush" @111:30-111:84
+        attr Color property "{ThemeResource SystemColorGrayTextColor}" @111:85-111:133
+          markup ThemeResource @111:92-111:132
+            positional "SystemColorGrayTextColor" @111:107-111:131
+      element SolidColorBrush ns=presentation @112:13-112:130
+        attr x:Key directive "ToggleSwitchHeaderForegroundThemeBrush" @112:30-112:76
+        attr Color property "{ThemeResource SystemColorButtonTextColor}" @112:77-112:127
+          markup ThemeResource @112:84-112:126
+            positional "SystemColorButtonTextColor" @112:99-112:125
+      element SolidColorBrush ns=presentation @113:13-113:131
+        attr x:Key directive "ToggleSwitchOuterBorderBorderThemeBrush" @113:30-113:77
+        attr Color property "{ThemeResource SystemColorButtonTextColor}" @113:78-113:128
+          markup ThemeResource @113:85-113:127
+            positional "SystemColorButtonTextColor" @113:100-113:126
+      element SolidColorBrush ns=presentation @114:13-114:137
+        attr x:Key directive "ToggleSwitchOuterBorderDisabledBorderThemeBrush" @114:30-114:85
+        attr Color property "{ThemeResource SystemColorGrayTextColor}" @114:86-114:134
+          markup ThemeResource @114:93-114:133
+            positional "SystemColorGrayTextColor" @114:108-114:132
+      element SolidColorBrush ns=presentation @115:13-115:129
+        attr x:Key directive "ToggleSwitchThumbBackgroundThemeBrush" @115:30-115:75
+        attr Color property "{ThemeResource SystemColorButtonTextColor}" @115:76-115:126
+          markup ThemeResource @115:83-115:125
+            positional "SystemColorButtonTextColor" @115:98-115:124
+      element SolidColorBrush ns=presentation @116:13-116:125
+        attr x:Key directive "ToggleSwitchThumbBorderThemeBrush" @116:30-116:71
+        attr Color property "{ThemeResource SystemColorButtonTextColor}" @116:72-116:122
+          markup ThemeResource @116:79-116:121
+            positional "SystemColorButtonTextColor" @116:94-116:120
+      element SolidColorBrush ns=presentation @117:13-117:135
+        attr x:Key directive "ToggleSwitchThumbDisabledBackgroundThemeBrush" @117:30-117:83
+        attr Color property "{ThemeResource SystemColorGrayTextColor}" @117:84-117:132
+          markup ThemeResource @117:91-117:131
+            positional "SystemColorGrayTextColor" @117:106-117:130
+      element SolidColorBrush ns=presentation @118:13-118:131
+        attr x:Key directive "ToggleSwitchThumbDisabledBorderThemeBrush" @118:30-118:79
+        attr Color property "{ThemeResource SystemColorGrayTextColor}" @118:80-118:128
+          markup ThemeResource @118:87-118:127
+            positional "SystemColorGrayTextColor" @118:102-118:126
+      element SolidColorBrush ns=presentation @119:13-119:139
+        attr x:Key directive "ToggleSwitchThumbPointerOverBackgroundThemeBrush" @119:30-119:86
+        attr Color property "{ThemeResource SystemColorHighlightColor}" @119:87-119:136
+          markup ThemeResource @119:94-119:135
+            positional "SystemColorHighlightColor" @119:109-119:134
+      element SolidColorBrush ns=presentation @120:13-120:136
+        attr x:Key directive "ToggleSwitchThumbPointerOverBorderThemeBrush" @120:30-120:82
+        attr Color property "{ThemeResource SystemColorButtonTextColor}" @120:83-120:133
+          markup ThemeResource @120:90-120:132
+            positional "SystemColorButtonTextColor" @120:105-120:131
+      element SolidColorBrush ns=presentation @121:13-121:136
+        attr x:Key directive "ToggleSwitchThumbPressedBackgroundThemeBrush" @121:30-121:82
+        attr Color property "{ThemeResource SystemColorButtonFaceColor}" @121:83-121:133
+          markup ThemeResource @121:90-121:132
+            positional "SystemColorButtonFaceColor" @121:105-121:131
+      element SolidColorBrush ns=presentation @122:13-122:136
+        attr x:Key directive "ToggleSwitchThumbPressedForegroundThemeBrush" @122:30-122:82
+        attr Color property "{ThemeResource SystemColorButtonTextColor}" @122:83-122:133
+          markup ThemeResource @122:90-122:132
+            positional "SystemColorButtonTextColor" @122:105-122:131
+      element SolidColorBrush ns=presentation @123:13-123:129
+        attr x:Key directive "ToggleSwitchTrackBackgroundThemeBrush" @123:30-123:75
+        attr Color property "{ThemeResource SystemColorButtonFaceColor}" @123:76-123:126
+          markup ThemeResource @123:83-123:125
+            positional "SystemColorButtonFaceColor" @123:98-123:124
+      element SolidColorBrush ns=presentation @124:13-124:94
+        attr x:Key directive "ToggleSwitchTrackBorderThemeBrush" @124:30-124:71
+        attr Color property "Transparent" @124:72-124:91
+      element SolidColorBrush ns=presentation @125:13-125:137
+        attr x:Key directive "ToggleSwitchTrackDisabledBackgroundThemeBrush" @125:30-125:83
+        attr Color property "{ThemeResource SystemColorButtonFaceColor}" @125:84-125:134
+          markup ThemeResource @125:91-125:133
+            positional "SystemColorButtonFaceColor" @125:106-125:132
+      element SolidColorBrush ns=presentation @126:13-126:140
+        attr x:Key directive "ToggleSwitchTrackPointerOverBackgroundThemeBrush" @126:30-126:86
+        attr Color property "{ThemeResource SystemColorButtonFaceColor}" @126:87-126:137
+          markup ThemeResource @126:94-126:136
+            positional "SystemColorButtonFaceColor" @126:109-126:135
+      element SolidColorBrush ns=presentation @127:13-127:136
+        attr x:Key directive "ToggleSwitchTrackPressedBackgroundThemeBrush" @127:30-127:82
+        attr Color property "{ThemeResource SystemColorButtonFaceColor}" @127:83-127:133
+          markup ThemeResource @127:90-127:132
+            positional "SystemColorButtonFaceColor" @127:105-127:131
+    element ResourceDictionary ns=presentation @129:9-188:31
+      attr x:Key directive "Light" @129:29-129:42
+      element x:Double ns=x @130:13-130:73
+        attr x:Key directive "ToggleSwitchOnStrokeThickness" @130:23-130:60
+        text "0" @130:61-130:62
+      element x:Double ns=x @131:13-131:82
+        attr x:Key directive "ToggleSwitchOuterBorderStrokeThickness" @131:23-131:69
+        text "1" @131:70-131:71
+      element StaticResource ns=presentation @132:13-132:120
+        attr x:Key directive "ToggleSwitchContentForeground" @132:29-132:66
+        attr ResourceKey property "SystemControlForegroundBaseHighBrush" @132:67-132:117
+      element StaticResource ns=presentation @133:13-133:131
+        attr x:Key directive "ToggleSwitchContentForegroundDisabled" @133:29-133:74
+        attr ResourceKey property "SystemControlDisabledBaseMediumLowBrush" @133:75-133:128
+      element StaticResource ns=presentation @134:13-134:119
+        attr x:Key directive "ToggleSwitchHeaderForeground" @134:29-134:65
+        attr ResourceKey property "SystemControlForegroundBaseHighBrush" @134:66-134:116
+      element StaticResource ns=presentation @135:13-135:130
+        attr x:Key directive "ToggleSwitchHeaderForegroundDisabled" @135:29-135:73
+        attr ResourceKey property "SystemControlDisabledBaseMediumLowBrush" @135:74-135:127
+      element StaticResource ns=presentation @136:13-136:115
+        attr x:Key directive "ToggleSwitchContainerBackground" @136:29-136:68
+        attr ResourceKey property "SystemControlTransparentBrush" @136:69-136:112
+      element StaticResource ns=presentation @137:13-137:126
+        attr x:Key directive "ToggleSwitchContainerBackgroundPointerOver" @137:29-137:79
+        attr ResourceKey property "SystemControlTransparentBrush" @137:80-137:123
+      element StaticResource ns=presentation @138:13-138:122
+        attr x:Key directive "ToggleSwitchContainerBackgroundPressed" @138:29-138:75
+        attr ResourceKey property "SystemControlTransparentBrush" @138:76-138:119
+      element StaticResource ns=presentation @139:13-139:123
+        attr x:Key directive "ToggleSwitchContainerBackgroundDisabled" @139:29-139:76
+        attr ResourceKey property "SystemControlTransparentBrush" @139:77-139:120
+      element StaticResource ns=presentation @140:13-140:103
+        attr x:Key directive "ToggleSwitchFillOff" @140:29-140:56
+        attr ResourceKey property "SystemControlTransparentBrush" @140:57-140:100
+      element StaticResource ns=presentation @141:13-141:114
+        attr x:Key directive "ToggleSwitchFillOffPointerOver" @141:29-141:67
+        attr ResourceKey property "SystemControlTransparentBrush" @141:68-141:111
+      element StaticResource ns=presentation @142:13-142:121
+        attr x:Key directive "ToggleSwitchFillOffPressed" @142:29-142:63
+        attr ResourceKey property "SystemControlHighlightBaseMediumLowBrush" @142:64-142:118
+      element StaticResource ns=presentation @143:13-143:111
+        attr x:Key directive "ToggleSwitchFillOffDisabled" @143:29-143:64
+        attr ResourceKey property "SystemControlTransparentBrush" @143:65-143:108
+      element StaticResource ns=presentation @144:13-144:114
+        attr x:Key directive "ToggleSwitchStrokeOff" @144:29-144:58
+        attr ResourceKey property "SystemControlForegroundBaseMediumBrush" @144:59-144:111
+      element StaticResource ns=presentation @145:13-145:128
+        attr x:Key directive "ToggleSwitchStrokeOffPointerOver" @145:29-145:69
+        attr ResourceKey property "SystemControlHighlightBaseMediumHighBrush" @145:70-145:125
+      element StaticResource ns=presentation @146:13-146:119
+        attr x:Key directive "ToggleSwitchStrokeOffPressed" @146:29-146:65
+        attr ResourceKey property "SystemControlForegroundBaseHighBrush" @146:66-146:116
+      element StaticResource ns=presentation @147:13-147:123
+        attr x:Key directive "ToggleSwitchStrokeOffDisabled" @147:29-147:66
+        attr ResourceKey property "SystemControlDisabledBaseMediumLowBrush" @147:67-147:120
+      element StaticResource ns=presentation @148:13-148:106
+        attr x:Key directive "ToggleSwitchFillOn" @148:29-148:55
+        attr ResourceKey property "SystemControlHighlightAccentBrush" @148:56-148:103
+      element StaticResource ns=presentation @149:13-149:107
+        attr x:Key directive "ToggleSwitchFillOnPointerOver" @149:29-149:66
+        attr ResourceKey property "SystemAccentColorLight1" @149:67-149:104
+      element StaticResource ns=presentation @150:13-150:102
+        attr x:Key directive "ToggleSwitchFillOnPressed" @150:29-150:62
+        attr ResourceKey property "SystemAccentColorDark1" @150:63-150:99
+      element StaticResource ns=presentation @151:13-151:114
+        attr x:Key directive "ToggleSwitchFillOnDisabled" @151:29-151:63
+        attr ResourceKey property "SystemControlDisabledBaseLowBrush" @151:64-151:111
+      element StaticResource ns=presentation @152:13-152:110
+        attr x:Key directive "ToggleSwitchStrokeOn" @152:29-152:57
+        attr ResourceKey property "SystemControlHighlightBaseHighBrush" @152:58-152:107
+      element StaticResource ns=presentation @153:13-153:127
+        attr x:Key directive "ToggleSwitchStrokeOnPointerOver" @153:29-153:68
+        attr ResourceKey property "SystemControlHighlightListAccentHighBrush" @153:69-153:124
+      element StaticResource ns=presentation @154:13-154:119
+        attr x:Key directive "ToggleSwitchStrokeOnPressed" @154:29-154:64
+        attr ResourceKey property "SystemControlHighlightBaseMediumBrush" @154:65-154:116
+      element StaticResource ns=presentation @155:13-155:122
+        attr x:Key directive "ToggleSwitchStrokeOnDisabled" @155:29-155:65
+        attr ResourceKey property "SystemControlDisabledBaseMediumLowBrush" @155:66-155:119
+      element StaticResource ns=presentation @156:13-156:114
+        attr x:Key directive "ToggleSwitchKnobFillOff" @156:29-156:60
+        attr ResourceKey property "SystemControlForegroundBaseHighBrush" @156:61-156:111
+      element StaticResource ns=presentation @157:13-157:124
+        attr x:Key directive "ToggleSwitchKnobFillOffPointerOver" @157:29-157:71
+        attr ResourceKey property "SystemControlHighlightBaseHighBrush" @157:72-157:121
+      element StaticResource ns=presentation @158:13-158:120
+        attr x:Key directive "ToggleSwitchKnobFillOffPressed" @158:29-158:67
+        attr ResourceKey property "SystemControlHighlightBaseHighBrush" @158:68-158:117
+      element StaticResource ns=presentation @159:13-159:125
+        attr x:Key directive "ToggleSwitchKnobFillOffDisabled" @159:29-159:68
+        attr ResourceKey property "SystemControlDisabledBaseMediumLowBrush" @159:69-159:122
+      element StaticResource ns=presentation @160:13-160:118
+        attr x:Key directive "ToggleSwitchKnobFillOn" @160:29-160:59
+        attr ResourceKey property "SystemControlHighlightAltChromeWhiteBrush" @160:60-160:115
+      element StaticResource ns=presentation @161:13-161:126
+        attr x:Key directive "ToggleSwitchKnobFillOnPointerOver" @161:29-161:70
+        attr ResourceKey property "SystemControlHighlightChromeWhiteBrush" @161:71-161:123
+      element StaticResource ns=presentation @162:13-162:125
+        attr x:Key directive "ToggleSwitchKnobFillOnPressed" @162:29-162:66
+        attr ResourceKey property "SystemControlHighlightAltChromeWhiteBrush" @162:67-162:122
+      element StaticResource ns=presentation @163:13-163:124
+        attr x:Key directive "ToggleSwitchKnobFillOnDisabled" @163:29-163:67
+        attr ResourceKey property "SystemControlPageBackgroundBaseLowBrush" @163:68-163:121
+      element SolidColorBrush ns=presentation @165:13-165:98
+        attr x:Key directive "ToggleSwitchCurtainBackgroundThemeBrush" @165:30-165:77
+        attr Color property "#FF4617B4" @165:78-165:95
+      element SolidColorBrush ns=presentation @166:13-166:108
+        attr x:Key directive "ToggleSwitchCurtainDisabledBackgroundThemeBrush" @166:30-166:85
+        attr Color property "Transparent" @166:86-166:105
+      element SolidColorBrush ns=presentation @167:13-167:109
+        attr x:Key directive "ToggleSwitchCurtainPointerOverBackgroundThemeBrush" @167:30-167:88
+        attr Color property "#FF5F37BE" @167:89-167:106
+      element SolidColorBrush ns=presentation @168:13-168:105
+        attr x:Key directive "ToggleSwitchCurtainPressedBackgroundThemeBrush" @168:30-168:84
+        attr Color property "#FF7241E4" @168:85-168:102
+      element SolidColorBrush ns=presentation @169:13-169:99
+        attr x:Key directive "ToggleSwitchDisabledForegroundThemeBrush" @169:30-169:78
+        attr Color property "#66000000" @169:79-169:96
+      element SolidColorBrush ns=presentation @170:13-170:91
+        attr x:Key directive "ToggleSwitchForegroundThemeBrush" @170:30-170:70
+        attr Color property "#FF000000" @170:71-170:88
+      element SolidColorBrush ns=presentation @171:13-171:105
+        attr x:Key directive "ToggleSwitchHeaderDisabledForegroundThemeBrush" @171:30-171:84
+        attr Color property "#66000000" @171:85-171:102
+      element SolidColorBrush ns=presentation @172:13-172:97
+        attr x:Key directive "ToggleSwitchHeaderForegroundThemeBrush" @172:30-172:76
+        attr Color property "#FF000000" @172:77-172:94
+      element SolidColorBrush ns=presentation @173:13-173:98
+        attr x:Key directive "ToggleSwitchOuterBorderBorderThemeBrush" @173:30-173:77
+        attr Color property "#59000000" @173:78-173:95
+      element SolidColorBrush ns=presentation @174:13-174:106
+        attr x:Key directive "ToggleSwitchOuterBorderDisabledBorderThemeBrush" @174:30-174:85
+        attr Color property "#33000000" @174:86-174:103
+      element SolidColorBrush ns=presentation @175:13-175:96
+        attr x:Key directive "ToggleSwitchThumbBackgroundThemeBrush" @175:30-175:75
+        attr Color property "#FF000000" @175:76-175:93
+      element SolidColorBrush ns=presentation @176:13-176:92
+        attr x:Key directive "ToggleSwitchThumbBorderThemeBrush" @176:30-176:71
+        attr Color property "#FF000000" @176:72-176:89
+      element SolidColorBrush ns=presentation @177:13-177:104
+        attr x:Key directive "ToggleSwitchThumbDisabledBackgroundThemeBrush" @177:30-177:83
+        attr Color property "#FF929292" @177:84-177:101
+      element SolidColorBrush ns=presentation @178:13-178:100
+        attr x:Key directive "ToggleSwitchThumbDisabledBorderThemeBrush" @178:30-178:79
+        attr Color property "#FF929292" @178:80-178:97
+      element SolidColorBrush ns=presentation @179:13-179:107
+        attr x:Key directive "ToggleSwitchThumbPointerOverBackgroundThemeBrush" @179:30-179:86
+        attr Color property "#FF000000" @179:87-179:104
+      element SolidColorBrush ns=presentation @180:13-180:103
+        attr x:Key directive "ToggleSwitchThumbPointerOverBorderThemeBrush" @180:30-180:82
+        attr Color property "#FF000000" @180:83-180:100
+      element SolidColorBrush ns=presentation @181:13-181:103
+        attr x:Key directive "ToggleSwitchThumbPressedBackgroundThemeBrush" @181:30-181:82
+        attr Color property "#FF000000" @181:83-181:100
+      element SolidColorBrush ns=presentation @182:13-182:103
+        attr x:Key directive "ToggleSwitchThumbPressedForegroundThemeBrush" @182:30-182:82
+        attr Color property "#FF000000" @182:83-182:100
+      element SolidColorBrush ns=presentation @183:13-183:96
+        attr x:Key directive "ToggleSwitchTrackBackgroundThemeBrush" @183:30-183:75
+        attr Color property "#59000000" @183:76-183:93
+      element SolidColorBrush ns=presentation @184:13-184:94
+        attr x:Key directive "ToggleSwitchTrackBorderThemeBrush" @184:30-184:71
+        attr Color property "Transparent" @184:72-184:91
+      element SolidColorBrush ns=presentation @185:13-185:104
+        attr x:Key directive "ToggleSwitchTrackDisabledBackgroundThemeBrush" @185:30-185:83
+        attr Color property "#1F000000" @185:84-185:101
+      element SolidColorBrush ns=presentation @186:13-186:107
+        attr x:Key directive "ToggleSwitchTrackPointerOverBackgroundThemeBrush" @186:30-186:86
+        attr Color property "#4A000000" @186:87-186:104
+      element SolidColorBrush ns=presentation @187:13-187:103
+        attr x:Key directive "ToggleSwitchTrackPressedBackgroundThemeBrush" @187:30-187:82
+        attr Color property "#42000000" @187:83-187:100
+  element Thickness ns=presentation @191:5-191:71
+    attr x:Key directive "ToggleSwitchTopHeaderMargin" @191:16-191:51
+    text "0,0,0,0" @191:52-191:59
+  element x:Double ns=x @192:5-192:64
+    attr x:Key directive "ToggleSwitchPreContentMargin" @192:15-192:51
+    text "6" @192:52-192:53
+  element x:Double ns=x @193:5-193:65
+    attr x:Key directive "ToggleSwitchPostContentMargin" @193:15-193:52
+    text "6" @193:53-193:54
+  element x:Double ns=x @195:5-195:63
+    attr x:Key directive "ToggleSwitchThemeMinWidth" @195:15-195:48
+    text "154" @195:49-195:52
+  element Style ns=presentation @197:5-197:92
+    attr TargetType property "ToggleSwitch" @197:12-197:37
+    attr BasedOn property "{StaticResource DefaultToggleSwitchStyle}" @197:38-197:89
+      markup StaticResource @197:47-197:88
+        positional "DefaultToggleSwitchStyle" @197:63-197:87
+  element Style ns=presentation @199:5-582:13
+    attr x:Key directive "DefaultToggleSwitchStyle" @199:12-199:44
+    attr TargetType property "ToggleSwitch" @199:45-199:70
+    element Setter ns=presentation @200:9-200:95
+      attr Property property "Foreground" @200:17-200:38
+      attr Value property "{ThemeResource ToggleSwitchContentForeground}" @200:39-200:92
+        markup ThemeResource @200:46-200:91
+          positional "ToggleSwitchContentForeground" @200:61-200:90
+    element Setter ns=presentation @201:9-201:63
+      attr Property property "HorizontalAlignment" @201:17-201:47
+      attr Value property "Left" @201:48-201:60
+    element Setter ns=presentation @202:9-202:63
+      attr Property property "VerticalAlignment" @202:17-202:45
+      attr Value property "Center" @202:46-202:60
+    element Setter ns=presentation @203:9-203:70
+      attr Property property "HorizontalContentAlignment" @203:17-203:54
+      attr Value property "Left" @203:55-203:67
+    element Setter ns=presentation @204:9-204:95
+      attr Property property "FontFamily" @204:17-204:38
+      attr Value property "{ThemeResource ContentControlThemeFontFamily}" @204:39-204:92
+        markup ThemeResource @204:46-204:91
+          positional "ContentControlThemeFontFamily" @204:61-204:90
+    element Setter ns=presentation @205:9-205:91
+      attr Property property "FontSize" @205:17-205:36
+      attr Value property "{ThemeResource ControlContentThemeFontSize}" @205:37-205:88
+        markup ThemeResource @205:44-205:87
+          positional "ControlContentThemeFontSize" @205:59-205:86
+    element Setter ns=presentation @206:9-206:73
+      attr Property property "ManipulationMode" @206:17-206:44
+      attr Value property "System,TranslateX" @206:45-206:70
+    element Setter ns=presentation @207:9-207:99
+      attr Property property "UseSystemFocusVisuals" @207:17-207:49
+      attr Value property "{StaticResource UseSystemFocusVisuals}" @207:50-207:96
+        markup StaticResource @207:57-207:95
+          positional "UseSystemFocusVisuals" @207:73-207:94
+    element Setter ns=presentation @208:9-208:68
+      attr Property property "FocusVisualMargin" @208:17-208:45
+      attr Value property "-7,-3,-7,-3" @208:46-208:65
+    element Setter ns=presentation @209:9-581:18
+      attr Property property "Template" @209:17-209:36
+      property-element Setter.Value ns=presentation @210:13-580:28
+        element ControlTemplate ns=presentation @211:17-579:35
+          attr TargetType property "ToggleSwitch" @211:34-211:59
+          element Grid ns=presentation @212:21-577:28
+            attr Background property "{TemplateBinding Background}" @213:25-213:66
+              markup TemplateBinding @213:37-213:65
+                positional "Background" @213:54-213:64
+            attr BorderBrush property "{TemplateBinding BorderBrush}" @214:25-214:68
+              markup TemplateBinding @214:38-214:67
+                positional "BorderBrush" @214:55-214:66
+            attr BorderThickness property "{TemplateBinding BorderThickness}" @215:25-215:76
+              markup TemplateBinding @215:42-215:75
+                positional "BorderThickness" @215:59-215:74
+            attr contract7Present:CornerRadius property if=IsApiContractPresent(Windows.Foundation.UniversalApiContract,7) "{TemplateBinding CornerRadius}" @216:25-216:87
+              markup TemplateBinding @216:56-216:86
+                positional "CornerRadius" @216:73-216:85
+            property-element VisualStateManager.VisualStateGroups ns=presentation @218:25-463:64
+              element VisualStateGroup ns=presentation @219:29-312:48
+                attr x:Name directive "CommonStates" @219:47-219:68
+                element VisualState ns=presentation @220:33-220:64
+                  attr x:Name directive "Normal" @220:46-220:61
+                element VisualState ns=presentation @222:33-247:47
+                  attr x:Name directive "PointerOver" @222:46-222:66
+                  element Storyboard ns=presentation @224:37-246:50
+                    element ObjectAnimationUsingKeyFrames ns=presentation @225:41-227:73
+                      attr Storyboard.TargetName attached "OuterBorder" @225:72-225:107
+                      attr Storyboard.TargetProperty attached "Stroke" @225:108-225:142
+                      element DiscreteObjectKeyFrame ns=presentation @226:45-226:140
+                        attr KeyTime property "0" @226:69-226:80
+                        attr Value property "{ThemeResource ToggleSwitchStrokeOffPointerOver}" @226:81-226:137
+                          markup ThemeResource @226:88-226:136
+                            positional "ToggleSwitchStrokeOffPointerOver" @226:103-226:135
+                    element ObjectAnimationUsingKeyFrames ns=presentation @228:41-230:73
+                      attr Storyboard.TargetName attached "OuterBorder" @228:72-228:107
+                      attr Storyboard.TargetProperty attached "Fill" @228:108-228:140
+                      element DiscreteObjectKeyFrame ns=presentation @229:45-229:138
+                        attr KeyTime property "0" @229:69-229:80
+                        attr Value property "{ThemeResource ToggleSwitchFillOffPointerOver}" @229:81-229:135
+                          markup ThemeResource @229:88-229:134
+                            positional "ToggleSwitchFillOffPointerOver" @229:103-229:133
+                    element ObjectAnimationUsingKeyFrames ns=presentation @231:41-233:73
+                      attr Storyboard.TargetName attached "SwitchKnobOff" @231:72-231:109
+                      attr Storyboard.TargetProperty attached "Fill" @231:110-231:142
+                      element DiscreteObjectKeyFrame ns=presentation @232:45-232:142
+                        attr KeyTime property "0" @232:69-232:80
+                        attr Value property "{ThemeResource ToggleSwitchKnobFillOffPointerOver}" @232:81-232:139
+                          markup ThemeResource @232:88-232:138
+                            positional "ToggleSwitchKnobFillOffPointerOver" @232:103-232:137
+                    element ObjectAnimationUsingKeyFrames ns=presentation @234:41-236:73
+                      attr Storyboard.TargetName attached "SwitchKnobOn" @234:72-234:108
+                      attr Storyboard.TargetProperty attached "Fill" @234:109-234:141
+                      element DiscreteObjectKeyFrame ns=presentation @235:45-235:141
+                        attr KeyTime property "0" @235:69-235:80
+                        attr Value property "{ThemeResource ToggleSwitchKnobFillOnPointerOver}" @235:81-235:138
+                          markup ThemeResource @235:88-235:137
+                            positional "ToggleSwitchKnobFillOnPointerOver" @235:103-235:136
+                    element ObjectAnimationUsingKeyFrames ns=presentation @237:41-239:73
+                      attr Storyboard.TargetName attached "SwitchKnobBounds" @237:72-237:112
+                      attr Storyboard.TargetProperty attached "Fill" @237:113-237:145
+                      element DiscreteObjectKeyFrame ns=presentation @238:45-238:137
+                        attr KeyTime property "0" @238:69-238:80
+                        attr Value property "{ThemeResource ToggleSwitchFillOnPointerOver}" @238:81-238:134
+                          markup ThemeResource @238:88-238:133
+                            positional "ToggleSwitchFillOnPointerOver" @238:103-238:132
+                    element ObjectAnimationUsingKeyFrames ns=presentation @240:41-242:73
+                      attr Storyboard.TargetName attached "SwitchKnobBounds" @240:72-240:112
+                      attr Storyboard.TargetProperty attached "Stroke" @240:113-240:147
+                      element DiscreteObjectKeyFrame ns=presentation @241:45-241:139
+                        attr KeyTime property "0" @241:69-241:80
+                        attr Value property "{ThemeResource ToggleSwitchStrokeOnPointerOver}" @241:81-241:136
+                          markup ThemeResource @241:88-241:135
+                            positional "ToggleSwitchStrokeOnPointerOver" @241:103-241:134
+                    element ObjectAnimationUsingKeyFrames ns=presentation @243:41-245:73
+                      attr Storyboard.TargetName attached "SwitchAreaGrid" @243:72-243:110
+                      attr Storyboard.TargetProperty attached "Background" @243:111-243:149
+                      element DiscreteObjectKeyFrame ns=presentation @244:45-244:150
+                        attr KeyTime property "0" @244:69-244:80
+                        attr Value property "{ThemeResource ToggleSwitchContainerBackgroundPointerOver}" @244:81-244:147
+                          markup ThemeResource @244:88-244:146
+                            positional "ToggleSwitchContainerBackgroundPointerOver" @244:103-244:145
+                element VisualState ns=presentation @249:33-274:47
+                  attr x:Name directive "Pressed" @249:46-249:62
+                  element Storyboard ns=presentation @251:37-273:50
+                    element ObjectAnimationUsingKeyFrames ns=presentation @252:41-254:73
+                      attr Storyboard.TargetName attached "OuterBorder" @252:72-252:107
+                      attr Storyboard.TargetProperty attached "Stroke" @252:108-252:142
+                      element DiscreteObjectKeyFrame ns=presentation @253:45-253:136
+                        attr KeyTime property "0" @253:69-253:80
+                        attr Value property "{ThemeResource ToggleSwitchStrokeOffPressed}" @253:81-253:133
+                          markup ThemeResource @253:88-253:132
+                            positional "ToggleSwitchStrokeOffPressed" @253:103-253:131
+                    element ObjectAnimationUsingKeyFrames ns=presentation @255:41-257:73
+                      attr Storyboard.TargetName attached "OuterBorder" @255:72-255:107
+                      attr Storyboard.TargetProperty attached "Fill" @255:108-255:140
+                      element DiscreteObjectKeyFrame ns=presentation @256:45-256:134
+                        attr KeyTime property "0" @256:69-256:80
+                        attr Value property "{ThemeResource ToggleSwitchFillOffPressed}" @256:81-256:131
+                          markup ThemeResource @256:88-256:130
+                            positional "ToggleSwitchFillOffPressed" @256:103-256:129
+                    element ObjectAnimationUsingKeyFrames ns=presentation @258:41-260:73
+                      attr Storyboard.TargetName attached "SwitchKnobBounds" @258:72-258:112
+                      attr Storyboard.TargetProperty attached "Fill" @258:113-258:145
+                      element DiscreteObjectKeyFrame ns=presentation @259:45-259:133
+                        attr KeyTime property "0" @259:69-259:80
+                        attr Value property "{ThemeResource ToggleSwitchFillOnPressed}" @259:81-259:130
+                          markup ThemeResource @259:88-259:129
+                            positional "ToggleSwitchFillOnPressed" @259:103-259:128
+                    element ObjectAnimationUsingKeyFrames ns=presentation @261:41-263:73
+                      attr Storyboard.TargetName attached "SwitchKnobBounds" @261:72-261:112
+                      attr Storyboard.TargetProperty attached "Stroke" @261:113-261:147
+                      element DiscreteObjectKeyFrame ns=presentation @262:45-262:135
+                        attr KeyTime property "0" @262:69-262:80
+                        attr Value property "{ThemeResource ToggleSwitchStrokeOnPressed}" @262:81-262:132
+                          markup ThemeResource @262:88-262:131
+                            positional "ToggleSwitchStrokeOnPressed" @262:103-262:130
+                    element ObjectAnimationUsingKeyFrames ns=presentation @264:41-266:73
+                      attr Storyboard.TargetName attached "SwitchKnobOff" @264:72-264:109
+                      attr Storyboard.TargetProperty attached "Fill" @264:110-264:142
+                      element DiscreteObjectKeyFrame ns=presentation @265:45-265:138
+                        attr KeyTime property "0" @265:69-265:80
+                        attr Value property "{ThemeResource ToggleSwitchKnobFillOffPressed}" @265:81-265:135
+                          markup ThemeResource @265:88-265:134
+                            positional "ToggleSwitchKnobFillOffPressed" @265:103-265:133
+                    element ObjectAnimationUsingKeyFrames ns=presentation @267:41-269:73
+                      attr Storyboard.TargetName attached "SwitchKnobOn" @267:72-267:108
+                      attr Storyboard.TargetProperty attached "Fill" @267:109-267:141
+                      element DiscreteObjectKeyFrame ns=presentation @268:45-268:137
+                        attr KeyTime property "0" @268:69-268:80
+                        attr Value property "{ThemeResource ToggleSwitchKnobFillOnPressed}" @268:81-268:134
+                          markup ThemeResource @268:88-268:133
+                            positional "ToggleSwitchKnobFillOnPressed" @268:103-268:132
+                    element ObjectAnimationUsingKeyFrames ns=presentation @270:41-272:73
+                      attr Storyboard.TargetName attached "SwitchAreaGrid" @270:72-270:110
+                      attr Storyboard.TargetProperty attached "Background" @270:111-270:149
+                      element DiscreteObjectKeyFrame ns=presentation @271:45-271:146
+                        attr KeyTime property "0" @271:69-271:80
+                        attr Value property "{ThemeResource ToggleSwitchContainerBackgroundPressed}" @271:81-271:143
+                          markup ThemeResource @271:88-271:142
+                            positional "ToggleSwitchContainerBackgroundPressed" @271:103-271:141
+                element VisualState ns=presentation @276:33-310:47
+                  attr x:Name directive "Disabled" @276:46-276:63
+                  element Storyboard ns=presentation @278:37-309:50
+                    element ObjectAnimationUsingKeyFrames ns=presentation @279:41-281:73
+                      attr Storyboard.TargetName attached "HeaderContentPresenter" @279:72-279:118
+                      attr Storyboard.TargetProperty attached "Foreground" @279:119-279:157
+                      element DiscreteObjectKeyFrame ns=presentation @280:45-280:144
+                        attr KeyTime property "0" @280:69-280:80
+                        attr Value property "{ThemeResource ToggleSwitchHeaderForegroundDisabled}" @280:81-280:141
+                          markup ThemeResource @280:88-280:140
+                            positional "ToggleSwitchHeaderForegroundDisabled" @280:103-280:139
+                    element ObjectAnimationUsingKeyFrames ns=presentation @282:41-284:73
+                      attr Storyboard.TargetName attached "OffContentPresenter" @282:72-282:115
+                      attr Storyboard.TargetProperty attached "Foreground" @282:116-282:154
+                      element DiscreteObjectKeyFrame ns=presentation @283:45-283:145
+                        attr KeyTime property "0" @283:69-283:80
+                        attr Value property "{ThemeResource ToggleSwitchContentForegroundDisabled}" @283:81-283:142
+                          markup ThemeResource @283:88-283:141
+                            positional "ToggleSwitchContentForegroundDisabled" @283:103-283:140
+                    element ObjectAnimationUsingKeyFrames ns=presentation @285:41-287:73
+                      attr Storyboard.TargetName attached "OnContentPresenter" @285:72-285:114
+                      attr Storyboard.TargetProperty attached "Foreground" @285:115-285:153
+                      element DiscreteObjectKeyFrame ns=presentation @286:45-286:145
+                        attr KeyTime property "0" @286:69-286:80
+                        attr Value property "{ThemeResource ToggleSwitchContentForegroundDisabled}" @286:81-286:142
+                          markup ThemeResource @286:88-286:141
+                            positional "ToggleSwitchContentForegroundDisabled" @286:103-286:140
+                    element ObjectAnimationUsingKeyFrames ns=presentation @288:41-290:73
+                      attr Storyboard.TargetName attached "OuterBorder" @288:72-288:107
+                      attr Storyboard.TargetProperty attached "Stroke" @288:108-288:142
+                      element DiscreteObjectKeyFrame ns=presentation @289:45-289:137
+                        attr KeyTime property "0" @289:69-289:80
+                        attr Value property "{ThemeResource ToggleSwitchStrokeOffDisabled}" @289:81-289:134
+                          markup ThemeResource @289:88-289:133
+                            positional "ToggleSwitchStrokeOffDisabled" @289:103-289:132
+                    element ObjectAnimationUsingKeyFrames ns=presentation @291:41-293:73
+                      attr Storyboard.TargetName attached "OuterBorder" @291:72-291:107
+                      attr Storyboard.TargetProperty attached "Fill" @291:108-291:140
+                      element DiscreteObjectKeyFrame ns=presentation @292:45-292:135
+                        attr KeyTime property "0" @292:69-292:80
+                        attr Value property "{ThemeResource ToggleSwitchFillOffDisabled}" @292:81-292:132
+                          markup ThemeResource @292:88-292:131
+                            positional "ToggleSwitchFillOffDisabled" @292:103-292:130
+                    element ObjectAnimationUsingKeyFrames ns=presentation @294:41-296:73
+                      attr Storyboard.TargetName attached "SwitchKnobBounds" @294:72-294:112
+                      attr Storyboard.TargetProperty attached "Fill" @294:113-294:145
+                      element DiscreteObjectKeyFrame ns=presentation @295:45-295:134
+                        attr KeyTime property "0" @295:69-295:80
+                        attr Value property "{ThemeResource ToggleSwitchFillOnDisabled}" @295:81-295:131
+                          markup ThemeResource @295:88-295:130
+                            positional "ToggleSwitchFillOnDisabled" @295:103-295:129
+                    element ObjectAnimationUsingKeyFrames ns=presentation @297:41-299:73
+                      attr Storyboard.TargetName attached "SwitchKnobBounds" @297:72-297:112
+                      attr Storyboard.TargetProperty attached "Stroke" @297:113-297:147
+                      element DiscreteObjectKeyFrame ns=presentation @298:45-298:136
+                        attr KeyTime property "0" @298:69-298:80
+                        attr Value property "{ThemeResource ToggleSwitchStrokeOnDisabled}" @298:81-298:133
+                          markup ThemeResource @298:88-298:132
+                            positional "ToggleSwitchStrokeOnDisabled" @298:103-298:131
+                    element ObjectAnimationUsingKeyFrames ns=presentation @300:41-302:73
+                      attr Storyboard.TargetName attached "SwitchKnobOff" @300:72-300:109
+                      attr Storyboard.TargetProperty attached "Fill" @300:110-300:142
+                      element DiscreteObjectKeyFrame ns=presentation @301:45-301:139
+                        attr KeyTime property "0" @301:69-301:80
+                        attr Value property "{ThemeResource ToggleSwitchKnobFillOffDisabled}" @301:81-301:136
+                          markup ThemeResource @301:88-301:135
+                            positional "ToggleSwitchKnobFillOffDisabled" @301:103-301:134
+                    element ObjectAnimationUsingKeyFrames ns=presentation @303:41-305:73
+                      attr Storyboard.TargetName attached "SwitchKnobOn" @303:72-303:108
+                      attr Storyboard.TargetProperty attached "Fill" @303:109-303:141
+                      element DiscreteObjectKeyFrame ns=presentation @304:45-304:138
+                        attr KeyTime property "0" @304:69-304:80
+                        attr Value property "{ThemeResource ToggleSwitchKnobFillOnDisabled}" @304:81-304:135
+                          markup ThemeResource @304:88-304:134
+                            positional "ToggleSwitchKnobFillOnDisabled" @304:103-304:133
+                    element ObjectAnimationUsingKeyFrames ns=presentation @306:41-308:73
+                      attr Storyboard.TargetName attached "SwitchAreaGrid" @306:72-306:110
+                      attr Storyboard.TargetProperty attached "Background" @306:111-306:149
+                      element DiscreteObjectKeyFrame ns=presentation @307:45-307:147
+                        attr KeyTime property "0" @307:69-307:80
+                        attr Value property "{ThemeResource ToggleSwitchContainerBackgroundDisabled}" @307:81-307:144
+                          markup ThemeResource @307:88-307:143
+                            positional "ToggleSwitchContainerBackgroundDisabled" @307:103-307:142
+              element VisualStateGroup ns=presentation @313:29-426:48
+                attr x:Name directive "ToggleStates" @313:47-313:68
+                property-element VisualStateGroup.Transitions ns=presentation @315:33-401:64
+                  element VisualTransition ns=presentation @316:37-336:56
+                    attr x:Name directive "DraggingToOnTransition" @316:55-316:86
+                    attr From property "Dragging" @317:41-317:56
+                    attr To property "On" @318:41-318:48
+                    attr GeneratedDuration property "0" @319:41-319:62
+                    element Storyboard ns=presentation @321:41-335:54
+                      element RepositionThemeAnimation ns=presentation @322:45-322:223
+                        attr TargetName property "SwitchKnob" @322:71-322:94
+                        attr FromHorizontalOffset property "{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.KnobCurrentToOnOffset}" @322:95-322:220
+                          markup Binding @322:117-322:219
+                            arg RelativeSource @322:141-322:173
+                              markup RelativeSource @322:141-322:173
+                                positional "TemplatedParent" @322:157-322:172
+                            arg Path "TemplateSettings.KnobCurrentToOnOffset" @322:180-322:218
+                      element ObjectAnimationUsingKeyFrames ns=presentation @323:45-325:77
+                        attr Storyboard.TargetName attached "SwitchKnobBounds" @323:76-323:116
+                        attr Storyboard.TargetProperty attached "Opacity" @323:117-323:152
+                        element DiscreteObjectKeyFrame ns=presentation @324:49-324:97
+                          attr KeyTime property "0" @324:73-324:84
+                          attr Value property "1" @324:85-324:94
+                      element ObjectAnimationUsingKeyFrames ns=presentation @326:45-328:77
+                        attr Storyboard.TargetName attached "OuterBorder" @326:76-326:111
+                        attr Storyboard.TargetProperty attached "Opacity" @326:112-326:147
+                        element DiscreteObjectKeyFrame ns=presentation @327:49-327:97
+                          attr KeyTime property "0" @327:73-327:84
+                          attr Value property "0" @327:85-327:94
+                      element ObjectAnimationUsingKeyFrames ns=presentation @329:45-331:77
+                        attr Storyboard.TargetName attached "SwitchKnobOn" @329:76-329:112
+                        attr Storyboard.TargetProperty attached "Opacity" @329:113-329:148
+                        element DiscreteObjectKeyFrame ns=presentation @330:49-330:97
+                          attr KeyTime property "0" @330:73-330:84
+                          attr Value property "1" @330:85-330:94
+                      element ObjectAnimationUsingKeyFrames ns=presentation @332:45-334:77
+                        attr Storyboard.TargetName attached "SwitchKnobOff" @332:76-332:113
+                        attr Storyboard.TargetProperty attached "Opacity" @332:114-332:149
+                        element DiscreteObjectKeyFrame ns=presentation @333:49-333:97
+                          attr KeyTime property "0" @333:73-333:84
+                          attr Value property "0" @333:85-333:94
+                  element VisualTransition ns=presentation @337:37-352:56
+                    attr x:Name directive "OnToDraggingTransition" @337:55-337:86
+                    attr From property "On" @338:41-338:50
+                    attr To property "Dragging" @339:41-339:54
+                    attr GeneratedDuration property "0" @340:41-340:62
+                    element Storyboard ns=presentation @341:41-351:54
+                      element ObjectAnimationUsingKeyFrames ns=presentation @342:45-344:77
+                        attr Storyboard.TargetName attached "SwitchKnobBounds" @342:76-342:116
+                        attr Storyboard.TargetProperty attached "Opacity" @342:117-342:152
+                        element DiscreteObjectKeyFrame ns=presentation @343:49-343:97
+                          attr KeyTime property "0" @343:73-343:84
+                          attr Value property "1" @343:85-343:94
+                      element ObjectAnimationUsingKeyFrames ns=presentation @345:45-347:77
+                        attr Storyboard.TargetName attached "SwitchKnobOn" @345:76-345:112
+                        attr Storyboard.TargetProperty attached "Opacity" @345:113-345:148
+                        element DiscreteObjectKeyFrame ns=presentation @346:49-346:97
+                          attr KeyTime property "0" @346:73-346:84
+                          attr Value property "1" @346:85-346:94
+                      element ObjectAnimationUsingKeyFrames ns=presentation @348:45-350:77
+                        attr Storyboard.TargetName attached "SwitchKnobOff" @348:76-348:113
+                        attr Storyboard.TargetProperty attached "Opacity" @348:114-348:149
+                        element DiscreteObjectKeyFrame ns=presentation @349:49-349:97
+                          attr KeyTime property "0" @349:73-349:84
+                          attr Value property "0" @349:85-349:94
+                  element VisualTransition ns=presentation @353:37-370:56
+                    attr x:Name directive "DraggingToOffTransition" @353:55-353:87
+                    attr From property "Dragging" @354:41-354:56
+                    attr To property "Off" @355:41-355:49
+                    attr GeneratedDuration property "0" @356:41-356:62
+                    element Storyboard ns=presentation @358:41-369:54
+                      element RepositionThemeAnimation ns=presentation @359:45-359:224
+                        attr TargetName property "SwitchKnob" @359:71-359:94
+                        attr FromHorizontalOffset property "{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.KnobCurrentToOffOffset}" @359:95-359:221
+                          markup Binding @359:117-359:220
+                            arg RelativeSource @359:141-359:173
+                              markup RelativeSource @359:141-359:173
+                                positional "TemplatedParent" @359:157-359:172
+                            arg Path "TemplateSettings.KnobCurrentToOffOffset" @359:180-359:219
+                      element ObjectAnimationUsingKeyFrames ns=presentation @360:45-362:77
+                        attr Storyboard.TargetName attached "SwitchKnobBounds" @360:76-360:116
+                        attr Storyboard.TargetProperty attached "Opacity" @360:117-360:152
+                        element DiscreteObjectKeyFrame ns=presentation @361:49-361:97
+                          attr KeyTime property "0" @361:73-361:84
+                          attr Value property "0" @361:85-361:94
+                      element ObjectAnimationUsingKeyFrames ns=presentation @363:45-365:77
+                        attr Storyboard.TargetName attached "SwitchKnobOn" @363:76-363:112
+                        attr Storyboard.TargetProperty attached "Opacity" @363:113-363:148
+                        element DiscreteObjectKeyFrame ns=presentation @364:49-364:97
+                          attr KeyTime property "0" @364:73-364:84
+                          attr Value property "0" @364:85-364:94
+                      element ObjectAnimationUsingKeyFrames ns=presentation @366:45-368:77
+                        attr Storyboard.TargetName attached "SwitchKnobOff" @366:76-366:113
+                        attr Storyboard.TargetProperty attached "Opacity" @366:114-366:149
+                        element DiscreteObjectKeyFrame ns=presentation @367:49-367:97
+                          attr KeyTime property "0" @367:73-367:84
+                          attr Value property "1" @367:85-367:94
+                  element VisualTransition ns=presentation @371:37-379:56
+                    attr x:Name directive "OnToOffTransition" @371:55-371:81
+                    attr From property "On" @372:41-372:50
+                    attr To property "Off" @373:41-373:49
+                    attr GeneratedDuration property "0" @374:41-374:62
+                    element Storyboard ns=presentation @376:41-378:54
+                      element RepositionThemeAnimation ns=presentation @377:45-377:219
+                        attr TargetName property "SwitchKnob" @377:71-377:94
+                        attr FromHorizontalOffset property "{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.KnobOnToOffOffset}" @377:95-377:216
+                          markup Binding @377:117-377:215
+                            arg RelativeSource @377:141-377:173
+                              markup RelativeSource @377:141-377:173
+                                positional "TemplatedParent" @377:157-377:172
+                            arg Path "TemplateSettings.KnobOnToOffOffset" @377:180-377:214
+                  element VisualTransition ns=presentation @380:37-400:56
+                    attr x:Name directive "OffToOnTransition" @380:55-380:81
+                    attr From property "Off" @381:41-381:51
+                    attr To property "On" @382:41-382:48
+                    attr GeneratedDuration property "0" @383:41-383:62
+                    element Storyboard ns=presentation @385:41-399:54
+                      element RepositionThemeAnimation ns=presentation @386:45-386:219
+                        attr TargetName property "SwitchKnob" @386:71-386:94
+                        attr FromHorizontalOffset property "{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.KnobOffToOnOffset}" @386:95-386:216
+                          markup Binding @386:117-386:215
+                            arg RelativeSource @386:141-386:173
+                              markup RelativeSource @386:141-386:173
+                                positional "TemplatedParent" @386:157-386:172
+                            arg Path "TemplateSettings.KnobOffToOnOffset" @386:180-386:214
+                      element ObjectAnimationUsingKeyFrames ns=presentation @387:45-389:77
+                        attr Storyboard.TargetName attached "SwitchKnobBounds" @387:76-387:116
+                        attr Storyboard.TargetProperty attached "Opacity" @387:117-387:152
+                        element DiscreteObjectKeyFrame ns=presentation @388:49-388:97
+                          attr KeyTime property "0" @388:73-388:84
+                          attr Value property "1" @388:85-388:94
+                      element ObjectAnimationUsingKeyFrames ns=presentation @390:45-392:77
+                        attr Storyboard.TargetName attached "OuterBorder" @390:76-390:111
+                        attr Storyboard.TargetProperty attached "Opacity" @390:112-390:147
+                        element DiscreteObjectKeyFrame ns=presentation @391:49-391:97
+                          attr KeyTime property "0" @391:73-391:84
+                          attr Value property "0" @391:85-391:94
+                      element ObjectAnimationUsingKeyFrames ns=presentation @393:45-395:77
+                        attr Storyboard.TargetName attached "SwitchKnobOn" @393:76-393:112
+                        attr Storyboard.TargetProperty attached "Opacity" @393:113-393:148
+                        element DiscreteObjectKeyFrame ns=presentation @394:49-394:97
+                          attr KeyTime property "0" @394:73-394:84
+                          attr Value property "1" @394:85-394:94
+                      element ObjectAnimationUsingKeyFrames ns=presentation @396:45-398:77
+                        attr Storyboard.TargetName attached "SwitchKnobOff" @396:76-396:113
+                        attr Storyboard.TargetProperty attached "Opacity" @396:114-396:149
+                        element DiscreteObjectKeyFrame ns=presentation @397:49-397:97
+                          attr KeyTime property "0" @397:73-397:84
+                          attr Value property "0" @397:85-397:94
+                element VisualState ns=presentation @402:33-402:66
+                  attr x:Name directive "Dragging" @402:46-402:63
+                element VisualState ns=presentation @403:33-403:61
+                  attr x:Name directive "Off" @403:46-403:58
+                element VisualState ns=presentation @404:33-424:47
+                  attr x:Name directive "On" @404:46-404:57
+                  element Storyboard ns=presentation @406:37-423:50
+                    element DoubleAnimation ns=presentation @407:41-410:60
+                      attr Storyboard.TargetName attached "KnobTranslateTransform" @407:58-407:104
+                      attr Storyboard.TargetProperty attached "X" @408:45-408:74
+                      attr To property "20" @409:45-409:52
+                      attr Duration property "0" @410:45-410:57
+                    element ObjectAnimationUsingKeyFrames ns=presentation @411:41-413:73
+                      attr Storyboard.TargetName attached "SwitchKnobBounds" @411:72-411:112
+                      attr Storyboard.TargetProperty attached "Opacity" @411:113-411:148
+                      element DiscreteObjectKeyFrame ns=presentation @412:45-412:93
+                        attr KeyTime property "0" @412:69-412:80
+                        attr Value property "1" @412:81-412:90
+                    element ObjectAnimationUsingKeyFrames ns=presentation @414:41-416:73
+                      attr Storyboard.TargetName attached "OuterBorder" @414:72-414:107
+                      attr Storyboard.TargetProperty attached "Opacity" @414:108-414:143
+                      element DiscreteObjectKeyFrame ns=presentation @415:45-415:93
+                        attr KeyTime property "0" @415:69-415:80
+                        attr Value property "0" @415:81-415:90
+                    element ObjectAnimationUsingKeyFrames ns=presentation @417:41-419:73
+                      attr Storyboard.TargetName attached "SwitchKnobOn" @417:72-417:108
+                      attr Storyboard.TargetProperty attached "Opacity" @417:109-417:144
+                      element DiscreteObjectKeyFrame ns=presentation @418:45-418:93
+                        attr KeyTime property "0" @418:69-418:80
+                        attr Value property "1" @418:81-418:90
+                    element ObjectAnimationUsingKeyFrames ns=presentation @420:41-422:73
+                      attr Storyboard.TargetName attached "SwitchKnobOff" @420:72-420:109
+                      attr Storyboard.TargetProperty attached "Opacity" @420:110-420:145
+                      element DiscreteObjectKeyFrame ns=presentation @421:45-421:93
+                        attr KeyTime property "0" @421:69-421:80
+                        attr Value property "0" @421:81-421:90
+              element VisualStateGroup ns=presentation @427:29-461:48
+                attr x:Name directive "ContentStates" @427:47-427:69
+                element VisualState ns=presentation @428:33-443:47
+                  attr x:Name directive "OffContent" @428:46-428:65
+                  element Storyboard ns=presentation @430:37-442:50
+                    element DoubleAnimation ns=presentation @431:41-434:60
+                      attr Storyboard.TargetName attached "OffContentPresenter" @431:58-431:101
+                      attr Storyboard.TargetProperty attached "Opacity" @432:45-432:80
+                      attr To property "1" @433:45-433:51
+                      attr Duration property "0" @434:45-434:57
+                    element ObjectAnimationUsingKeyFrames ns=presentation @435:41-441:73
+                      attr Storyboard.TargetProperty attached "IsHitTestVisible" @435:72-435:116
+                      attr Storyboard.TargetName attached "OffContentPresenter" @435:117-435:160
+                      element DiscreteObjectKeyFrame ns=presentation @436:45-440:70
+                        attr KeyTime property "0" @436:69-436:80
+                        property-element DiscreteObjectKeyFrame.Value ns=presentation @437:49-439:80
+                          element x:Boolean ns=x @438:53-438:80
+                            text "True" @438:64-438:68
+                element VisualState ns=presentation @444:33-459:47
+                  attr x:Name directive "OnContent" @444:46-444:64
+                  element Storyboard ns=presentation @446:37-458:50
+                    element DoubleAnimation ns=presentation @447:41-450:60
+                      attr Storyboard.TargetName attached "OnContentPresenter" @447:58-447:100
+                      attr Storyboard.TargetProperty attached "Opacity" @448:45-448:80
+                      attr To property "1" @449:45-449:51
+                      attr Duration property "0" @450:45-450:57
+                    element ObjectAnimationUsingKeyFrames ns=presentation @451:41-457:73
+                      attr Storyboard.TargetProperty attached "IsHitTestVisible" @451:72-451:116
+                      attr Storyboard.TargetName attached "OnContentPresenter" @451:117-451:159
+                      element DiscreteObjectKeyFrame ns=presentation @452:45-456:70
+                        attr KeyTime property "0" @452:69-452:80
+                        property-element DiscreteObjectKeyFrame.Value ns=presentation @453:49-455:80
+                          element x:Boolean ns=x @454:53-454:80
+                            text "True" @454:64-454:68
+            property-element Grid.RowDefinitions ns=presentation @465:25-468:47
+              element RowDefinition ns=presentation @466:29-466:60
+                attr Height property "Auto" @466:44-466:57
+              element RowDefinition ns=presentation @467:29-467:57
+                attr Height property "*" @467:44-467:54
+            element ContentPresenter ns=presentation @470:25-481:76
+              attr x:Name directive "HeaderContentPresenter" @470:43-470:74
+              attr x:DeferLoadStrategy directive "Lazy" @471:29-471:55
+              attr Grid.Row attached "0" @472:29-472:41
+              attr Content property "{TemplateBinding Header}" @473:29-473:63
+                markup TemplateBinding @473:38-473:62
+                  positional "Header" @473:55-473:61
+              attr ContentTemplate property "{TemplateBinding HeaderTemplate}" @474:29-474:79
+                markup TemplateBinding @474:46-474:78
+                  positional "HeaderTemplate" @474:63-474:77
+              attr Foreground property "{ThemeResource ToggleSwitchHeaderForeground}" @475:29-475:86
+                markup ThemeResource @475:41-475:85
+                  positional "ToggleSwitchHeaderForeground" @475:56-475:84
+              attr IsHitTestVisible property "False" @476:29-476:53
+              attr Margin property "{ThemeResource ToggleSwitchTopHeaderMargin}" @477:29-477:81
+                markup ThemeResource @477:37-477:80
+                  positional "ToggleSwitchTopHeaderMargin" @477:52-477:79
+              attr TextWrapping property "Wrap" @478:29-478:48
+              attr VerticalAlignment property "Top" @479:29-479:52
+              attr Visibility property "Collapsed" @480:29-480:51
+              attr AutomationProperties.AccessibilityView attached "Raw" @481:29-481:73
+            element Grid ns=presentation @482:25-575:32
+              attr Grid.Row attached "1" @483:29-483:41
+              attr MinWidth property "{StaticResource ToggleSwitchThemeMinWidth}" @484:29-484:82
+                markup StaticResource @484:39-484:81
+                  positional "ToggleSwitchThemeMinWidth" @484:55-484:80
+              attr HorizontalAlignment property "Left" @485:29-485:55
+              attr VerticalAlignment property "Top" @486:29-486:52
+              property-element Grid.RowDefinitions ns=presentation @488:29-492:51
+                element RowDefinition ns=presentation @489:33-489:104
+                  attr Height property "{ThemeResource ToggleSwitchPreContentMargin}" @489:48-489:101
+                    markup ThemeResource @489:56-489:100
+                      positional "ToggleSwitchPreContentMargin" @489:71-489:99
+                element RowDefinition ns=presentation @490:33-490:64
+                  attr Height property "Auto" @490:48-490:61
+                element RowDefinition ns=presentation @491:33-491:105
+                  attr Height property "{ThemeResource ToggleSwitchPostContentMargin}" @491:48-491:102
+                    markup ThemeResource @491:56-491:101
+                      positional "ToggleSwitchPostContentMargin" @491:71-491:100
+              property-element Grid.ColumnDefinitions ns=presentation @494:29-498:54
+                element ColumnDefinition ns=presentation @495:33-495:66
+                  attr Width property "Auto" @495:51-495:63
+                element ColumnDefinition ns=presentation @496:33-496:78
+                  attr Width property "12" @496:51-496:61
+                  attr MaxWidth property "12" @496:62-496:75
+                element ColumnDefinition ns=presentation @497:33-497:66
+                  attr Width property "Auto" @497:51-497:63
+              element Grid ns=presentation @499:29-504:96
+                attr x:Name directive "SwitchAreaGrid" @499:35-499:58
+                attr Grid.RowSpan attached "3" @500:33-500:49
+                attr Grid.ColumnSpan attached "3" @501:33-501:52
+                attr Margin property "0,5" @502:33-502:45
+                attr Control.IsTemplateFocusTarget attached "True" @503:33-503:69
+                attr Background property "{ThemeResource ToggleSwitchContainerBackground}" @504:33-504:93
+                  markup ThemeResource @504:45-504:92
+                    positional "ToggleSwitchContainerBackground" @504:60-504:91
+              element ContentPresenter ns=presentation @505:29-515:80
+                attr x:Name directive "OffContentPresenter" @505:47-505:75
+                attr Grid.RowSpan attached "3" @506:33-506:49
+                attr Grid.Column attached "2" @507:33-507:48
+                attr Opacity property "0" @508:33-508:44
+                attr Foreground property "{TemplateBinding Foreground}" @509:33-509:74
+                  markup TemplateBinding @509:45-509:73
+                    positional "Foreground" @509:62-509:72
+                attr IsHitTestVisible property "False" @510:33-510:57
+                attr Content property "{TemplateBinding OffContent}" @511:33-511:71
+                  markup TemplateBinding @511:42-511:70
+                    positional "OffContent" @511:59-511:69
+                attr ContentTemplate property "{TemplateBinding OffContentTemplate}" @512:33-512:87
+                  markup TemplateBinding @512:50-512:86
+                    positional "OffContentTemplate" @512:67-512:85
+                attr HorizontalAlignment property "{TemplateBinding HorizontalContentAlignment}" @513:33-513:99
+                  markup TemplateBinding @513:54-513:98
+                    positional "HorizontalContentAlignment" @513:71-513:97
+                attr VerticalAlignment property "{TemplateBinding VerticalContentAlignment}" @514:33-514:95
+                  markup TemplateBinding @514:52-514:94
+                    positional "VerticalContentAlignment" @514:69-514:93
+                attr AutomationProperties.AccessibilityView attached "Raw" @515:33-515:77
+              element ContentPresenter ns=presentation @516:29-526:80
+                attr x:Name directive "OnContentPresenter" @516:47-516:74
+                attr Grid.RowSpan attached "3" @517:33-517:49
+                attr Grid.Column attached "2" @518:33-518:48
+                attr Opacity property "0" @519:33-519:44
+                attr Foreground property "{TemplateBinding Foreground}" @520:33-520:74
+                  markup TemplateBinding @520:45-520:73
+                    positional "Foreground" @520:62-520:72
+                attr IsHitTestVisible property "False" @521:33-521:57
+                attr Content property "{TemplateBinding OnContent}" @522:33-522:70
+                  markup TemplateBinding @522:42-522:69
+                    positional "OnContent" @522:59-522:68
+                attr ContentTemplate property "{TemplateBinding OnContentTemplate}" @523:33-523:86
+                  markup TemplateBinding @523:50-523:85
+                    positional "OnContentTemplate" @523:67-523:84
+                attr HorizontalAlignment property "{TemplateBinding HorizontalContentAlignment}" @524:33-524:99
+                  markup TemplateBinding @524:54-524:98
+                    positional "HorizontalContentAlignment" @524:71-524:97
+                attr VerticalAlignment property "{TemplateBinding VerticalContentAlignment}" @525:33-525:95
+                  markup TemplateBinding @525:52-525:94
+                    positional "VerticalContentAlignment" @525:69-525:93
+                attr AutomationProperties.AccessibilityView attached "Raw" @526:33-526:77
+              element Rectangle ns=presentation @527:29-535:108
+                attr x:Name directive "OuterBorder" @527:40-527:60
+                attr Grid.Row attached "1" @528:33-528:45
+                attr Height property "20" @529:33-529:44
+                attr Width property "40" @530:33-530:43
+                attr RadiusX property "10" @531:33-531:45
+                attr RadiusY property "10" @532:33-532:45
+                attr Fill property "{ThemeResource ToggleSwitchFillOff}" @533:33-533:75
+                  markup ThemeResource @533:39-533:74
+                    positional "ToggleSwitchFillOff" @533:54-533:73
+                attr Stroke property "{ThemeResource ToggleSwitchStrokeOff}" @534:33-534:79
+                  markup ThemeResource @534:41-534:78
+                    positional "ToggleSwitchStrokeOff" @534:56-534:77
+                attr StrokeThickness property "{ThemeResource ToggleSwitchOuterBorderStrokeThickness}" @535:33-535:105
+                  markup ThemeResource @535:50-535:104
+                    positional "ToggleSwitchOuterBorderStrokeThickness" @535:65-535:103
+              element Rectangle ns=presentation @536:29-545:47
+                attr x:Name directive "SwitchKnobBounds" @536:40-536:65
+                attr Grid.Row attached "1" @537:33-537:45
+                attr Height property "20" @538:33-538:44
+                attr Width property "40" @539:33-539:43
+                attr RadiusX property "10" @540:33-540:45
+                attr RadiusY property "10" @541:33-541:45
+                attr Fill property "{ThemeResource ToggleSwitchFillOn}" @542:33-542:74
+                  markup ThemeResource @542:39-542:73
+                    positional "ToggleSwitchFillOn" @542:54-542:72
+                attr Stroke property "{ThemeResource ToggleSwitchStrokeOn}" @543:33-543:78
+                  markup ThemeResource @543:41-543:77
+                    positional "ToggleSwitchStrokeOn" @543:56-543:76
+                attr StrokeThickness property "{ThemeResource ToggleSwitchOnStrokeThickness}" @544:33-544:96
+                  markup ThemeResource @544:50-544:95
+                    positional "ToggleSwitchOnStrokeThickness" @544:65-544:94
+                attr Opacity property "0" @545:33-545:44
+              element Grid ns=presentation @546:29-563:36
+                attr x:Name directive "SwitchKnob" @546:35-546:54
+                attr Grid.Row attached "1" @547:33-547:45
+                attr HorizontalAlignment property "Left" @548:33-548:59
+                attr Width property "20" @549:33-549:43
+                attr Height property "20" @550:33-550:44
+                element Ellipse ns=presentation @551:33-555:51
+                  attr x:Name directive "SwitchKnobOn" @551:42-551:63
+                  attr Fill property "{ThemeResource ToggleSwitchKnobFillOn}" @552:37-552:82
+                    markup ThemeResource @552:43-552:81
+                      positional "ToggleSwitchKnobFillOn" @552:58-552:80
+                  attr Width property "10" @553:37-553:47
+                  attr Height property "10" @554:37-554:48
+                  attr Opacity property "0" @555:37-555:48
+                element Ellipse ns=presentation @556:33-559:51
+                  attr x:Name directive "SwitchKnobOff" @556:42-556:64
+                  attr Fill property "{ThemeResource ToggleSwitchKnobFillOff}" @557:37-557:83
+                    markup ThemeResource @557:43-557:82
+                      positional "ToggleSwitchKnobFillOff" @557:58-557:81
+                  attr Width property "10" @558:37-558:47
+                  attr Height property "10" @559:37-559:48
+                property-element Grid.RenderTransform ns=presentation @560:33-562:56
+                  element TranslateTransform ns=presentation @561:37-561:91
+                    attr x:Name directive "KnobTranslateTransform" @561:57-561:88
+              element Thumb ns=presentation @564:29-573:37
+                attr x:Name directive "SwitchThumb" @564:36-564:56
+                attr AutomationProperties.AccessibilityView attached "Raw" @565:33-565:77
+                attr Grid.RowSpan attached "3" @566:33-566:49
+                attr Grid.ColumnSpan attached "3" @567:33-567:52
+                property-element Thumb.Template ns=presentation @568:33-572:50
+                  element ControlTemplate ns=presentation @569:37-571:55
+                    attr TargetType property "Thumb" @569:54-569:72
+                    element Rectangle ns=presentation @570:41-570:73
+                      attr Fill property "Transparent" @570:52-570:70

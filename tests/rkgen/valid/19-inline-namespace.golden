@@ -1,0 +1,2 @@
+struct demo::v1::Versioned @4
+  field public 'int' revision get= set= readonly=0 transient=0 @6

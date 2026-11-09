@@ -1,0 +1,1 @@
+2:4 Test::Plain has no XAML view in this build; custom controls are UserControls with x:Class="Test.Plain"

@@ -1,0 +1,12 @@
+class rkgen_test::Player @14
+  base Entity
+  field public 'int' hp get= set= readonly=0 transient=0 @17
+  field public 'int' mana get=GetMana set= readonly=0 transient=0 @18
+  field public 'int' shield get=GetShield set=SetShield readonly=0 transient=0 @19
+  field public 'const char*' name get= set=SetName readonly=0 transient=0 @20
+  field public 'Vec3' position get= set= readonly=1 transient=0 @21
+  field public 'void*' runtimeOnly get= set= readonly=0 transient=1 @22
+  ctor public '' Player('int' id) @24
+  method public 'void' SetHp('int' value) @26
+  method public 'int' GetHp() const noexcept @27
+  method public static 'Player*' SpawnDefault() @28

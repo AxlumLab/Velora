@@ -1,0 +1,25 @@
+<Page x:Class="VxbfTest.Bound"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:VxbfTest">
+    <Page.Resources>
+        <local:Shout x:Key="Shout"/>
+        <ControlTemplate x:Key="Labelled" TargetType="Button">
+            <Border x:Name="Chrome">
+                <TextBlock x:Name="Caption"
+                           Text="{Binding Content, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource Shout}}"/>
+            </Border>
+        </ControlTemplate>
+    </Page.Resources>
+    <StackPanel>
+        <!-- ElementName may name an element declared later in the same scope. -->
+        <TextBox x:Name="Mirror" Text="{Binding Text, ElementName=Source, Converter={StaticResource Shout}, ConverterParameter=!}"/>
+        <TextBox x:Name="Source" Text="hello"/>
+        <Slider x:Name="Volume" Maximum="100" Value="30"/>
+        <Slider x:Name="Twin" Maximum="50" Value="{Binding Value, ElementName=Volume, Mode=TwoWay}"/>
+        <TextBlock x:Name="Self" FontSize="18"
+                   Text="{Binding FontSize, RelativeSource={RelativeSource Self}, Converter={StaticResource Shout}}"/>
+        <TextBlock x:Name="Fallback" Text="{Binding Missing.Path, FallbackValue=n/a}"/>
+        <Button x:Name="Labelled" Template="{StaticResource Labelled}" Content="go"/>
+    </StackPanel>
+</Page>

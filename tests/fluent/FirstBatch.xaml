@@ -1,0 +1,34 @@
+<Page x:Class="FluentTest.FirstBatch"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="ms-appx-framework:///Themes/WinUIButton.xaml"/>
+                <ResourceDictionary Source="ms-appx-framework:///Themes/WinUITextBox.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Page.Resources>
+    <!-- R11.3 first batch: every control through objects, properties, resources, templates, input. -->
+    <Grid x:Name="Layout" RowSpacing="4">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="80"/>
+        </Grid.RowDefinitions>
+        <StackPanel x:Name="Row0" Orientation="Horizontal" Spacing="8">
+            <TextBlock x:Name="Caption" Text="Name"/>
+            <TextBox x:Name="Input" Width="160" TextChanged="OnTextChanged"/>
+            <CheckBox x:Name="Agree" Content="Agree" Checked="OnChecked"/>
+            <Button x:Name="Submit" Content="Submit" Click="OnClick"/>
+        </StackPanel>
+        <Border x:Name="Card" Grid.Row="1" Height="30" Background="{ThemeResource SystemControlBackgroundBaseLowBrush}"/>
+        <ScrollViewer x:Name="Scroller" Grid.Row="2" ViewChanged="OnViewChanged">
+            <StackPanel>
+                <Border Height="100"/>
+                <Border Height="100"/>
+                <Border Height="100"/>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>

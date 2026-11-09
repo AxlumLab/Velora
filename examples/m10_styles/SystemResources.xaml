@@ -1,0 +1,65 @@
+<!-- Platform resources the WinUI 2.3 dictionaries refer to but do not define (the OS generic.xaml
+     provides them on Windows). Hand-written stand-ins with the documented Light/Dark values of the
+     XAML theme resources (SystemBase*/SystemAlt*/SystemChrome* colors and the SystemControl* brushes
+     built from them). "Default" is the dark theme, as in WinUI. -->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <ResourceDictionary.ThemeDictionaries>
+    <ResourceDictionary x:Key="Default">
+      <Color x:Key="SystemBaseHighColor">#FFFFFFFF</Color>
+      <Color x:Key="SystemBaseMediumHighColor">#CCFFFFFF</Color>
+      <Color x:Key="SystemBaseMediumColor">#99FFFFFF</Color>
+      <Color x:Key="SystemBaseMediumLowColor">#66FFFFFF</Color>
+      <Color x:Key="SystemBaseLowColor">#33FFFFFF</Color>
+      <Color x:Key="SystemAltHighColor">#FF000000</Color>
+      <Color x:Key="SystemAltMediumLowColor">#66000000</Color>
+      <Color x:Key="SystemChromeMediumLowColor">#FF2B2B2B</Color>
+    </ResourceDictionary>
+    <ResourceDictionary x:Key="Light">
+      <Color x:Key="SystemBaseHighColor">#FF000000</Color>
+      <Color x:Key="SystemBaseMediumHighColor">#CC000000</Color>
+      <Color x:Key="SystemBaseMediumColor">#99000000</Color>
+      <Color x:Key="SystemBaseMediumLowColor">#66000000</Color>
+      <Color x:Key="SystemBaseLowColor">#33000000</Color>
+      <Color x:Key="SystemAltHighColor">#FFFFFFFF</Color>
+      <Color x:Key="SystemAltMediumLowColor">#66FFFFFF</Color>
+      <Color x:Key="SystemChromeMediumLowColor">#FFF2F2F2</Color>
+    </ResourceDictionary>
+  </ResourceDictionary.ThemeDictionaries>
+
+  <Color x:Key="SystemAccentColor">#FF0078D7</Color>
+  <Color x:Key="SystemAccentColorLight1">#FF429CE3</Color>
+  <Color x:Key="SystemAccentColorDark1">#FF005A9E</Color>
+  <SolidColorBrush x:Key="SystemControlBackgroundAccentBrush" Color="{ThemeResource SystemAccentColor}"/>
+  <SolidColorBrush x:Key="SystemControlForegroundAccentBrush" Color="{ThemeResource SystemAccentColor}"/>
+  <SolidColorBrush x:Key="SystemControlBackgroundChromeWhiteBrush" Color="#FFFFFFFF"/>
+  <SolidColorBrush x:Key="SystemControlHighlightBaseMediumLowBrush" Color="{ThemeResource SystemBaseMediumLowColor}"/>
+  <SolidColorBrush x:Key="SystemControlBackgroundBaseLowBrush" Color="{ThemeResource SystemBaseLowColor}"/>
+  <SolidColorBrush x:Key="SystemControlBackgroundBaseMediumLowBrush" Color="{ThemeResource SystemBaseMediumLowColor}"/>
+  <SolidColorBrush x:Key="SystemControlBackgroundAltHighBrush" Color="{ThemeResource SystemAltHighColor}"/>
+  <SolidColorBrush x:Key="SystemControlBackgroundAltMediumLowBrush" Color="{ThemeResource SystemAltMediumLowColor}"/>
+  <SolidColorBrush x:Key="SystemControlBackgroundChromeMediumLowBrush" Color="{ThemeResource SystemChromeMediumLowColor}"/>
+  <SolidColorBrush x:Key="SystemControlForegroundBaseHighBrush" Color="{ThemeResource SystemBaseHighColor}"/>
+  <SolidColorBrush x:Key="SystemControlForegroundBaseMediumBrush" Color="{ThemeResource SystemBaseMediumColor}"/>
+  <SolidColorBrush x:Key="SystemControlHighlightBaseHighBrush" Color="{ThemeResource SystemBaseHighColor}"/>
+  <SolidColorBrush x:Key="SystemControlHighlightBaseMediumHighBrush" Color="{ThemeResource SystemBaseMediumHighColor}"/>
+  <SolidColorBrush x:Key="SystemControlDisabledBaseMediumLowBrush" Color="{ThemeResource SystemBaseMediumLowColor}"/>
+  <SolidColorBrush x:Key="SystemControlForegroundTransparentBrush" Color="Transparent"/>
+  <SolidColorBrush x:Key="SystemControlHighlightTransparentBrush" Color="Transparent"/>
+  <SolidColorBrush x:Key="SystemControlDisabledTransparentBrush" Color="Transparent"/>
+  <SolidColorBrush x:Key="SystemControlHighlightAccentBrush" Color="{ThemeResource SystemAccentColor}"/>
+  <SolidColorBrush x:Key="SystemControlHighlightListAccentHighBrush" Color="{ThemeResource SystemAccentColor}" Opacity="0.9"/>
+  <SolidColorBrush x:Key="SystemControlHighlightBaseMediumBrush" Color="{ThemeResource SystemBaseMediumColor}"/>
+  <SolidColorBrush x:Key="SystemControlDisabledBaseLowBrush" Color="{ThemeResource SystemBaseLowColor}"/>
+  <SolidColorBrush x:Key="SystemControlPageBackgroundBaseLowBrush" Color="{ThemeResource SystemBaseLowColor}"/>
+  <SolidColorBrush x:Key="SystemControlHighlightAltChromeWhiteBrush" Color="#FFFFFFFF"/>
+  <SolidColorBrush x:Key="SystemControlHighlightChromeWhiteBrush" Color="#FFFFFFFF"/>
+  <SolidColorBrush x:Key="SystemControlTransparentBrush" Color="Transparent"/>
+  <x:Double x:Key="ControlContentThemeFontSize">14</x:Double>
+  <x:Double x:Key="TextControlThemeMinHeight">32</x:Double>
+  <x:Double x:Key="TextControlThemeMinWidth">64</x:Double>
+  <Thickness x:Key="TextControlThemePadding">10,5,6,6</Thickness>
+  <Thickness x:Key="TextControlBorderThemeThickness">1</Thickness>
+  <StaticResource x:Key="TextControlForeground" ResourceKey="SystemControlForegroundBaseHighBrush"/>
+  <StaticResource x:Key="TextControlBackground" ResourceKey="SystemControlBackgroundAltHighBrush"/>
+</ResourceDictionary>

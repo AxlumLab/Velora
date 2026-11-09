@@ -1,0 +1,29 @@
+{
+  "upstream": "https://github.com/microsoft/microsoft-ui-xaml",
+  "tag": "v2.3.191129002",
+  "commit": "2237b09d9ba6052414ddccf3d61316de20564303",
+  "license": "MIT",
+  "status": "adapted excerpts; not full original; styles may omit unsupported UWP XAML features",
+  "files": {
+    "SystemResources.xaml": {
+      "sha256": "6d457e183dc4e9b7b1379a8389484bace37d5a5503860a2cd4c187b1968a842f",
+      "upstream_path": null,
+      "kind": "velora-compatibility-shim"
+    },
+    "WinUICornerRadius.xaml": {
+      "sha256": "5b3b75bee2962ad451e65c42409b91f700ac2bda9cf7f18cfc1cfbd1f0fd12a1",
+      "upstream_path": "dev/CommonStyles/CornerRadius_themeresources.xaml",
+      "kind": "adapted-winui"
+    },
+    "WinUIButton.xaml": {
+      "sha256": "2022dcfabb4415f80beb54d64c75341cab0a8c17076180efc0d71644400dc0a9",
+      "upstream_path": "dev/CommonStyles/Button_themeresources.xaml",
+      "kind": "adapted-winui"
+    },
+    "WinUITextBox.xaml": {
+      "sha256": "a6686f8d526fe76e11308793985935bc02357097b0220adc3ae6c20f9fd205d8",
+      "upstream_path": "dev/CommonStyles/TextBox_themeresources.xaml",
+      "kind": "adapted-winui"
+    }
+  }
+}

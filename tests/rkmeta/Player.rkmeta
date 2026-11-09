@@ -1,0 +1,13 @@
+rkmeta	5
+type	15560448677105583842	rkgen_test::Player	class	14	0
+base	Entity
+field	6209259126353418539	hp	rkgen_test::Player::hp	public	0	17	int			0	0
+field	16887476426060462508	mana	rkgen_test::Player::mana	public	0	18	int	GetMana		0	0
+field	17560480988214758690	shield	rkgen_test::Player::shield	public	0	19	int	GetShield	SetShield	0	0
+field	7998116984934214848	name	rkgen_test::Player::name	public	0	20	const char*		SetName	0	0
+field	3954254219323340382	position	rkgen_test::Player::position	public	0	21	Vec3			1	0
+field	15160516336961336910	runtimeOnly	rkgen_test::Player::runtimeOnly	public	0	22	void*			0	1
+method	17114248147427809548	Player	rkgen_test::Player::Player	public	0	implicit	24	Player(int)
+method	14202233445702220269	SetHp	rkgen_test::Player::SetHp	public	0	none	26	void SetHp(int)
+method	14520027939371928472	GetHp	rkgen_test::Player::GetHp	public	0	none	27	int GetHp() const noexcept
+method	17164045161679707567	SpawnDefault	rkgen_test::Player::SpawnDefault	public	1	none	28	Player* SpawnDefault()

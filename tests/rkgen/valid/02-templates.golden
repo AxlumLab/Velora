@@ -1,0 +1,13 @@
+class demo::containers::Inventory @3
+  base Base<int, Vec<float>>
+  base virtual Observer
+  field public 'std::vector<int>' ids get= set= readonly=0 transient=0 @6
+  field public 'std::map<std::string, std::vector<Item*>>' byName get= set= readonly=0 transient=0 @7
+  field public 'const std::unordered_map<int, float>&' weights get= set= readonly=0 transient=0 @8
+  method public 'std::vector<std::string>' Names() const @10
+  method public 'void' Merge('const std::map<int, std::vector<int>>&' other, 'std::size_t' limit) @11
+  method public 'std::pair<int, float>' Best('std::span<const Item>' items) @12
+struct demo::containers::Pair @15
+  base Base<int>
+  field public 'std::array<int, 4>' slots get= set= readonly=0 transient=0 @17
+  field public 'std::optional<std::string>' label get= set= readonly=0 transient=0 @18

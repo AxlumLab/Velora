@@ -1,0 +1,36 @@
+<Page x:Class="Demo.MainPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:Demo"
+      Background="{StaticResource PageBrush}">
+  <Page.Resources>
+    <SolidColorBrush x:Key="AccentColor" Color="#FF0078D4"/>
+    <SolidColorBrush x:Key="Accent" Color="{StaticResource AccentColor}"/>
+    <SolidColorBrush x:Key="PageBrush" Color="#FFF3F3F3"/>
+    <x:Double x:Key="TitleSize">28</x:Double>
+    <Thickness x:Key="PagePadding">24</Thickness>
+  </Page.Resources>
+  <Grid Margin="{StaticResource PagePadding}" RowSpacing="16">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+    <StackPanel Orientation="Horizontal" Spacing="12">
+      <TextBlock Text="{x:Bind Title}" FontSize="{StaticResource TitleSize}"/>
+      <local:Badge x:Name="NewBadge" Label="New" VerticalAlignment="Center"/>
+    </StackPanel>
+    <StackPanel Grid.Row="1" Spacing="10" Width="360" HorizontalAlignment="Left">
+      <TextBlock x:Name="GreetingText" Text="{x:Bind ViewModel.Greeting, Mode=OneWay}" FontSize="18"/>
+      <TextBox x:Name="NameBox" PlaceholderText="Your name" Text="{x:Bind ViewModel.UserName, Mode=TwoWay}"/>
+      <StackPanel Orientation="Horizontal" Spacing="12">
+        <Button x:Name="SaveButton" Content="Save" Click="OnSave" Background="{StaticResource Accent}"
+                BorderBrush="{StaticResource Accent}" Foreground="White"/>
+        <TextBlock x:Name="StatusText" Text="{x:Bind ViewModel.Status, Mode=OneWay}" VerticalAlignment="Center"/>
+      </StackPanel>
+    </StackPanel>
+    <Border Grid.Row="2" Background="White" BorderBrush="#FFE0E0E0" BorderThickness="1" CornerRadius="8" Padding="16">
+      <TextBlock>Generated from MainPage.xaml by velorac; no XML is parsed at runtime.</TextBlock>
+    </Border>
+  </Grid>
+</Page>

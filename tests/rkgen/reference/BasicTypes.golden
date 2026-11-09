@@ -1,0 +1,9 @@
+enum rkgen_test::Color @12
+  underlying 'u8' class=1
+  value Red = 0 raw=''
+  value Green = 2 raw='2'
+  value Blue = 3 raw=''
+struct rkgen_test::Vec3 @19
+  field public 'float' x get= set= readonly=0 transient=0 @21
+  field public 'float' y get= set= readonly=0 transient=0 @22
+  field public 'float' z get= set= readonly=0 transient=0 @23

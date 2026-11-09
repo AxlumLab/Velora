@@ -1,0 +1,11 @@
+struct demo::Vec2 @5
+  field public 'float' x get= set= readonly=0 transient=0 @7
+  field public 'float' y get= set= readonly=0 transient=0 @8
+class demo::Counter @12
+  field public 'int' count get= set= readonly=0 transient=0 @15
+  field public 'int' limit get=GetLimit set= readonly=0 transient=0 @16
+  field public 'const char*' name get=GetName set=SetName readonly=0 transient=0 @17
+  ctor public '' Counter('int' start) @19
+  method public 'void' Reset() @21
+  method public 'int' Value() const noexcept @22
+  method public static 'Counter*' Make() @23

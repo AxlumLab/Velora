@@ -1,0 +1,32 @@
+127:10 conditional XAML namespaces are not supported by velorac
+131:10 conditional XAML namespaces are not supported by velorac
+132:10 conditional XAML namespaces are not supported by velorac
+135:27 Setter: 'Button' has no property 'FontFamily' in the Velora runtime
+136:27 Setter: 'Button' has no property 'FontWeight' in the Velora runtime
+138:27 Setter: 'Button' has no property 'UseSystemFocusVisuals' in the Velora runtime
+139:27 Setter: 'Button' has no property 'FocusVisualMargin' in the Velora runtime
+140:10 conditional XAML namespaces are not supported by velorac
+147:25 conditional XAML namespaces are not supported by velorac
+151:25 'ContentPresenter' has no property or event 'ContentTemplate'
+152:25 'ContentPresenter' has no property or event 'ContentTransitions'
+153:25 conditional XAML namespaces are not supported by velorac
+154:25 conditional XAML namespaces are not supported by velorac
+156:25 'ContentPresenter' has no property or event 'HorizontalContentAlignment'
+157:25 'ContentPresenter' has no property or event 'VerticalContentAlignment'
+158:25 'ContentPresenter' has no property or event 'AutomationProperties.AccessibilityView'
+163:42 'PointerUpThemeAnimation' (a theme animation) is not supported by the Velora runtime
+177:42 'PointerUpThemeAnimation' (a theme animation) is not supported by the Velora runtime
+191:42 'PointerDownThemeAnimation' (a theme animation) is not supported by the Velora runtime
+218:10 conditional XAML namespaces are not supported by velorac
+220:10 conditional XAML namespaces are not supported by velorac
+227:25 conditional XAML namespaces are not supported by velorac
+231:25 'ContentPresenter' has no property or event 'ContentTemplate'
+232:25 'ContentPresenter' has no property or event 'ContentTransitions'
+233:25 conditional XAML namespaces are not supported by velorac
+234:25 conditional XAML namespaces are not supported by velorac
+236:25 'ContentPresenter' has no property or event 'HorizontalContentAlignment'
+237:25 'ContentPresenter' has no property or event 'VerticalContentAlignment'
+238:25 'ContentPresenter' has no property or event 'AutomationProperties.AccessibilityView'
+243:42 'PointerUpThemeAnimation' (a theme animation) is not supported by the Velora runtime
+257:42 'PointerUpThemeAnimation' (a theme animation) is not supported by the Velora runtime
+271:42 'PointerDownThemeAnimation' (a theme animation) is not supported by the Velora runtime

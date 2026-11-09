@@ -1,0 +1,22 @@
+element ResourceDictionary ns=presentation @1:1-14:22
+  attr xmlns xmlns "http://schemas.microsoft.com/winfx/2006/xaml/presentation" @1:21-1:86
+  attr xmlns:x xmlns "http://schemas.microsoft.com/winfx/2006/xaml" @2:5-2:59
+  property-element ResourceDictionary.ThemeDictionaries ns=presentation @3:3-10:42
+    element ResourceDictionary ns=presentation @4:5-6:26
+      attr x:Key directive "Light" @4:25-4:38
+      element SolidColorBrush ns=presentation @5:7-5:69
+        attr x:Key directive "ControlBackground" @5:24-5:49
+        attr Color property "#FFFFFFFF" @5:50-5:67
+    element ResourceDictionary ns=presentation @7:5-9:26
+      attr x:Key directive "Dark" @7:25-7:37
+      element SolidColorBrush ns=presentation @8:7-8:69
+        attr x:Key directive "ControlBackground" @8:24-8:49
+        attr Color property "#FF202020" @8:50-8:67
+  element Style ns=presentation @11:3-13:11
+    attr x:Key directive "ButtonStyle" @11:10-11:29
+    attr TargetType property "Button" @11:30-11:49
+    element Setter ns=presentation @12:5-12:78
+      attr Property property "Background" @12:13-12:34
+      attr Value property "{ThemeResource ControlBackground}" @12:35-12:76
+        markup ThemeResource @12:42-12:75
+          positional "ControlBackground" @12:57-12:74

@@ -1,0 +1,728 @@
+comment " Copyright (c) Microsoft Corporation. All Rights Reserved. " @1:1-1:67
+element ResourceDictionary ns=presentation @2:1-295:22
+  attr xmlns xmlns "http://schemas.microsoft.com/winfx/2006/xaml/presentation" @3:5-3:70
+  attr xmlns:x xmlns "http://schemas.microsoft.com/winfx/2006/xaml" @4:5-4:59
+  attr xmlns:contract7Present xmlns "http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)" @5:5-5:151
+  attr xmlns:contract7NotPresent xmlns "http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,7)" @6:5-6:157
+  property-element ResourceDictionary.ThemeDictionaries ns=presentation @7:5-119:44
+    element ResourceDictionary ns=presentation @8:9-44:30
+      attr x:Key directive "Default" @8:29-8:44
+      element StaticResource ns=presentation @9:13-9:111
+        attr x:Key directive "AccentButtonBackground" @9:29-9:59
+        attr ResourceKey property "SystemControlBackgroundAccentBrush" @9:60-9:108
+      element StaticResource ns=presentation @10:13-10:111
+        attr x:Key directive "AccentButtonBackgroundPointerOver" @10:29-10:70
+        attr ResourceKey property "SystemAccentColorLight1" @10:71-10:108
+      element StaticResource ns=presentation @11:13-11:106
+        attr x:Key directive "AccentButtonBackgroundPressed" @11:29-11:66
+        attr ResourceKey property "SystemAccentColorDark1" @11:67-11:103
+      element StaticResource ns=presentation @12:13-12:120
+        attr x:Key directive "AccentButtonBackgroundDisabled" @12:29-12:67
+        attr ResourceKey property "SystemControlBackgroundBaseLowBrush" @12:68-12:117
+      element StaticResource ns=presentation @13:13-13:116
+        attr x:Key directive "AccentButtonForeground" @13:29-13:59
+        attr ResourceKey property "SystemControlBackgroundChromeWhiteBrush" @13:60-13:113
+      element StaticResource ns=presentation @14:13-14:127
+        attr x:Key directive "AccentButtonForegroundPointerOver" @14:29-14:70
+        attr ResourceKey property "SystemControlBackgroundChromeWhiteBrush" @14:71-14:124
+      element StaticResource ns=presentation @15:13-15:123
+        attr x:Key directive "AccentButtonForegroundPressed" @15:29-15:66
+        attr ResourceKey property "SystemControlBackgroundChromeWhiteBrush" @15:67-15:120
+      element StaticResource ns=presentation @16:13-16:124
+        attr x:Key directive "AccentButtonForegroundDisabled" @16:29-16:67
+        attr ResourceKey property "SystemControlDisabledBaseMediumLowBrush" @16:68-16:121
+      element StaticResource ns=presentation @17:13-17:117
+        attr x:Key directive "AccentButtonBorderBrush" @17:29-17:60
+        attr ResourceKey property "SystemControlForegroundTransparentBrush" @17:61-17:114
+      element StaticResource ns=presentation @18:13-18:128
+        attr x:Key directive "AccentButtonBorderBrushPointerOver" @18:29-18:71
+        attr ResourceKey property "SystemControlForegroundTransparentBrush" @18:72-18:125
+      element StaticResource ns=presentation @19:13-19:123
+        attr x:Key directive "AccentButtonBorderBrushPressed" @19:29-19:67
+        attr ResourceKey property "SystemControlHighlightTransparentBrush" @19:68-19:120
+      element StaticResource ns=presentation @20:13-20:123
+        attr x:Key directive "AccentButtonBorderBrushDisabled" @20:29-20:68
+        attr ResourceKey property "SystemControlDisabledTransparentBrush" @20:69-20:120
+      element Thickness ns=presentation @21:13-21:72
+        attr x:Key directive "ButtonBorderThemeThickness" @21:24-21:58
+        text "1" @21:59-21:60
+      element StaticResource ns=presentation @22:13-22:106
+        attr x:Key directive "ButtonBackground" @22:29-22:53
+        attr ResourceKey property "SystemControlBackgroundBaseLowBrush" @22:54-22:103
+      element SolidColorBrush ns=presentation @23:13-23:127
+        attr x:Key directive "ButtonBackgroundPointerOver" @23:30-23:65
+        attr Color property "{StaticResource SystemBaseHighColor}" @23:66-23:110
+          markup StaticResource @23:73-23:109
+            positional "SystemBaseHighColor" @23:89-23:108
+        attr Opacity property "0.1" @23:111-23:124
+      element StaticResource ns=presentation @24:13-24:119
+        attr x:Key directive "ButtonBackgroundPressed" @24:29-24:60
+        attr ResourceKey property "SystemControlBackgroundBaseMediumLowBrush" @24:61-24:116
+      element StaticResource ns=presentation @25:13-25:114
+        attr x:Key directive "ButtonBackgroundDisabled" @25:29-25:61
+        attr ResourceKey property "SystemControlBackgroundBaseLowBrush" @25:62-25:111
+      element StaticResource ns=presentation @26:13-26:107
+        attr x:Key directive "ButtonForeground" @26:29-26:53
+        attr ResourceKey property "SystemControlForegroundBaseHighBrush" @26:54-26:104
+      element StaticResource ns=presentation @27:13-27:117
+        attr x:Key directive "ButtonForegroundPointerOver" @27:29-27:64
+        attr ResourceKey property "SystemControlHighlightBaseHighBrush" @27:65-27:114
+      element StaticResource ns=presentation @28:13-28:113
+        attr x:Key directive "ButtonForegroundPressed" @28:29-28:60
+        attr ResourceKey property "SystemControlHighlightBaseHighBrush" @28:61-28:110
+      element StaticResource ns=presentation @29:13-29:118
+        attr x:Key directive "ButtonForegroundDisabled" @29:29-29:61
+        attr ResourceKey property "SystemControlDisabledBaseMediumLowBrush" @29:62-29:115
+      element StaticResource ns=presentation @30:13-30:111
+        attr x:Key directive "ButtonBorderBrush" @30:29-30:54
+        attr ResourceKey property "SystemControlForegroundTransparentBrush" @30:55-30:108
+      element StaticResource ns=presentation @31:13-31:122
+        attr x:Key directive "ButtonBorderBrushPointerOver" @31:29-31:65
+        attr ResourceKey property "SystemControlForegroundTransparentBrush" @31:66-31:119
+      element StaticResource ns=presentation @32:13-32:117
+        attr x:Key directive "ButtonBorderBrushPressed" @32:29-32:61
+        attr ResourceKey property "SystemControlHighlightTransparentBrush" @32:62-32:114
+      element StaticResource ns=presentation @33:13-33:117
+        attr x:Key directive "ButtonBorderBrushDisabled" @33:29-33:62
+        attr ResourceKey property "SystemControlDisabledTransparentBrush" @33:63-33:114
+      element SolidColorBrush ns=presentation @34:13-34:87
+        attr x:Key directive "ButtonBackgroundThemeBrush" @34:30-34:64
+        attr Color property "Transparent" @34:65-34:84
+      element SolidColorBrush ns=presentation @35:13-35:81
+        attr x:Key directive "ButtonBorderThemeBrush" @35:30-35:60
+        attr Color property "#FFFFFFFF" @35:61-35:78
+      element SolidColorBrush ns=presentation @36:13-36:95
+        attr x:Key directive "ButtonDisabledBackgroundThemeBrush" @36:30-36:72
+        attr Color property "Transparent" @36:73-36:92
+      element SolidColorBrush ns=presentation @37:13-37:89
+        attr x:Key directive "ButtonDisabledBorderThemeBrush" @37:30-37:68
+        attr Color property "#66FFFFFF" @37:69-37:86
+      element SolidColorBrush ns=presentation @38:13-38:93
+        attr x:Key directive "ButtonDisabledForegroundThemeBrush" @38:30-38:72
+        attr Color property "#66FFFFFF" @38:73-38:90
+      element SolidColorBrush ns=presentation @39:13-39:85
+        attr x:Key directive "ButtonForegroundThemeBrush" @39:30-39:64
+        attr Color property "#FFFFFFFF" @39:65-39:82
+      element SolidColorBrush ns=presentation @40:13-40:96
+        attr x:Key directive "ButtonPointerOverBackgroundThemeBrush" @40:30-40:75
+        attr Color property "#21FFFFFF" @40:76-40:93
+      element SolidColorBrush ns=presentation @41:13-41:96
+        attr x:Key directive "ButtonPointerOverForegroundThemeBrush" @41:30-41:75
+        attr Color property "#FFFFFFFF" @41:76-41:93
+      element SolidColorBrush ns=presentation @42:13-42:92
+        attr x:Key directive "ButtonPressedBackgroundThemeBrush" @42:30-42:71
+        attr Color property "#FFFFFFFF" @42:72-42:89
+      element SolidColorBrush ns=presentation @43:13-43:92
+        attr x:Key directive "ButtonPressedForegroundThemeBrush" @43:30-43:71
+        attr Color property "#FF000000" @43:72-43:89
+    element ResourceDictionary ns=presentation @45:9-81:30
+      attr x:Key directive "HighContrast" @45:29-45:49
+      element StaticResource ns=presentation @46:13-46:111
+        attr x:Key directive "AccentButtonBackground" @46:29-46:59
+        attr ResourceKey property "SystemControlBackgroundAccentBrush" @46:60-46:108
+      element StaticResource ns=presentation @47:13-47:122
+        attr x:Key directive "AccentButtonBackgroundPointerOver" @47:29-47:70
+        attr ResourceKey property "SystemControlForegroundAccentBrush" @47:71-47:119
+      element StaticResource ns=presentation @48:13-48:125
+        attr x:Key directive "AccentButtonBackgroundPressed" @48:29-48:66
+        attr ResourceKey property "SystemControlBackgroundBaseMediumLowBrush" @48:67-48:122
+      element StaticResource ns=presentation @49:13-49:120
+        attr x:Key directive "AccentButtonBackgroundDisabled" @49:29-49:67
+        attr ResourceKey property "SystemControlBackgroundBaseLowBrush" @49:68-49:117
+      element StaticResource ns=presentation @50:13-50:116
+        attr x:Key directive "AccentButtonForeground" @50:29-50:59
+        attr ResourceKey property "SystemControlBackgroundChromeWhiteBrush" @50:60-50:113
+      element StaticResource ns=presentation @51:13-51:127
+        attr x:Key directive "AccentButtonForegroundPointerOver" @51:29-51:70
+        attr ResourceKey property "SystemControlBackgroundChromeWhiteBrush" @51:71-51:124
+      element StaticResource ns=presentation @52:13-52:119
+        attr x:Key directive "AccentButtonForegroundPressed" @52:29-52:66
+        attr ResourceKey property "SystemControlHighlightBaseHighBrush" @52:67-52:116
+      element StaticResource ns=presentation @53:13-53:124
+        attr x:Key directive "AccentButtonForegroundDisabled" @53:29-53:67
+        attr ResourceKey property "SystemControlDisabledBaseMediumLowBrush" @53:68-53:121
+      element StaticResource ns=presentation @54:13-54:117
+        attr x:Key directive "AccentButtonBorderBrush" @54:29-54:60
+        attr ResourceKey property "SystemControlForegroundTransparentBrush" @54:61-54:114
+      element StaticResource ns=presentation @55:13-55:129
+        attr x:Key directive "AccentButtonBorderBrushPointerOver" @55:29-55:71
+        attr ResourceKey property "SystemControlHighlightBaseMediumLowBrush" @55:72-55:126
+      element StaticResource ns=presentation @56:13-56:123
+        attr x:Key directive "AccentButtonBorderBrushPressed" @56:29-56:67
+        attr ResourceKey property "SystemControlHighlightTransparentBrush" @56:68-56:120
+      element StaticResource ns=presentation @57:13-57:123
+        attr x:Key directive "AccentButtonBorderBrushDisabled" @57:29-57:68
+        attr ResourceKey property "SystemControlDisabledTransparentBrush" @57:69-57:120
+      element StaticResource ns=presentation @58:13-58:106
+        attr x:Key directive "ButtonBackground" @58:29-58:53
+        attr ResourceKey property "SystemControlBackgroundBaseLowBrush" @58:54-58:103
+      element StaticResource ns=presentation @59:13-59:117
+        attr x:Key directive "ButtonBackgroundPointerOver" @59:29-59:64
+        attr ResourceKey property "SystemControlBackgroundBaseLowBrush" @59:65-59:114
+      element StaticResource ns=presentation @60:13-60:119
+        attr x:Key directive "ButtonBackgroundPressed" @60:29-60:60
+        attr ResourceKey property "SystemControlBackgroundBaseMediumLowBrush" @60:61-60:116
+      element StaticResource ns=presentation @61:13-61:114
+        attr x:Key directive "ButtonBackgroundDisabled" @61:29-61:61
+        attr ResourceKey property "SystemControlBackgroundBaseLowBrush" @61:62-61:111
+      element StaticResource ns=presentation @62:13-62:107
+        attr x:Key directive "ButtonForeground" @62:29-62:53
+        attr ResourceKey property "SystemControlForegroundBaseHighBrush" @62:54-62:104
+      element StaticResource ns=presentation @63:13-63:117
+        attr x:Key directive "ButtonForegroundPointerOver" @63:29-63:64
+        attr ResourceKey property "SystemControlHighlightBaseHighBrush" @63:65-63:114
+      element StaticResource ns=presentation @64:13-64:113
+        attr x:Key directive "ButtonForegroundPressed" @64:29-64:60
+        attr ResourceKey property "SystemControlHighlightBaseHighBrush" @64:61-64:110
+      element StaticResource ns=presentation @65:13-65:118
+        attr x:Key directive "ButtonForegroundDisabled" @65:29-65:61
+        attr ResourceKey property "SystemControlDisabledBaseMediumLowBrush" @65:62-65:115
+      element StaticResource ns=presentation @66:13-66:111
+        attr x:Key directive "ButtonBorderBrush" @66:29-66:54
+        attr ResourceKey property "SystemControlForegroundTransparentBrush" @66:55-66:108
+      element StaticResource ns=presentation @67:13-67:123
+        attr x:Key directive "ButtonBorderBrushPointerOver" @67:29-67:65
+        attr ResourceKey property "SystemControlHighlightBaseMediumLowBrush" @67:66-67:120
+      element StaticResource ns=presentation @68:13-68:117
+        attr x:Key directive "ButtonBorderBrushPressed" @68:29-68:61
+        attr ResourceKey property "SystemControlHighlightTransparentBrush" @68:62-68:114
+      element StaticResource ns=presentation @69:13-69:117
+        attr x:Key directive "ButtonBorderBrushDisabled" @69:29-69:62
+        attr ResourceKey property "SystemControlDisabledTransparentBrush" @69:63-69:114
+      element Thickness ns=presentation @70:13-70:72
+        attr x:Key directive "ButtonBorderThemeThickness" @70:24-70:58
+        text "1" @70:59-70:60
+      element SolidColorBrush ns=presentation @71:13-71:118
+        attr x:Key directive "ButtonBackgroundThemeBrush" @71:30-71:64
+        attr Color property "{ThemeResource SystemColorButtonFaceColor}" @71:65-71:115
+          markup ThemeResource @71:72-71:114
+            positional "SystemColorButtonFaceColor" @71:87-71:113
+      element SolidColorBrush ns=presentation @72:13-72:114
+        attr x:Key directive "ButtonBorderThemeBrush" @72:30-72:60
+        attr Color property "{ThemeResource SystemColorButtonTextColor}" @72:61-72:111
+          markup ThemeResource @72:68-72:110
+            positional "SystemColorButtonTextColor" @72:83-72:109
+      element SolidColorBrush ns=presentation @73:13-73:126
+        attr x:Key directive "ButtonDisabledBackgroundThemeBrush" @73:30-73:72
+        attr Color property "{ThemeResource SystemColorButtonFaceColor}" @73:73-73:123
+          markup ThemeResource @73:80-73:122
+            positional "SystemColorButtonFaceColor" @73:95-73:121
+      element SolidColorBrush ns=presentation @74:13-74:120
+        attr x:Key directive "ButtonDisabledBorderThemeBrush" @74:30-74:68
+        attr Color property "{ThemeResource SystemColorGrayTextColor}" @74:69-74:117
+          markup ThemeResource @74:76-74:116
+            positional "SystemColorGrayTextColor" @74:91-74:115
+      element SolidColorBrush ns=presentation @75:13-75:124
+        attr x:Key directive "ButtonDisabledForegroundThemeBrush" @75:30-75:72
+        attr Color property "{ThemeResource SystemColorGrayTextColor}" @75:73-75:121
+          markup ThemeResource @75:80-75:120
+            positional "SystemColorGrayTextColor" @75:95-75:119
+      element SolidColorBrush ns=presentation @76:13-76:118
+        attr x:Key directive "ButtonForegroundThemeBrush" @76:30-76:64
+        attr Color property "{ThemeResource SystemColorButtonTextColor}" @76:65-76:115
+          markup ThemeResource @76:72-76:114
+            positional "SystemColorButtonTextColor" @76:87-76:113
+      element SolidColorBrush ns=presentation @77:13-77:128
+        attr x:Key directive "ButtonPointerOverBackgroundThemeBrush" @77:30-77:75
+        attr Color property "{ThemeResource SystemColorHighlightColor}" @77:76-77:125
+          markup ThemeResource @77:83-77:124
+            positional "SystemColorHighlightColor" @77:98-77:123
+      element SolidColorBrush ns=presentation @78:13-78:132
+        attr x:Key directive "ButtonPointerOverForegroundThemeBrush" @78:30-78:75
+        attr Color property "{ThemeResource SystemColorHighlightTextColor}" @78:76-78:129
+          markup ThemeResource @78:83-78:128
+            positional "SystemColorHighlightTextColor" @78:98-78:127
+      element SolidColorBrush ns=presentation @79:13-79:125
+        attr x:Key directive "ButtonPressedBackgroundThemeBrush" @79:30-79:71
+        attr Color property "{ThemeResource SystemColorButtonTextColor}" @79:72-79:122
+          markup ThemeResource @79:79-79:121
+            positional "SystemColorButtonTextColor" @79:94-79:120
+      element SolidColorBrush ns=presentation @80:13-80:125
+        attr x:Key directive "ButtonPressedForegroundThemeBrush" @80:30-80:71
+        attr Color property "{ThemeResource SystemColorButtonFaceColor}" @80:72-80:122
+          markup ThemeResource @80:79-80:121
+            positional "SystemColorButtonFaceColor" @80:94-80:120
+    element ResourceDictionary ns=presentation @82:9-118:30
+      attr x:Key directive "Light" @82:29-82:42
+      element StaticResource ns=presentation @83:13-83:111
+        attr x:Key directive "AccentButtonBackground" @83:29-83:59
+        attr ResourceKey property "SystemControlBackgroundAccentBrush" @83:60-83:108
+      element StaticResource ns=presentation @84:13-84:111
+        attr x:Key directive "AccentButtonBackgroundPointerOver" @84:29-84:70
+        attr ResourceKey property "SystemAccentColorLight1" @84:71-84:108
+      element StaticResource ns=presentation @85:13-85:106
+        attr x:Key directive "AccentButtonBackgroundPressed" @85:29-85:66
+        attr ResourceKey property "SystemAccentColorDark1" @85:67-85:103
+      element StaticResource ns=presentation @86:13-86:120
+        attr x:Key directive "AccentButtonBackgroundDisabled" @86:29-86:67
+        attr ResourceKey property "SystemControlBackgroundBaseLowBrush" @86:68-86:117
+      element StaticResource ns=presentation @87:13-87:116
+        attr x:Key directive "AccentButtonForeground" @87:29-87:59
+        attr ResourceKey property "SystemControlBackgroundChromeWhiteBrush" @87:60-87:113
+      element StaticResource ns=presentation @88:13-88:127
+        attr x:Key directive "AccentButtonForegroundPointerOver" @88:29-88:70
+        attr ResourceKey property "SystemControlBackgroundChromeWhiteBrush" @88:71-88:124
+      element StaticResource ns=presentation @89:13-89:123
+        attr x:Key directive "AccentButtonForegroundPressed" @89:29-89:66
+        attr ResourceKey property "SystemControlBackgroundChromeWhiteBrush" @89:67-89:120
+      element StaticResource ns=presentation @90:13-90:124
+        attr x:Key directive "AccentButtonForegroundDisabled" @90:29-90:67
+        attr ResourceKey property "SystemControlDisabledBaseMediumLowBrush" @90:68-90:121
+      element StaticResource ns=presentation @91:13-91:117
+        attr x:Key directive "AccentButtonBorderBrush" @91:29-91:60
+        attr ResourceKey property "SystemControlForegroundTransparentBrush" @91:61-91:114
+      element StaticResource ns=presentation @92:13-92:128
+        attr x:Key directive "AccentButtonBorderBrushPointerOver" @92:29-92:71
+        attr ResourceKey property "SystemControlForegroundTransparentBrush" @92:72-92:125
+      element StaticResource ns=presentation @93:13-93:123
+        attr x:Key directive "AccentButtonBorderBrushPressed" @93:29-93:67
+        attr ResourceKey property "SystemControlHighlightTransparentBrush" @93:68-93:120
+      element StaticResource ns=presentation @94:13-94:123
+        attr x:Key directive "AccentButtonBorderBrushDisabled" @94:29-94:68
+        attr ResourceKey property "SystemControlDisabledTransparentBrush" @94:69-94:120
+      element Thickness ns=presentation @95:13-95:72
+        attr x:Key directive "ButtonBorderThemeThickness" @95:24-95:58
+        text "1" @95:59-95:60
+      element StaticResource ns=presentation @96:13-96:106
+        attr x:Key directive "ButtonBackground" @96:29-96:53
+        attr ResourceKey property "SystemControlBackgroundBaseLowBrush" @96:54-96:103
+      element SolidColorBrush ns=presentation @97:13-97:127
+        attr x:Key directive "ButtonBackgroundPointerOver" @97:30-97:65
+        attr Color property "{StaticResource SystemBaseHighColor}" @97:66-97:110
+          markup StaticResource @97:73-97:109
+            positional "SystemBaseHighColor" @97:89-97:108
+        attr Opacity property "0.1" @97:111-97:124
+      element StaticResource ns=presentation @98:13-98:119
+        attr x:Key directive "ButtonBackgroundPressed" @98:29-98:60
+        attr ResourceKey property "SystemControlBackgroundBaseMediumLowBrush" @98:61-98:116
+      element StaticResource ns=presentation @99:13-99:114
+        attr x:Key directive "ButtonBackgroundDisabled" @99:29-99:61
+        attr ResourceKey property "SystemControlBackgroundBaseLowBrush" @99:62-99:111
+      element StaticResource ns=presentation @100:13-100:107
+        attr x:Key directive "ButtonForeground" @100:29-100:53
+        attr ResourceKey property "SystemControlForegroundBaseHighBrush" @100:54-100:104
+      element StaticResource ns=presentation @101:13-101:117
+        attr x:Key directive "ButtonForegroundPointerOver" @101:29-101:64
+        attr ResourceKey property "SystemControlHighlightBaseHighBrush" @101:65-101:114
+      element StaticResource ns=presentation @102:13-102:113
+        attr x:Key directive "ButtonForegroundPressed" @102:29-102:60
+        attr ResourceKey property "SystemControlHighlightBaseHighBrush" @102:61-102:110
+      element StaticResource ns=presentation @103:13-103:118
+        attr x:Key directive "ButtonForegroundDisabled" @103:29-103:61
+        attr ResourceKey property "SystemControlDisabledBaseMediumLowBrush" @103:62-103:115
+      element StaticResource ns=presentation @104:13-104:111
+        attr x:Key directive "ButtonBorderBrush" @104:29-104:54
+        attr ResourceKey property "SystemControlForegroundTransparentBrush" @104:55-104:108
+      element StaticResource ns=presentation @105:13-105:122
+        attr x:Key directive "ButtonBorderBrushPointerOver" @105:29-105:65
+        attr ResourceKey property "SystemControlForegroundTransparentBrush" @105:66-105:119
+      element StaticResource ns=presentation @106:13-106:117
+        attr x:Key directive "ButtonBorderBrushPressed" @106:29-106:61
+        attr ResourceKey property "SystemControlHighlightTransparentBrush" @106:62-106:114
+      element StaticResource ns=presentation @107:13-107:117
+        attr x:Key directive "ButtonBorderBrushDisabled" @107:29-107:62
+        attr ResourceKey property "SystemControlDisabledTransparentBrush" @107:63-107:114
+      element SolidColorBrush ns=presentation @108:13-108:85
+        attr x:Key directive "ButtonBackgroundThemeBrush" @108:30-108:64
+        attr Color property "#B3B6B6B6" @108:65-108:82
+      element SolidColorBrush ns=presentation @109:13-109:81
+        attr x:Key directive "ButtonBorderThemeBrush" @109:30-109:60
+        attr Color property "#33000000" @109:61-109:78
+      element SolidColorBrush ns=presentation @110:13-110:93
+        attr x:Key directive "ButtonDisabledBackgroundThemeBrush" @110:30-110:72
+        attr Color property "#66CACACA" @110:73-110:90
+      element SolidColorBrush ns=presentation @111:13-111:89
+        attr x:Key directive "ButtonDisabledBorderThemeBrush" @111:30-111:68
+        attr Color property "#1A000000" @111:69-111:86
+      element SolidColorBrush ns=presentation @112:13-112:93
+        attr x:Key directive "ButtonDisabledForegroundThemeBrush" @112:30-112:72
+        attr Color property "#66000000" @112:73-112:90
+      element SolidColorBrush ns=presentation @113:13-113:85
+        attr x:Key directive "ButtonForegroundThemeBrush" @113:30-113:64
+        attr Color property "#FF000000" @113:65-113:82
+      element SolidColorBrush ns=presentation @114:13-114:96
+        attr x:Key directive "ButtonPointerOverBackgroundThemeBrush" @114:30-114:75
+        attr Color property "#D1CDCDCD" @114:76-114:93
+      element SolidColorBrush ns=presentation @115:13-115:96
+        attr x:Key directive "ButtonPointerOverForegroundThemeBrush" @115:30-115:75
+        attr Color property "#FF000000" @115:76-115:93
+      element SolidColorBrush ns=presentation @116:13-116:92
+        attr x:Key directive "ButtonPressedBackgroundThemeBrush" @116:30-116:71
+        attr Color property "#FF000000" @116:72-116:89
+      element SolidColorBrush ns=presentation @117:13-117:92
+        attr x:Key directive "ButtonPressedForegroundThemeBrush" @117:30-117:71
+        attr Color property "#FFFFFFFF" @117:72-117:89
+  element Thickness ns=presentation @121:5-121:57
+    attr x:Key directive "ButtonPadding" @121:16-121:37
+    text "8,5,8,6" @121:38-121:45
+  element Style ns=presentation @123:5-123:80
+    attr TargetType property "Button" @123:12-123:31
+    attr BasedOn property "{StaticResource DefaultButtonStyle}" @123:32-123:77
+      markup StaticResource @123:41-123:76
+        positional "DefaultButtonStyle" @123:57-123:75
+  element Style ns=presentation @125:5-213:13
+    attr x:Key directive "DefaultButtonStyle" @125:12-125:38
+    attr TargetType property "Button" @125:39-125:58
+    element Setter ns=presentation @126:9-126:82
+      attr Property property "Background" @126:17-126:38
+      attr Value property "{ThemeResource ButtonBackground}" @126:39-126:79
+        markup ThemeResource @126:46-126:78
+          positional "ButtonBackground" @126:61-126:77
+    element contract7Present:Setter ns=presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7) @127:9-127:88
+      attr Property property "BackgroundSizing" @127:34-127:61
+      attr Value property "OuterBorderEdge" @127:62-127:85
+    element Setter ns=presentation @128:9-128:82
+      attr Property property "Foreground" @128:17-128:38
+      attr Value property "{ThemeResource ButtonForeground}" @128:39-128:79
+        markup ThemeResource @128:46-128:78
+          positional "ButtonForeground" @128:61-128:77
+    element Setter ns=presentation @129:9-129:84
+      attr Property property "BorderBrush" @129:17-129:39
+      attr Value property "{ThemeResource ButtonBorderBrush}" @129:40-129:81
+        markup ThemeResource @129:47-129:80
+          positional "ButtonBorderBrush" @129:62-129:79
+    element Setter ns=presentation @130:9-130:97
+      attr Property property "BorderThickness" @130:17-130:43
+      attr Value property "{ThemeResource ButtonBorderThemeThickness}" @130:44-130:94
+        markup ThemeResource @130:51-130:93
+          positional "ButtonBorderThemeThickness" @130:66-130:92
+    element contract7NotPresent:Setter ns=presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,7) @131:9-131:74
+      attr Property property "Padding" @131:37-131:55
+      attr Value property "8,5,8,5" @131:56-131:71
+    element contract7Present:Setter ns=presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7) @132:9-132:94
+      attr Property property "Padding" @132:34-132:52
+      attr Value property "{StaticResource ButtonPadding}" @132:53-132:91
+        markup StaticResource @132:60-132:90
+          positional "ButtonPadding" @132:76-132:89
+    element Setter ns=presentation @133:9-133:63
+      attr Property property "HorizontalAlignment" @133:17-133:47
+      attr Value property "Left" @133:48-133:60
+    element Setter ns=presentation @134:9-134:63
+      attr Property property "VerticalAlignment" @134:17-134:45
+      attr Value property "Center" @134:46-134:60
+    element Setter ns=presentation @135:9-135:95
+      attr Property property "FontFamily" @135:17-135:38
+      attr Value property "{ThemeResource ContentControlThemeFontFamily}" @135:39-135:92
+        markup ThemeResource @135:46-135:91
+          positional "ContentControlThemeFontFamily" @135:61-135:90
+    element Setter ns=presentation @136:9-136:56
+      attr Property property "FontWeight" @136:17-136:38
+      attr Value property "Normal" @136:39-136:53
+    element Setter ns=presentation @137:9-137:91
+      attr Property property "FontSize" @137:17-137:36
+      attr Value property "{ThemeResource ControlContentThemeFontSize}" @137:37-137:88
+        markup ThemeResource @137:44-137:87
+          positional "ControlContentThemeFontSize" @137:59-137:86
+    element Setter ns=presentation @138:9-138:99
+      attr Property property "UseSystemFocusVisuals" @138:17-138:49
+      attr Value property "{StaticResource UseSystemFocusVisuals}" @138:50-138:96
+        markup StaticResource @138:57-138:95
+          positional "UseSystemFocusVisuals" @138:73-138:94
+    element Setter ns=presentation @139:9-139:59
+      attr Property property "FocusVisualMargin" @139:17-139:45
+      attr Value property "-3" @139:46-139:56
+    element contract7Present:Setter ns=presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7) @140:9-140:104
+      attr Property property "CornerRadius" @140:34-140:57
+      attr Value property "{ThemeResource ControlCornerRadius}" @140:58-140:101
+        markup ThemeResource @140:65-140:100
+          positional "ControlCornerRadius" @140:80-140:99
+    element Setter ns=presentation @141:9-212:18
+      attr Property property "Template" @141:17-141:36
+      property-element Setter.Value ns=presentation @142:13-211:28
+        element ControlTemplate ns=presentation @143:17-210:35
+          attr TargetType property "Button" @143:34-143:53
+          element ContentPresenter ns=presentation @144:21-209:40
+            attr x:Name directive "ContentPresenter" @145:25-145:50
+            attr Background property "{TemplateBinding Background}" @146:25-146:66
+              markup TemplateBinding @146:37-146:65
+                positional "Background" @146:54-146:64
+            attr contract7Present:BackgroundSizing property if=IsApiContractPresent(Windows.Foundation.UniversalApiContract,7) "{TemplateBinding BackgroundSizing}" @147:25-147:95
+              markup TemplateBinding @147:60-147:94
+                positional "BackgroundSizing" @147:77-147:93
+            attr BorderBrush property "{TemplateBinding BorderBrush}" @148:25-148:68
+              markup TemplateBinding @148:38-148:67
+                positional "BorderBrush" @148:55-148:66
+            attr BorderThickness property "{TemplateBinding BorderThickness}" @149:25-149:76
+              markup TemplateBinding @149:42-149:75
+                positional "BorderThickness" @149:59-149:74
+            attr Content property "{TemplateBinding Content}" @150:25-150:60
+              markup TemplateBinding @150:34-150:59
+                positional "Content" @150:51-150:58
+            attr ContentTemplate property "{TemplateBinding ContentTemplate}" @151:25-151:76
+              markup TemplateBinding @151:42-151:75
+                positional "ContentTemplate" @151:59-151:74
+            attr ContentTransitions property "{TemplateBinding ContentTransitions}" @152:25-152:82
+              markup TemplateBinding @152:45-152:81
+                positional "ContentTransitions" @152:62-152:80
+            attr contract7Present:CornerRadius property if=IsApiContractPresent(Windows.Foundation.UniversalApiContract,7) "{TemplateBinding CornerRadius}" @153:25-153:87
+              markup TemplateBinding @153:56-153:86
+                positional "CornerRadius" @153:73-153:85
+            attr contract7NotPresent:CornerRadius property if=IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,7) "{ThemeResource ControlCornerRadius}" @154:25-154:95
+              markup ThemeResource @154:59-154:94
+                positional "ControlCornerRadius" @154:74-154:93
+            attr Padding property "{TemplateBinding Padding}" @155:25-155:60
+              markup TemplateBinding @155:34-155:59
+                positional "Padding" @155:51-155:58
+            attr HorizontalContentAlignment property "{TemplateBinding HorizontalContentAlignment}" @156:25-156:98
+              markup TemplateBinding @156:53-156:97
+                positional "HorizontalContentAlignment" @156:70-156:96
+            attr VerticalContentAlignment property "{TemplateBinding VerticalContentAlignment}" @157:25-157:94
+              markup TemplateBinding @157:51-157:93
+                positional "VerticalContentAlignment" @157:68-157:92
+            attr AutomationProperties.AccessibilityView attached "Raw" @158:25-158:69
+            property-element VisualStateManager.VisualStateGroups ns=presentation @159:25-208:64
+              element VisualStateGroup ns=presentation @160:29-207:48
+                attr x:Name directive "CommonStates" @160:47-160:68
+                element VisualState ns=presentation @161:33-165:47
+                  attr x:Name directive "Normal" @161:46-161:61
+                  element Storyboard ns=presentation @162:37-164:50
+                    element PointerUpThemeAnimation ns=presentation @163:41-163:109
+                      attr Storyboard.TargetName attached "ContentPresenter" @163:66-163:106
+                element VisualState ns=presentation @166:33-179:47
+                  attr x:Name directive "PointerOver" @166:46-166:66
+                  element Storyboard ns=presentation @167:37-178:50
+                    element ObjectAnimationUsingKeyFrames ns=presentation @168:41-170:73
+                      attr Storyboard.TargetName attached "ContentPresenter" @168:72-168:112
+                      attr Storyboard.TargetProperty attached "Background" @168:113-168:151
+                      element DiscreteObjectKeyFrame ns=presentation @169:45-169:135
+                        attr KeyTime property "0" @169:69-169:80
+                        attr Value property "{ThemeResource ButtonBackgroundPointerOver}" @169:81-169:132
+                          markup ThemeResource @169:88-169:131
+                            positional "ButtonBackgroundPointerOver" @169:103-169:130
+                    element ObjectAnimationUsingKeyFrames ns=presentation @171:41-173:73
+                      attr Storyboard.TargetName attached "ContentPresenter" @171:72-171:112
+                      attr Storyboard.TargetProperty attached "BorderBrush" @171:113-171:152
+                      element DiscreteObjectKeyFrame ns=presentation @172:45-172:136
+                        attr KeyTime property "0" @172:69-172:80
+                        attr Value property "{ThemeResource ButtonBorderBrushPointerOver}" @172:81-172:133
+                          markup ThemeResource @172:88-172:132
+                            positional "ButtonBorderBrushPointerOver" @172:103-172:131
+                    element ObjectAnimationUsingKeyFrames ns=presentation @174:41-176:73
+                      attr Storyboard.TargetName attached "ContentPresenter" @174:72-174:112
+                      attr Storyboard.TargetProperty attached "Foreground" @174:113-174:151
+                      element DiscreteObjectKeyFrame ns=presentation @175:45-175:135
+                        attr KeyTime property "0" @175:69-175:80
+                        attr Value property "{ThemeResource ButtonForegroundPointerOver}" @175:81-175:132
+                          markup ThemeResource @175:88-175:131
+                            positional "ButtonForegroundPointerOver" @175:103-175:130
+                    element PointerUpThemeAnimation ns=presentation @177:41-177:109
+                      attr Storyboard.TargetName attached "ContentPresenter" @177:66-177:106
+                element VisualState ns=presentation @180:33-193:47
+                  attr x:Name directive "Pressed" @180:46-180:62
+                  element Storyboard ns=presentation @181:37-192:50
+                    element ObjectAnimationUsingKeyFrames ns=presentation @182:41-184:73
+                      attr Storyboard.TargetName attached "ContentPresenter" @182:72-182:112
+                      attr Storyboard.TargetProperty attached "Background" @182:113-182:151
+                      element DiscreteObjectKeyFrame ns=presentation @183:45-183:131
+                        attr KeyTime property "0" @183:69-183:80
+                        attr Value property "{ThemeResource ButtonBackgroundPressed}" @183:81-183:128
+                          markup ThemeResource @183:88-183:127
+                            positional "ButtonBackgroundPressed" @183:103-183:126
+                    element ObjectAnimationUsingKeyFrames ns=presentation @185:41-187:73
+                      attr Storyboard.TargetName attached "ContentPresenter" @185:72-185:112
+                      attr Storyboard.TargetProperty attached "BorderBrush" @185:113-185:152
+                      element DiscreteObjectKeyFrame ns=presentation @186:45-186:132
+                        attr KeyTime property "0" @186:69-186:80
+                        attr Value property "{ThemeResource ButtonBorderBrushPressed}" @186:81-186:129
+                          markup ThemeResource @186:88-186:128
+                            positional "ButtonBorderBrushPressed" @186:103-186:127
+                    element ObjectAnimationUsingKeyFrames ns=presentation @188:41-190:73
+                      attr Storyboard.TargetName attached "ContentPresenter" @188:72-188:112
+                      attr Storyboard.TargetProperty attached "Foreground" @188:113-188:151
+                      element DiscreteObjectKeyFrame ns=presentation @189:45-189:131
+                        attr KeyTime property "0" @189:69-189:80
+                        attr Value property "{ThemeResource ButtonForegroundPressed}" @189:81-189:128
+                          markup ThemeResource @189:88-189:127
+                            positional "ButtonForegroundPressed" @189:103-189:126
+                    element PointerDownThemeAnimation ns=presentation @191:41-191:111
+                      attr Storyboard.TargetName attached "ContentPresenter" @191:68-191:108
+                element VisualState ns=presentation @194:33-206:47
+                  attr x:Name directive "Disabled" @194:46-194:63
+                  element Storyboard ns=presentation @195:37-205:50
+                    element ObjectAnimationUsingKeyFrames ns=presentation @196:41-198:73
+                      attr Storyboard.TargetName attached "ContentPresenter" @196:72-196:112
+                      attr Storyboard.TargetProperty attached "Background" @196:113-196:151
+                      element DiscreteObjectKeyFrame ns=presentation @197:45-197:132
+                        attr KeyTime property "0" @197:69-197:80
+                        attr Value property "{ThemeResource ButtonBackgroundDisabled}" @197:81-197:129
+                          markup ThemeResource @197:88-197:128
+                            positional "ButtonBackgroundDisabled" @197:103-197:127
+                    element ObjectAnimationUsingKeyFrames ns=presentation @199:41-201:73
+                      attr Storyboard.TargetName attached "ContentPresenter" @199:72-199:112
+                      attr Storyboard.TargetProperty attached "BorderBrush" @199:113-199:152
+                      element DiscreteObjectKeyFrame ns=presentation @200:45-200:133
+                        attr KeyTime property "0" @200:69-200:80
+                        attr Value property "{ThemeResource ButtonBorderBrushDisabled}" @200:81-200:130
+                          markup ThemeResource @200:88-200:129
+                            positional "ButtonBorderBrushDisabled" @200:103-200:128
+                    element ObjectAnimationUsingKeyFrames ns=presentation @202:41-204:73
+                      attr Storyboard.TargetName attached "ContentPresenter" @202:72-202:112
+                      attr Storyboard.TargetProperty attached "Foreground" @202:113-202:151
+                      element DiscreteObjectKeyFrame ns=presentation @203:45-203:132
+                        attr KeyTime property "0" @203:69-203:80
+                        attr Value property "{ThemeResource ButtonForegroundDisabled}" @203:81-203:129
+                          markup ThemeResource @203:88-203:128
+                            positional "ButtonForegroundDisabled" @203:103-203:127
+  element Style ns=presentation @215:5-293:13
+    attr x:Key directive "AccentButtonStyle" @215:12-215:37
+    attr TargetType property "Button" @215:38-215:57
+    element Setter ns=presentation @216:9-216:88
+      attr Property property "Foreground" @216:17-216:38
+      attr Value property "{ThemeResource AccentButtonForeground}" @216:39-216:85
+        markup ThemeResource @216:46-216:84
+          positional "AccentButtonForeground" @216:61-216:83
+    element Setter ns=presentation @217:9-217:88
+      attr Property property "Background" @217:17-217:38
+      attr Value property "{ThemeResource AccentButtonBackground}" @217:39-217:85
+        markup ThemeResource @217:46-217:84
+          positional "AccentButtonBackground" @217:61-217:83
+    element contract7Present:Setter ns=presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7) @218:9-218:88
+      attr Property property "BackgroundSizing" @218:34-218:61
+      attr Value property "OuterBorderEdge" @218:62-218:85
+    element Setter ns=presentation @219:9-219:90
+      attr Property property "BorderBrush" @219:17-219:39
+      attr Value property "{ThemeResource AccentButtonBorderBrush}" @219:40-219:87
+        markup ThemeResource @219:47-219:86
+          positional "AccentButtonBorderBrush" @219:62-219:85
+    element contract7Present:Setter ns=presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7) @220:9-220:104
+      attr Property property "CornerRadius" @220:34-220:57
+      attr Value property "{ThemeResource ControlCornerRadius}" @220:58-220:101
+        markup ThemeResource @220:65-220:100
+          positional "ControlCornerRadius" @220:80-220:99
+    element Setter ns=presentation @221:9-292:18
+      attr Property property "Template" @221:17-221:36
+      property-element Setter.Value ns=presentation @222:13-291:28
+        element ControlTemplate ns=presentation @223:17-290:35
+          attr TargetType property "Button" @223:34-223:53
+          element ContentPresenter ns=presentation @224:21-289:40
+            attr x:Name directive "ContentPresenter" @225:25-225:50
+            attr Background property "{TemplateBinding Background}" @226:25-226:66
+              markup TemplateBinding @226:37-226:65
+                positional "Background" @226:54-226:64
+            attr contract7Present:BackgroundSizing property if=IsApiContractPresent(Windows.Foundation.UniversalApiContract,7) "{TemplateBinding BackgroundSizing}" @227:25-227:95
+              markup TemplateBinding @227:60-227:94
+                positional "BackgroundSizing" @227:77-227:93
+            attr BorderBrush property "{TemplateBinding BorderBrush}" @228:25-228:68
+              markup TemplateBinding @228:38-228:67
+                positional "BorderBrush" @228:55-228:66
+            attr BorderThickness property "{TemplateBinding BorderThickness}" @229:25-229:76
+              markup TemplateBinding @229:42-229:75
+                positional "BorderThickness" @229:59-229:74
+            attr Content property "{TemplateBinding Content}" @230:25-230:60
+              markup TemplateBinding @230:34-230:59
+                positional "Content" @230:51-230:58
+            attr ContentTemplate property "{TemplateBinding ContentTemplate}" @231:25-231:76
+              markup TemplateBinding @231:42-231:75
+                positional "ContentTemplate" @231:59-231:74
+            attr ContentTransitions property "{TemplateBinding ContentTransitions}" @232:25-232:82
+              markup TemplateBinding @232:45-232:81
+                positional "ContentTransitions" @232:62-232:80
+            attr contract7Present:CornerRadius property if=IsApiContractPresent(Windows.Foundation.UniversalApiContract,7) "{TemplateBinding CornerRadius}" @233:25-233:87
+              markup TemplateBinding @233:56-233:86
+                positional "CornerRadius" @233:73-233:85
+            attr contract7NotPresent:CornerRadius property if=IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,7) "{ThemeResource ControlCornerRadius}" @234:25-234:95
+              markup ThemeResource @234:59-234:94
+                positional "ControlCornerRadius" @234:74-234:93
+            attr Padding property "{TemplateBinding Padding}" @235:25-235:60
+              markup TemplateBinding @235:34-235:59
+                positional "Padding" @235:51-235:58
+            attr HorizontalContentAlignment property "{TemplateBinding HorizontalContentAlignment}" @236:25-236:98
+              markup TemplateBinding @236:53-236:97
+                positional "HorizontalContentAlignment" @236:70-236:96
+            attr VerticalContentAlignment property "{TemplateBinding VerticalContentAlignment}" @237:25-237:94
+              markup TemplateBinding @237:51-237:93
+                positional "VerticalContentAlignment" @237:68-237:92
+            attr AutomationProperties.AccessibilityView attached "Raw" @238:25-238:69
+            property-element VisualStateManager.VisualStateGroups ns=presentation @239:25-288:64
+              element VisualStateGroup ns=presentation @240:29-287:48
+                attr x:Name directive "CommonStates" @240:47-240:68
+                element VisualState ns=presentation @241:33-245:47
+                  attr x:Name directive "Normal" @241:46-241:61
+                  element Storyboard ns=presentation @242:37-244:50
+                    element PointerUpThemeAnimation ns=presentation @243:41-243:109
+                      attr Storyboard.TargetName attached "ContentPresenter" @243:66-243:106
+                element VisualState ns=presentation @246:33-259:47
+                  attr x:Name directive "PointerOver" @246:46-246:66
+                  element Storyboard ns=presentation @247:37-258:50
+                    element ObjectAnimationUsingKeyFrames ns=presentation @248:41-250:73
+                      attr Storyboard.TargetName attached "ContentPresenter" @248:72-248:112
+                      attr Storyboard.TargetProperty attached "Background" @248:113-248:151
+                      element DiscreteObjectKeyFrame ns=presentation @249:45-249:141
+                        attr KeyTime property "0" @249:69-249:80
+                        attr Value property "{ThemeResource AccentButtonBackgroundPointerOver}" @249:81-249:138
+                          markup ThemeResource @249:88-249:137
+                            positional "AccentButtonBackgroundPointerOver" @249:103-249:136
+                    element ObjectAnimationUsingKeyFrames ns=presentation @251:41-253:73
+                      attr Storyboard.TargetName attached "ContentPresenter" @251:72-251:112
+                      attr Storyboard.TargetProperty attached "BorderBrush" @251:113-251:152
+                      element DiscreteObjectKeyFrame ns=presentation @252:45-252:142
+                        attr KeyTime property "0" @252:69-252:80
+                        attr Value property "{ThemeResource AccentButtonBorderBrushPointerOver}" @252:81-252:139
+                          markup ThemeResource @252:88-252:138
+                            positional "AccentButtonBorderBrushPointerOver" @252:103-252:137
+                    element ObjectAnimationUsingKeyFrames ns=presentation @254:41-256:73
+                      attr Storyboard.TargetName attached "ContentPresenter" @254:72-254:112
+                      attr Storyboard.TargetProperty attached "Foreground" @254:113-254:151
+                      element DiscreteObjectKeyFrame ns=presentation @255:45-255:141
+                        attr KeyTime property "0" @255:69-255:80
+                        attr Value property "{ThemeResource AccentButtonForegroundPointerOver}" @255:81-255:138
+                          markup ThemeResource @255:88-255:137
+                            positional "AccentButtonForegroundPointerOver" @255:103-255:136
+                    element PointerUpThemeAnimation ns=presentation @257:41-257:109
+                      attr Storyboard.TargetName attached "ContentPresenter" @257:66-257:106
+                element VisualState ns=presentation @260:33-273:47
+                  attr x:Name directive "Pressed" @260:46-260:62
+                  element Storyboard ns=presentation @261:37-272:50
+                    element ObjectAnimationUsingKeyFrames ns=presentation @262:41-264:73
+                      attr Storyboard.TargetName attached "ContentPresenter" @262:72-262:112
+                      attr Storyboard.TargetProperty attached "Background" @262:113-262:151
+                      element DiscreteObjectKeyFrame ns=presentation @263:45-263:137
+                        attr KeyTime property "0" @263:69-263:80
+                        attr Value property "{ThemeResource AccentButtonBackgroundPressed}" @263:81-263:134
+                          markup ThemeResource @263:88-263:133
+                            positional "AccentButtonBackgroundPressed" @263:103-263:132
+                    element ObjectAnimationUsingKeyFrames ns=presentation @265:41-267:73
+                      attr Storyboard.TargetName attached "ContentPresenter" @265:72-265:112
+                      attr Storyboard.TargetProperty attached "BorderBrush" @265:113-265:152
+                      element DiscreteObjectKeyFrame ns=presentation @266:45-266:138
+                        attr KeyTime property "0" @266:69-266:80
+                        attr Value property "{ThemeResource AccentButtonBorderBrushPressed}" @266:81-266:135
+                          markup ThemeResource @266:88-266:134
+                            positional "AccentButtonBorderBrushPressed" @266:103-266:133
+                    element ObjectAnimationUsingKeyFrames ns=presentation @268:41-270:73
+                      attr Storyboard.TargetName attached "ContentPresenter" @268:72-268:112
+                      attr Storyboard.TargetProperty attached "Foreground" @268:113-268:151
+                      element DiscreteObjectKeyFrame ns=presentation @269:45-269:137
+                        attr KeyTime property "0" @269:69-269:80
+                        attr Value property "{ThemeResource AccentButtonForegroundPressed}" @269:81-269:134
+                          markup ThemeResource @269:88-269:133
+                            positional "AccentButtonForegroundPressed" @269:103-269:132
+                    element PointerDownThemeAnimation ns=presentation @271:41-271:111
+                      attr Storyboard.TargetName attached "ContentPresenter" @271:68-271:108
+                element VisualState ns=presentation @274:33-286:47
+                  attr x:Name directive "Disabled" @274:46-274:63
+                  element Storyboard ns=presentation @275:37-285:50
+                    element ObjectAnimationUsingKeyFrames ns=presentation @276:41-278:73
+                      attr Storyboard.TargetName attached "ContentPresenter" @276:72-276:112
+                      attr Storyboard.TargetProperty attached "Background" @276:113-276:151
+                      element DiscreteObjectKeyFrame ns=presentation @277:45-277:138
+                        attr KeyTime property "0" @277:69-277:80
+                        attr Value property "{ThemeResource AccentButtonBackgroundDisabled}" @277:81-277:135
+                          markup ThemeResource @277:88-277:134
+                            positional "AccentButtonBackgroundDisabled" @277:103-277:133
+                    element ObjectAnimationUsingKeyFrames ns=presentation @279:41-281:73
+                      attr Storyboard.TargetName attached "ContentPresenter" @279:72-279:112
+                      attr Storyboard.TargetProperty attached "BorderBrush" @279:113-279:152
+                      element DiscreteObjectKeyFrame ns=presentation @280:45-280:139
+                        attr KeyTime property "0" @280:69-280:80
+                        attr Value property "{ThemeResource AccentButtonBorderBrushDisabled}" @280:81-280:136
+                          markup ThemeResource @280:88-280:135
+                            positional "AccentButtonBorderBrushDisabled" @280:103-280:134
+                    element ObjectAnimationUsingKeyFrames ns=presentation @282:41-284:73
+                      attr Storyboard.TargetName attached "ContentPresenter" @282:72-282:112
+                      attr Storyboard.TargetProperty attached "Foreground" @282:113-282:151
+                      element DiscreteObjectKeyFrame ns=presentation @283:45-283:138
+                        attr KeyTime property "0" @283:69-283:80
+                        attr Value property "{ThemeResource AccentButtonForegroundDisabled}" @283:81-283:135
+                          markup ThemeResource @283:88-283:134
+                            positional "AccentButtonForegroundDisabled" @283:103-283:133

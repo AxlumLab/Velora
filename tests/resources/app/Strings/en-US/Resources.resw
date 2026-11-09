@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <data name="Greeting" xml:space="preserve">
+    <value>Hello</value>
+  </data>
+  <data name="Title.Text" xml:space="preserve">
+    <value>Settings &amp; more</value>
+    <comment>The settings page title.</comment>
+  </data>
+</root>

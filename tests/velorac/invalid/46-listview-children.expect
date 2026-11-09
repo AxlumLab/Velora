@@ -1,0 +1,2 @@
+2:4 'ListView' needs a ListView.ItemTemplate
+3:6 'ListView' cannot contain elements (items come from ItemsSource and ItemTemplate)

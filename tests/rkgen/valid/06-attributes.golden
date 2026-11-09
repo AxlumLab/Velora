@@ -1,0 +1,8 @@
+class demo::Widget @4 attrs=Category|Editor
+  field public 'int' width get=GetWidth set=SetWidth readonly=0 transient=0 @7
+  field public 'int' id get= set= readonly=1 transient=0 @8
+  field public 'void*' cache get= set= readonly=0 transient=1 @9
+  field public 'int' flags get= set= readonly=0 transient=0 @10 attrs=attr_hidden|attr_group
+  field public 'int' a get=GetA set=SetA readonly=0 transient=0 @11 attrs=extra
+  field public 'float' opacity get= set= readonly=0 transient=0 @13 attrs=Animatable
+  method public 'void' Click() @15 attrs=Command

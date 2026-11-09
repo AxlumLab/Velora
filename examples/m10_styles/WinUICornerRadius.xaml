@@ -1,0 +1,17 @@
+<!-- Excerpt of microsoft-ui-xaml v2.3.191129002 dev/CommonStyles/CornerRadius_themeresources.xaml
+     (MIT, see NOTICE.md): the Default and Light theme entries. The CornerRadiusFilterConverter and
+     CornerRadiusToThicknessConverter resources are omitted (converters are not supported). -->
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Default">
+            <CornerRadius x:Key="ControlCornerRadius">2,2,2,2</CornerRadius>
+            <CornerRadius x:Key="OverlayCornerRadius">4,4,4,4</CornerRadius>
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Light">
+            <CornerRadius x:Key="ControlCornerRadius">2,2,2,2</CornerRadius>
+            <CornerRadius x:Key="OverlayCornerRadius">4,4,4,4</CornerRadius>
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
+</ResourceDictionary>

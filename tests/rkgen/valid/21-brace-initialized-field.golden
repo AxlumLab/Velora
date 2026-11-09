@@ -1,0 +1,3 @@
+struct Defaults @2
+  field public 'int' width get= set= readonly=0 transient=0 @4
+  field public 'float' scale get= set= readonly=0 transient=0 @5

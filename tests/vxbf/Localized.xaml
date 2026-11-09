@@ -1,0 +1,9 @@
+<Page x:Class="VxbfTest.Localized"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel>
+        <!-- x:Uid values replace the markup values for the languages that have them. -->
+        <TextBlock x:Name="Greeting" x:Uid="Greeting" Text="markup" FontSize="10"/>
+        <Button x:Name="Ok" x:Uid="Ok" Content="OK"/>
+    </StackPanel>
+</Page>

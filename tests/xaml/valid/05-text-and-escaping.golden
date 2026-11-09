@@ -1,0 +1,13 @@
+element Page ns=presentation @1:1-8:8
+  attr xmlns xmlns "http://schemas.microsoft.com/winfx/2006/xaml/presentation" @1:7-1:72
+  attr xmlns:x xmlns "http://schemas.microsoft.com/winfx/2006/xaml" @2:7-2:61
+  comment " comments are kept in the syntax tree " @3:3-3:48
+  element TextBlock ns=presentation @4:3-4:57
+    attr Text property "This is a literal {x:Bind Nope}" @4:14-4:54
+  element TextBlock ns=presentation @5:3-5:69
+    attr Text property "<Hi> \"world\" 中文" @5:14-5:66
+  element TextBlock ns=presentation @6:3-6:31
+    attr Text property "{x:Null}" @6:14-6:29
+      markup x:Null @6:20-6:28
+  element Border ns=presentation @7:3-7:53
+    cdata "Literal <xml> & stuff" @7:11-7:44

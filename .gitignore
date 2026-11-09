@@ -1,0 +1,11 @@
+/build/
+/.tpkg/
+/.vs/
+/.vscode/
+/.ccgui/
+/CMakeUserPresets.json
+__pycache__/
+*.pyc
+*.user
+*.suo
+backup

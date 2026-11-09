@@ -1,0 +1,8 @@
+struct rkgen_test::nested::InventoryItem @9
+  field public 'int' itemId get= set= readonly=0 transient=0 @11
+  field public 'int' count get=GetCount set=SetCount readonly=0 transient=0 @12
+  field public 'const char*' debugName get= set= readonly=0 transient=0 @13
+class rkgen_test::nested::Inventory @19
+  field public 'InventoryItem*' selected get= set= readonly=0 transient=0 @22
+  method public 'void' Select('const InventoryItem&' item) @23
+  method public 'const InventoryItem&' GetSelected() const @24

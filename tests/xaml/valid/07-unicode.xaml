@@ -1,0 +1,8 @@
+<Page xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:界面="using:Demo.界面">
+  <StackPanel>
+    <界面:计数器 x:Name="主计数器" 标题="中文 😀 標題"/>
+    <TextBlock Text="😀😀 emoji" Tag="after emoji"/>
+  </StackPanel>
+</Page>

@@ -1,0 +1,6 @@
+203:27 Setter: 'ToggleSwitch' has no property 'HorizontalContentAlignment' in the Velora runtime
+204:27 Setter: 'ToggleSwitch' has no property 'FontFamily' in the Velora runtime
+206:27 Setter: 'ToggleSwitch' has no property 'ManipulationMode' in the Velora runtime
+207:27 Setter: 'ToggleSwitch' has no property 'UseSystemFocusVisuals' in the Velora runtime
+208:27 Setter: 'ToggleSwitch' has no property 'FocusVisualMargin' in the Velora runtime
+211:18 ControlTemplate is supported for Button in this subset, not for 'ToggleSwitch'

@@ -1,0 +1,54 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": { "major": 3, "minor": 25, "patch": 0 },
+  "configurePresets": [
+    {
+      "name": "dev",
+      "displayName": "Windows development: compilers, examples and all tests (Debug/Release)",
+      "generator": "Visual Studio 17 2022",
+      "architecture": "x64",
+      "binaryDir": "${sourceDir}/build/dev",
+      "condition": { "type": "equals", "lhs": "${hostSystemName}", "rhs": "Windows" },
+      "cacheVariables": {
+        "VELORA_ENABLE_ANTLR": "ON",
+        "VELORA_BUILD_TESTS": "ON"
+      }
+    },
+    {
+      "name": "asan",
+      "displayName": "Windows AddressSanitizer: core and UI behavior tests",
+      "generator": "Visual Studio 17 2022",
+      "architecture": "x64",
+      "binaryDir": "${sourceDir}/build/asan",
+      "condition": { "type": "equals", "lhs": "${hostSystemName}", "rhs": "Windows" },
+      "cacheVariables": {
+        "VELORA_ENABLE_ANTLR": "OFF",
+        "VELORA_BUILD_TESTS": "ON",
+        "VELORA_ENABLE_SANITIZERS": "ON"
+      }
+    },
+    {
+      "name": "core-check",
+      "displayName": "Dependency-free core smoke checks",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/core-check",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "VELORA_ENABLE_ANTLR": "OFF",
+        "VELORA_BUILD_TESTS": "ON"
+      }
+    }
+  ],
+  "buildPresets": [
+    { "name": "dev-debug", "configurePreset": "dev", "configuration": "Debug" },
+    { "name": "dev-release", "configurePreset": "dev", "configuration": "Release" },
+    { "name": "asan", "configurePreset": "asan", "configuration": "Debug" },
+    { "name": "core-check", "configurePreset": "core-check" }
+  ],
+  "testPresets": [
+    { "name": "dev-debug", "configurePreset": "dev", "configuration": "Debug", "output": { "outputOnFailure": true } },
+    { "name": "dev-release", "configurePreset": "dev", "configuration": "Release", "output": { "outputOnFailure": true } },
+    { "name": "asan", "configurePreset": "asan", "configuration": "Debug", "output": { "outputOnFailure": true } },
+    { "name": "core-check", "configurePreset": "core-check", "output": { "outputOnFailure": true } }
+  ]
+}

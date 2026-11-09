@@ -1,0 +1,3 @@
+class Logger @3
+  method public 'void' Write('const std::string&' _arg0, 'int' _arg1) @6
+  method public 'void' Flush('bool' force, 'unsigned' _arg1) @7

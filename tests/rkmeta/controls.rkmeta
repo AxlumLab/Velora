@@ -1,0 +1,39 @@
+rkmeta	5
+type	3318903870509445119	velora::fluent::Text	struct	24	0
+field	17527463967544236808	value	velora::fluent::Text::value	public	0	25	std::string			0	0
+field	2361049674340674112	font_size	velora::fluent::Text::font_size	public	0	26	float			0	0
+field	3317736900363119545	wrap	velora::fluent::Text::wrap	public	0	27	bool			0	0
+type	3166618886666150262	velora::fluent::Panel	struct	33	0
+field	14279888962111448185	fill	velora::fluent::Panel::fill	public	0	34	velora::Color			0	0
+field	7252453347832720470	border	velora::fluent::Panel::border	public	0	35	velora::Color			0	0
+field	6926067387361094624	radius	velora::fluent::Panel::radius	public	0	36	float			0	0
+field	11023629824527337995	padding	velora::fluent::Panel::padding	public	0	37	float			0	0
+type	11548509248151174486	velora::fluent::Card	struct	45	0
+base	Panel
+field	7392947696300072945	elevation	velora::fluent::Card::elevation	public	0	46	float			0	0
+field	12471874574661036422	clip	velora::fluent::Card::clip	public	0	47	bool			0	0
+type	861259762189620396	velora::fluent::Button	class	53	0
+method	3932504070980739232	Button	velora::fluent::Button::Button	public	0	implicit	63	Button(std::string, std::function<void()>)
+property	11561670226190161808	Content	velora::fluent::Button::Content	59	std::string_view	text			Measure|Paint|Content
+property	15234756256220448192	IsEnabled	velora::fluent::Button::IsEnabled	60	bool	enabled	set_enabled	true	Paint
+event	3822502221588467540	Click	velora::fluent::Button::Click	61	void()	set_on_click
+type	2232411265974018192	velora::fluent::ToggleSwitch	class	91	0
+method	16653379934602679372	ToggleSwitch	velora::fluent::ToggleSwitch::ToggleSwitch	public	0	implicit	100	ToggleSwitch(bool)
+property	1374934112361268544	IsChecked	velora::fluent::ToggleSwitch::IsChecked	97	bool	checked	set_checked	false	Paint
+event	4403755943373278616	Toggled	velora::fluent::ToggleSwitch::Toggled	98	void(bool)	set_on_change
+type	120596258090933321	velora::fluent::CheckBox	class	129	0
+base	ToggleSwitch
+type	12454637370186304477	velora::fluent::Slider	class	184	0
+method	1134330811950294600	Slider	velora::fluent::Slider::Slider	public	0	implicit	195	Slider(float, float, float)
+property	824168695576802951	Value	velora::fluent::Slider::Value	190	float	value	set	0	Paint
+property	16564049267305054218	Minimum	velora::fluent::Slider::Minimum	191	float	minimum		0	Paint
+property	10254481269985285280	Maximum	velora::fluent::Slider::Maximum	192	float	maximum		1	Paint
+event	13538879272514780208	ValueChanged	velora::fluent::Slider::ValueChanged	193	void(float)	set_on_change
+type	6149379867054340100	velora::fluent::ProgressBar	class	241	0
+method	2973042697418849670	ProgressBar	velora::fluent::ProgressBar::ProgressBar	public	0	implicit	250	ProgressBar(float)
+property	1390286024478837300	Value	velora::fluent::ProgressBar::Value	247	float	value	set	0	Paint
+event	863354471502152531	ValueChanged	velora::fluent::ProgressBar::ValueChanged	248	void(float)	set_on_change
+type	5193742465307775584	velora::fluent::TextBox	class	271	0
+method	11443146904048250670	TextBox	velora::fluent::TextBox::TextBox	public	0	implicit	281	TextBox(bool)
+property	3738270832251118660	Text	velora::fluent::TextBox::Text	278	std::string_view	text			Measure|Paint
+property	2848426774545216062	IsPassword	velora::fluent::TextBox::IsPassword	279	bool	password		false	Measure|Paint

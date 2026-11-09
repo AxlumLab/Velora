@@ -1,0 +1,9 @@
+class demo::Registry @3
+  field public static 'int' count get= set= readonly=0 transient=0 @6
+  field public static 'int' total get= set= readonly=0 transient=0 @7
+  method public static 'Registry&' Instance() @8
+  method public static 'int' Size() @9
+  method public static 'void' Clear() @10
+struct demo::Defaults @13
+  field public static 'int' shared get= set= readonly=0 transient=0 @15
+  field public 'int' local get= set= readonly=0 transient=0 @16

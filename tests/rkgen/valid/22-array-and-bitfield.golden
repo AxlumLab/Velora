@@ -1,0 +1,2 @@
+struct Packed @3
+  field public 'int' plain get= set= readonly=0 transient=0 @7

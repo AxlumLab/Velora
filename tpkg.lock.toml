@@ -1,0 +1,98 @@
+version = 1
+
+[[package]]
+name = 'antlr4-runtime'
+source = 'https://github.com/antlr/antlr4.git'
+type = 'git'
+overridden = false
+override_path = ''
+override_source = ''
+original_source = ''
+original_source_type = ''
+original_ref = ''
+sha256 = ''
+resolved_archive_hash = ''
+ref = '7d5770395bb7b02eb56e7c62662cb1d7c08f42a3'
+commit = '7d5770395bb7b02eb56e7c62662cb1d7c08f42a3'
+subdir = 'runtime/Cpp'
+strip_components = 0
+patches = []
+patch_hashes = []
+build = 'cmake'
+linkage = 'static'
+runtime = 'dynamic'
+pic = 'default'
+config = 'debug'
+toolchain = 'windows-msvc-x64'
+build_hash = '4fc7fc555134e3b0'
+artifact_id = 'antlr4-runtime/7d5770395bb7b02eb56e7c62662cb1d7c08f42a3-4fc7fc555134e3b0'
+
+[package.cmake.options]
+ANTLR4_INSTALL = 'OFF'
+ANTLR_BUILD_CPP_TESTS = 'OFF'
+ANTLR_BUILD_SHARED = 'OFF'
+ANTLR_BUILD_STATIC = 'ON'
+CMAKE_INSTALL_INCLUDEDIR = 'include'
+WITH_DEMO = 'OFF'
+WITH_STATIC_CRT = 'OFF'
+
+[package.artifacts]
+mode = 'install'
+include_dirs = ['include/antlr4-runtime']
+lib_dirs = []
+bin_dirs = []
+bin_files = []
+libs = []
+lib_files = ['lib/antlr4-runtime-static.lib']
+defines = ['ANTLR4CPP_STATIC']
+system_libs = []
+frameworks = []
+
+[[package]]
+name = 'antlr4-runtime'
+source = 'https://github.com/antlr/antlr4.git'
+type = 'git'
+overridden = false
+override_path = ''
+override_source = ''
+original_source = ''
+original_source_type = ''
+original_ref = ''
+sha256 = ''
+resolved_archive_hash = ''
+ref = '7d5770395bb7b02eb56e7c62662cb1d7c08f42a3'
+commit = '7d5770395bb7b02eb56e7c62662cb1d7c08f42a3'
+subdir = 'runtime/Cpp'
+strip_components = 0
+patches = []
+patch_hashes = []
+build = 'cmake'
+linkage = 'static'
+runtime = 'dynamic'
+pic = 'default'
+config = 'release'
+toolchain = 'windows-msvc-x64'
+build_hash = '6fb08a44ce2e8d0c'
+artifact_id = 'antlr4-runtime/7d5770395bb7b02eb56e7c62662cb1d7c08f42a3-6fb08a44ce2e8d0c'
+
+[package.cmake.options]
+ANTLR4_INSTALL = 'OFF'
+ANTLR_BUILD_CPP_TESTS = 'OFF'
+ANTLR_BUILD_SHARED = 'OFF'
+ANTLR_BUILD_STATIC = 'ON'
+CMAKE_INSTALL_INCLUDEDIR = 'include'
+WITH_DEMO = 'OFF'
+WITH_STATIC_CRT = 'OFF'
+
+[package.artifacts]
+mode = 'install'
+include_dirs = ['include/antlr4-runtime']
+lib_dirs = []
+bin_dirs = []
+bin_files = []
+libs = []
+lib_files = ['lib/antlr4-runtime-static.lib']
+defines = ['ANTLR4CPP_STATIC']
+system_libs = []
+frameworks = []
+

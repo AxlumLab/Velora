@@ -1,0 +1,8 @@
+<Page x:Class="Test.Page" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="using:Test">
+  <Page.Resources>
+    <ControlTemplate x:Key="T" TargetType="Button">
+      <Button Content="inner" Click="OnClick"/>
+    </ControlTemplate>
+  </Page.Resources>
+  <Button Content="x" Template="{StaticResource T}"/>
+</Page>

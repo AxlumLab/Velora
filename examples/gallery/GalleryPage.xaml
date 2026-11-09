@@ -1,0 +1,95 @@
+<Page x:Class="Gallery.GalleryPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:Gallery"
+      Background="#FFF3F3F3">
+  <Page.Resources>
+    <Style x:Key="Card" TargetType="Border">
+      <Setter Property="Background" Value="White"/>
+      <Setter Property="BorderBrush" Value="#FFE5E5E5"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="CornerRadius" Value="8"/>
+      <Setter Property="Padding" Value="16"/>
+    </Style>
+    <x:Double x:Key="SectionTitle">18</x:Double>
+  </Page.Resources>
+
+  <ScrollViewer x:Name="Scroller" ViewChanged="OnViewChanged" Padding="24">
+    <StackPanel Spacing="16">
+      <TextBlock Text="Velora core controls" FontSize="28"/>
+
+      <Border Style="{StaticResource Card}">
+        <StackPanel Spacing="8">
+          <TextBlock Text="Text input" FontSize="{StaticResource SectionTitle}"/>
+          <TextBox x:Name="NameBox" PlaceholderText="Your name" Text="{x:Bind Name, Mode=TwoWay}"/>
+          <Button x:Name="GreetButton" Content="Greet" Click="OnGreet"/>
+          <TextBlock x:Name="GreetingText" Text="{x:Bind Greeting, Mode=OneWay}"/>
+        </StackPanel>
+      </Border>
+
+      <Border Style="{StaticResource Card}">
+        <StackPanel Spacing="4">
+          <TextBlock Text="Toggles" FontSize="{StaticResource SectionTitle}"/>
+          <CheckBox x:Name="Subscribe" Content="Subscribe to updates"
+                    IsChecked="{x:Bind Subscribed, Mode=TwoWay}"/>
+          <CheckBox x:Name="Newsletter" Content="Monthly newsletter" DataContext="{x:Bind Settings}"
+                    IsChecked="{Binding Newsletter, Mode=TwoWay}"/>
+          <ToggleSwitch x:Name="Notify" Header="Notifications" IsOn="{x:Bind Notifications, Mode=TwoWay}"/>
+        </StackPanel>
+      </Border>
+
+      <Border Style="{StaticResource Card}">
+        <StackPanel Spacing="4">
+          <TextBlock Text="Choices" FontSize="{StaticResource SectionTitle}"/>
+          <StackPanel Orientation="Horizontal" Spacing="16">
+            <RadioButton x:Name="Small" Content="Small" IsChecked="True" Checked="OnSmall"/>
+            <RadioButton x:Name="Medium" Content="Medium" Checked="OnMedium"/>
+            <RadioButton x:Name="Large" Content="Large" Checked="OnLarge"/>
+          </StackPanel>
+        </StackPanel>
+      </Border>
+
+      <Border Style="{StaticResource Card}">
+        <StackPanel Spacing="4">
+          <TextBlock Text="Range" FontSize="{StaticResource SectionTitle}"/>
+          <Slider x:Name="VolumeSlider" Minimum="0" Maximum="100" StepFrequency="5"
+                  Value="{x:Bind Volume, Mode=TwoWay}"/>
+          <ProgressBar x:Name="Progress" Value="{x:Bind Volume, Mode=OneWay}" Maximum="100"/>
+        </StackPanel>
+      </Border>
+
+      <Border Style="{StaticResource Card}">
+        <StackPanel Spacing="4">
+          <TextBlock Text="Shapes" FontSize="{StaticResource SectionTitle}"/>
+          <Canvas x:Name="Shapes" Width="200" Height="100" Background="#FFF0F0F0">
+            <Border Canvas.Left="0" Canvas.Top="10" Width="60" Height="60"
+                    CornerRadius="30" Background="#FFE53935"/>
+            <Border Canvas.Left="100" Canvas.Top="20" Width="80" Height="50"
+                    CornerRadius="8" Background="#FF0078D4"/>
+          </Canvas>
+        </StackPanel>
+      </Border>
+
+      <Border Style="{StaticResource Card}">
+        <StackPanel Spacing="4">
+          <TextBlock Text="Fruits" FontSize="{StaticResource SectionTitle}"/>
+          <ListView x:Name="FruitList" ItemsSource="{x:Bind Fruits}" Height="150" ItemHeight="28">
+            <ListView.ItemTemplate>
+              <DataTemplate x:DataType="local:Fruit">
+                <TextBlock Text="{x:Bind Name, Mode=OneWay}" Margin="8,4,8,4"/>
+              </DataTemplate>
+            </ListView.ItemTemplate>
+          </ListView>
+        </StackPanel>
+      </Border>
+
+      <Border Style="{StaticResource Card}">
+        <StackPanel Spacing="4">
+          <TextBlock Text="Summary" FontSize="{StaticResource SectionTitle}"/>
+          <TextBlock x:Name="SizeText" Text="{x:Bind Size, Mode=OneWay}"/>
+          <TextBlock x:Name="SummaryText" Text="{x:Bind Summary, Mode=OneWay}"/>
+        </StackPanel>
+      </Border>
+    </StackPanel>
+  </ScrollViewer>
+</Page>

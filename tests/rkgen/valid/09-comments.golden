@@ -1,0 +1,3 @@
+struct demo::Annotated @8
+  field public 'int' value get= set= readonly=0 transient=0 @12
+  field public 'float' scale get= set= readonly=0 transient=0 @13

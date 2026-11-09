@@ -1,0 +1,1 @@
+2:40 TwoWay binding needs a target that reports changes; in this subset that is TextBox.Text, CheckBox.IsChecked

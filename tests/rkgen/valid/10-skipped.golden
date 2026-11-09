@@ -1,0 +1,4 @@
+struct AfterTemplate @18
+  field public 'int' kept get= set= readonly=0 transient=0 @20
+struct demo::Reflected @32
+  field public 'int' count get= set= readonly=0 transient=0 @38

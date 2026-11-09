@@ -1,0 +1,7 @@
+<Page x:Class="Test.Page" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="using:Test">
+  <Page.Resources>
+    <Style x:Key="A" TargetType="TextBlock"/>
+    <Style x:Key="B" TargetType="Button" BasedOn="{StaticResource A}"/>
+  </Page.Resources>
+  <Button Content="x" Style="{StaticResource B}"/>
+</Page>

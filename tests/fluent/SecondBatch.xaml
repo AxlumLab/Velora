@@ -1,0 +1,12 @@
+<Page x:Class="FluentTest.SecondBatch"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- R11.4 second batch (the controls the runtime has): pointer and keyboard behavior. -->
+    <StackPanel Spacing="8">
+        <ToggleSwitch x:Name="Wifi" Header="Wi-Fi" Toggled="OnToggled" TabIndex="2"/>
+        <Slider x:Name="Volume" Width="200" Minimum="0" Maximum="100" Value="10" ValueChanged="OnValueChanged" TabIndex="1"/>
+        <RadioButton x:Name="Small" Content="Small" GroupName="Size" IsChecked="True" IsTabStop="False"/>
+        <RadioButton x:Name="Large" Content="Large" GroupName="Size" Checked="OnLarge"/>
+        <ProgressBar x:Name="Progress" Width="200" Maximum="10" Value="15"/>
+    </StackPanel>
+</Page>

@@ -1,0 +1,37 @@
+element Page ns=presentation @2:1-20:8
+  attr x:Class directive "Demo.MainPage" @2:7-2:30
+  attr xmlns xmlns "http://schemas.microsoft.com/winfx/2006/xaml/presentation" @3:7-3:72
+  attr xmlns:x xmlns "http://schemas.microsoft.com/winfx/2006/xaml" @4:7-4:61
+  attr xmlns:local xmlns "using:Demo" @5:7-5:31
+  property-element Page.Resources ns=presentation @6:5-8:22
+    element SolidColorBrush ns=presentation @7:9-7:58
+      attr x:Key directive "Accent" @7:26-7:40
+      attr Color property "#0078D7" @7:41-7:56
+  element Grid ns=presentation @9:5-19:12
+    property-element Grid.RowDefinitions ns=presentation @10:9-13:31
+      element RowDefinition ns=presentation @11:13-11:43
+        attr Height property "Auto" @11:28-11:41
+      element RowDefinition ns=presentation @12:13-12:40
+        attr Height property "*" @12:28-12:38
+    element TextBlock ns=presentation @14:9-14:61
+      attr Grid.Row attached "0" @14:20-14:32
+      attr Text property "Velora & Fluent" @14:33-14:59
+    element StackPanel ns=presentation @15:9-18:22
+      attr Grid.Row attached "1" @15:21-15:33
+      attr Spacing property "12" @15:34-15:46
+      element TextBox ns=presentation @16:13-16:89
+        attr x:Name directive "Username" @16:22-16:39
+        attr Text property "{x:Bind ViewModel.UserName, Mode=TwoWay}" @16:40-16:87
+          markup x:Bind @16:46-16:86
+            positional "ViewModel.UserName" @16:54-16:72
+            arg Mode "TwoWay" @16:79-16:85
+            bind @16:54-16:72
+              path @16:54-16:72
+                member "ViewModel" @16:54-16:63
+                member "UserName" @16:64-16:72
+      element Button ns=presentation @17:13-17:89
+        attr Content property "Save" @17:21-17:35
+        attr Click property "OnSave" @17:36-17:50
+        attr Background property "{StaticResource Accent}" @17:51-17:87
+          markup StaticResource @17:63-17:86
+            positional "Accent" @17:79-17:85

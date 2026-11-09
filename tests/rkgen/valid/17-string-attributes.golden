@@ -1,0 +1,2 @@
+class Player @3 attrs=DisplayName = "Player"|Order = 2
+  field public 'int' hp get= set= readonly=0 transient=0 @7 attrs=Tooltip = "Hit points"

@@ -1,0 +1,10 @@
+element Page ns=presentation @1:1-7:8
+  attr xmlns xmlns "http://schemas.microsoft.com/winfx/2006/xaml/presentation" @1:7-1:72
+  attr xmlns:x xmlns "http://schemas.microsoft.com/winfx/2006/xaml" @2:7-2:61
+  attr xmlns:d xmlns "http://schemas.microsoft.com/expression/blend/2008" @3:7-3:67
+  attr xmlns:mc xmlns "http://schemas.openxmlformats.org/markup-compatibility/2006" @4:7-4:77
+  attr xmlns:local xmlns "using:Demo" @5:7-5:31
+  attr mc:Ignorable directive "d" @5:32-5:48
+  attr d:DesignHeight ignored "720" @5:49-5:69
+  element local:CounterControl ns=using:Demo @6:3-6:43
+    attr x:Name directive "Counter" @6:25-6:41

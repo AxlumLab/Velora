@@ -1,0 +1,31 @@
+element Grid ns=presentation @1:1-23:8
+  attr xmlns xmlns "http://schemas.microsoft.com/winfx/2006/xaml/presentation" @1:7-1:72
+  attr xmlns:x xmlns "http://schemas.microsoft.com/winfx/2006/xaml" @2:7-2:61
+  property-element Grid.RowDefinitions ns=presentation @3:3-6:25
+    element RowDefinition ns=presentation @4:5-4:35
+      attr Height property "Auto" @4:20-4:33
+    element RowDefinition ns=presentation @5:5-5:32
+      attr Height property "*" @5:20-5:30
+  property-element VisualStateManager.VisualStateGroups ns=presentation @7:3-16:42
+    element VisualStateGroup ns=presentation @8:5-15:24
+      attr x:Name directive "CommonStates" @8:23-8:44
+      element VisualState ns=presentation @9:7-9:37
+        attr x:Name directive "Normal" @9:20-9:35
+      element VisualState ns=presentation @10:7-14:21
+        attr x:Name directive "PointerOver" @10:20-10:40
+        element Storyboard ns=presentation @11:9-13:22
+          element DoubleAnimation ns=presentation @12:11-12:122
+            attr Storyboard.TargetName attached "Card" @12:28-12:56
+            attr Storyboard.TargetProperty attached "Opacity" @12:57-12:92
+            attr To property "0.8" @12:93-12:101
+            attr Duration property "0:0:0.1" @12:102-12:120
+  element Border ns=presentation @17:3-21:12
+    attr x:Name directive "Card" @17:11-17:24
+    attr Grid.Row attached "1" @17:25-17:37
+    property-element Border.Background ns=presentation @18:5-20:25
+      element SolidColorBrush ns=presentation @19:7-19:57
+        attr Color property "#FF0078D4" @19:24-19:41
+        attr Opacity property "0.5" @19:42-19:55
+  element x:Double ns=x @22:3-22:38
+    attr x:Key directive "Gap" @22:13-22:24
+    text "12" @22:25-22:27

@@ -1,0 +1,10 @@
+<UserControl x:Class="Demo.Badge"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <UserControl.Resources>
+    <SolidColorBrush x:Key="BadgeBrush" Color="#FFC42B1C"/>
+  </UserControl.Resources>
+  <Border Background="{StaticResource BadgeBrush}" CornerRadius="10" Padding="10,2">
+    <TextBlock Text="{x:Bind Label, Mode=OneWay}" Foreground="White" FontSize="12"/>
+  </Border>
+</UserControl>

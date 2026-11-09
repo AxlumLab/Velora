@@ -1,0 +1,6 @@
+enum Offset @3
+  underlying 'int' class=1
+  value Below = -5 raw='- 5'
+  value Next = -4 raw=''
+  value Shifted = ? raw='1<<2'
+  value AfterShift = ? raw=''

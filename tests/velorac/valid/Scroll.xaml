@@ -1,0 +1,11 @@
+<Page x:Class="Test.Page"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <ScrollViewer x:Name="Scroller" ViewChanged="OnClick" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Hidden"
+                Padding="4" BorderThickness="1" BorderBrush="Gray">
+    <StackPanel Spacing="8">
+      <TextBlock x:Name="First" Text="First"/>
+      <TextBlock Text="Second"/>
+    </StackPanel>
+  </ScrollViewer>
+</Page>

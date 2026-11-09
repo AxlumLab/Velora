@@ -1,0 +1,10 @@
+class outer::inner::deep::Node @4
+  field public 'Link' first get= set= readonly=0 transient=0 @11
+struct outer::inner::deep::Node::Link @7
+  field public 'int' target get= set= readonly=0 transient=0 @9
+struct outer::Root @16
+  field public 'int' value get= set= readonly=0 transient=0 @18
+struct Hidden @24
+  field public 'int' x get= set= readonly=0 transient=0 @26
+struct other::Second @31
+  field public 'double' weight get= set= readonly=0 transient=0 @33

@@ -1,0 +1,1 @@
+2:34 ItemsSource needs a velora::ObservableVector<T>& (non-const reference); the path is std::vector<std::string>&

@@ -1,0 +1,14 @@
+class demo::Account @3
+  field private 'int' implicitPrivate get= set= readonly=0 transient=0 @5
+  field public 'int' balance get= set= readonly=0 transient=0 @7
+  field protected 'int' audit get= set= readonly=0 transient=0 @10
+  field public 'int' owner get= set= readonly=0 transient=0 @16
+  method public 'int' Balance() const @8
+  method protected 'void' Audit() @11
+  method private 'void' Lock() @13
+  rkctor private '' Account('int' id) @14
+struct demo::Record @19
+  base Base
+  field public 'int' visible get= set= readonly=0 transient=0 @21
+  field private 'int' secret get= set= readonly=0 transient=0 @23
+  field protected 'float' weight get= set= readonly=0 transient=0 @25

@@ -1,0 +1,18 @@
+enum demo::Color @3
+  underlying 'std::uint8_t' class=1
+  value Red = 0 raw=''
+  value Green = 2 raw='2'
+  value Blue = 3 raw=''
+  value Mask = 255 raw='0xFFu'
+  value After = 256 raw=''
+enum demo::Plain @12
+  underlying '' class=0
+  value First = 10 raw='10'
+  value Second = 11 raw=''
+  value Third = 12 raw=''
+class demo::Holder @17
+  field public 'Mode' mode get= set= readonly=0 transient=0 @25
+enum demo::Holder::Mode @20
+  underlying 'int' class=1
+  value Off = 0 raw=''
+  value On = 1 raw=''

@@ -1,0 +1,8 @@
+BasedOnStyle: Microsoft
+BreakBeforeBraces: Allman
+IndentWidth: 4
+UseTab: Never
+ColumnLimit: 110
+PointerAlignment: Left
+ReferenceAlignment: Left
+SortIncludes: CaseSensitive

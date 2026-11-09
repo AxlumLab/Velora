@@ -1,0 +1,23 @@
+include_guard(GLOBAL)
+
+option(VELORA_ENABLE_ANTLR "Build XAML and reflection compilers (requires tpkg and ANTLR jar)" ON)
+option(VELORA_EMBED_RESOURCES "Embed the complete .vpak in the binary (Qt qrc-style); OFF deploys under Resources/" ON)
+option(VELORA_BUILD_TESTS "Configure CTest unit and integration test programs" OFF)
+
+if(WIN32)
+    set(VELORA_PLATFORM_WINDOWS 1)
+elseif(APPLE)
+    set(VELORA_PLATFORM_MACOS 1)
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    set(VELORA_PLATFORM_LINUX 1)
+else()
+    message(FATAL_ERROR "Unsupported host OS for Velora")
+endif()
+
+if(MSVC)
+    set(VELORA_COMPILER_MSVC 1)
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    set(VELORA_COMPILER_CLANG 1)
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    set(VELORA_COMPILER_GCC 1)
+endif()

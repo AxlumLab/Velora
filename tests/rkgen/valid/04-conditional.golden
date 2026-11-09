@@ -1,0 +1,13 @@
+class demo::Window @6
+  field public 'void*' hwnd get= set= readonly=0 transient=0 @10
+  field public 'int' dpi get= set= readonly=0 transient=0 @17
+  method public 'void' Show() @21
+struct demo::Settings @24
+  field public 'int' width get= set= readonly=0 transient=0 @26
+  field public 'float' volume get= set= readonly=0 transient=0 @31
+  field public 'int' height get= set= readonly=0 transient=0 @33
+enum demo::Backend @43
+  underlying '' class=1
+  value Software = 0 raw=''
+  value Direct3D = 1 raw=''
+  value Vulkan = 2 raw=''

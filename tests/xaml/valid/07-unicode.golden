@@ -1,0 +1,11 @@
+element Page ns=presentation @1:1-8:8
+  attr xmlns xmlns "http://schemas.microsoft.com/winfx/2006/xaml/presentation" @1:7-1:72
+  attr xmlns:x xmlns "http://schemas.microsoft.com/winfx/2006/xaml" @2:7-2:61
+  attr xmlns:界面 xmlns "using:Demo.界面" @3:7-3:31
+  element StackPanel ns=presentation @4:3-7:16
+    element 界面:计数器 ns=using:Demo.界面 @5:5-5:41
+      attr x:Name directive "主计数器" @5:13-5:26
+      attr 标题 property "中文 😀 標題" @5:27-5:39
+    element TextBlock ns=presentation @6:5-6:51
+      attr Text property "😀😀 emoji" @6:16-6:31
+      attr Tag property "after emoji" @6:32-6:49
