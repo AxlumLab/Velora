@@ -4,6 +4,7 @@
 #include <list>
 #include <memory>
 #include <optional>
+#include <span>
 #include <string>
 #include <string_view>
 #include <thread>
@@ -11,6 +12,7 @@
 #include <vector>
 #include <velora/controls/EventSubscription.hpp>
 #include <velora/controls/LayoutTypes.hpp>
+#include <velora/controls/SourceControlRegistry.hpp>
 #include <velora/globals.hpp>
 #include <velora/runtime/BindingEngine.hpp>
 #include <velora/runtime/ElementTree.hpp>
@@ -228,6 +230,14 @@ class Framework
     // Creates an element of a built-in type with the type's defaults applied at DefaultStyle level.
     // Code that only has a type name resolves it with findElementKind first.
     ElementId create(ElementKind kind, ElementId parent = 0);
+    // Source-only registration. Declarations are copied; descriptors must outlive this UI context.
+    std::string registerSourceControl(const XamlTypeDeclaration& declaration,
+                                      SourceControlRegistry::Factory factory,
+                                      std::span<const PropertyDescriptor* const> properties);
+    [[nodiscard]] const SourceControlRegistry& sourceControls() const noexcept
+    {
+        return m_sourceControls;
+    }
     // Hosts an element object made off-tree (createElement, configured through elementProperties())
     // under `parent` (0: a top-level element). Its values are kept. 0 for an untyped element, one
     // already in a tree, an unknown parent or a call off the UI thread.
@@ -461,6 +471,7 @@ class Framework
     Compositor& m_compositor;
     TextMeasurer m_measure;
     PropertyRegistry m_registry;
+    SourceControlRegistry m_sourceControls;
     EventRegistry m_eventRegistry;
     VisualProperties m_visual;
     Properties m_props;

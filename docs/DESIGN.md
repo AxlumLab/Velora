@@ -82,7 +82,7 @@ auto subscription = ui.subscribeEvent(id, ui.events().Toggled,
 
 `renderOverride(Canvas&, Size) const` 在已有背景之后、子视觉之前记录局部绘图命令，返回 true 接管内容绘制，false 使用注册的默认 painter。属性有效值变化通过现有 VisualBridge 触发重绘，快照仍为不可变 DisplayList。渲染回调不得改变树或属性；本轮不提供额外 overlay、文本编辑、触摸多指或指针取消 API。
 
-`examples/custom_control/ValuePad` 是实际源码示例，使用同一依赖属性保存数值，支持拖动、键盘、Tab 和虚拟绘制。它暂时沿用 UserControl schema 身份，通过 C++ 工厂挂载；开放类型注册与正式自定义 XAML 编译仍是 2A 待办，不能把示例类当作已完成的控件 SDK。
+`examples/custom_control/ValuePad` 是实际源码示例，使用同一依赖属性保存数值，支持拖动、键盘、Tab 和虚拟绘制。其类名与 TypeId 现在为声明中的 `Demo.ValuePad`，布局 kind 继续沿用内建 UserControl 基类作为过渡。`SourcePage.xaml`、同一份 `.vtypes` 声明及普通 C++ 工厂已贯通正式编译加载，当前限叶节点、字面值与 x:Name；完整扩展语义及插件仍是 2A 待办，详见 XAML-TOOLCHAIN.md。
 
 ## 5. 后端与发布
 

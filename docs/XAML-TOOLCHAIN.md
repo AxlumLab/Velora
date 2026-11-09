@@ -10,9 +10,26 @@
 
 目标：内建、源码扩展和二进制插件从同一声明生成普通反射、XAML schema、编辑器补全与运行期描述，避免分别维护多份属性表。每类声明包含完整名称/TypeId、基类、属性 ID/类型/默认值/无效化规则、事件、内容规则、模板约定与所属模块。工厂与 C++ 访问器单独绑定，不把进程地址写进文件。
 
-当前 `XamlIRBuilder` 只接受内建 schema，`RuntimeTypeRegistry` 也尚未提供插件工厂。实施时先引入可组合元数据目录，再让编译器和加载目标查询同一声明；不要仅取消未知元素诊断。
+当前增加了源码控件的第一个声明目录切片：`XamlTypeCatalog` 读取 `.vtypes`，编译器通过 `using:命名空间` 解析已声明类型；Framework 的 `SourceControlRegistry` 将同一声明绑定到普通 C++ 工厂和实际依赖属性描述符。动态插件加载器、自动 C++ 声明生成和完整可扩展 schema 尚未实现。
 
-整个 schema fingerprint 的严格相等目前适用于固定集合。开放插件后，新增无关类型不应使全部旧页面失效。新二进制版本应记录实际引用的模块、类型和属性契约，逐项校验签名与版本；保持格式版本、大小边界和完整性校验。旧二进制只按其旧规则读取，不能静默跳过 fingerprint。变更属性含义、访问器契约或指令编码时重新生成页面与连接代码。
+内建 schema 仍按原 fingerprint 严格校验。引用源码控件的页面使用 VXBF 1.4，在实际引用的类型记录中保存声明契约；类型、基类、属性名称/种类/默认值/运行期名称或固定 Paint 规则改变会改变契约。注册无关源码类型不影响原页面。内建页面仍输出 1.3，读取器按旧版记录布局兼容 1.0–1.3，拒绝未知新版本；保留校验和、大小边界及结构校验，不跳过 fingerprint。当前契约按类型记录，模块级插件依赖与版本解析仍待实现。
+
+### 源码类型声明切片
+
+`.vtypes` 为 UTF-8、制表符分列的声明，首行 `velora-xaml-types<TAB>1`。示例：
+
+```text
+velora-xaml-types	1
+type	Demo.ValuePad	UserControl
+property	Value	Double	ValuePad.Value	0
+end
+```
+
+type 行为完整类名及内建基类名；property 行为 XAML 名称、值种类、实际依赖属性名称及默认值。首版只允许 Double、Integer、Boolean、String 和 Paint 无效化规则，基类必须为已知内建类型，不能覆盖继承属性。完整文件校验成功后才发布到目录，重复名称/身份、未知基类、错误种类和默认值均报错。
+
+`velora_add_xaml(... TYPES ValuePad.vtypes)` 或 `velora_xaml_load(... TYPES ...)` 将声明作为 `velorac vxbf --types` 输入和构建依赖。应用在加载前调用 `Framework::registerSourceControl`，绑定声明、返回未挂载对象的工厂及匹配描述符。声明复制进注册表；描述符须保持有效。工厂输出的类名、TypeId、基类 kind 和线程必须匹配，异常转为加载错误并回滚。源属性赋值失败也会回滚，已有根的原局部值会恢复。
+
+首个编译切片支持叶节点、字面值、继承的普通属性与 x:Name；自定义 Binding/x:Bind、资源表达式、模板、子内容和事件声明仍明确报未支持。未知类型和属性继续有源位置诊断。`ValuePad.vtypes` 在示例构建中同时供编译器使用并嵌入 C++，其类身份、属性默认值和工厂注册读取同一声明，没有第二份属性表或运行期 XML 构树解释器。
 
 ## 3. 文本编辑与实时预览
 

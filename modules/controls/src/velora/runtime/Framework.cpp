@@ -144,6 +144,15 @@ ElementId Framework::create(ElementKind kind, ElementId parent)
     return insert(createElement(kind), parent);
 }
 
+std::string Framework::registerSourceControl(const XamlTypeDeclaration& declaration,
+                                             SourceControlRegistry::Factory factory,
+                                             std::span<const PropertyDescriptor* const> properties)
+{
+    if (!isOwnerThread())
+        return "source control registration requires the UI thread";
+    return m_sourceControls.add(declaration, std::move(factory), properties);
+}
+
 ElementId Framework::insert(std::shared_ptr<UIElement> element, ElementId parent)
 {
     if (!element || !element->kind() || element->isInTree() || !isOwnerThread())

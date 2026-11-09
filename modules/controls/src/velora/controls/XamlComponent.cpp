@@ -7,8 +7,8 @@
 #include <velora/controls/XamlItems.hpp>
 #include <velora/resources/ResourceProvider.hpp>
 #include <velora/runtime/FrameworkResources.hpp>
-#include <velora/runtime/object/BuiltinTypes.hpp>
 #include <velora/runtime/SchemaValue.hpp>
+#include <velora/runtime/object/BuiltinTypes.hpp>
 #include <velora/xaml/XamlBinary.hpp>
 
 namespace velora
@@ -42,7 +42,7 @@ ResourceTemplateFactory dataTemplateFactory(std::shared_ptr<const XamlIR> ir, us
 // compiled ResourceDictionary files, loaded through the ResourceManager.
 class DictionaryBuilder
 {
-public:
+  public:
     // `base` is the dictionary file's own URI: relative merged Sources resolve next to it, in its
     // namespace (a framework package's dictionaries merge each other inside the package).
     DictionaryBuilder(Framework& ui, ElementId element, ResourceUri base, std::vector<std::string>& loading,
@@ -178,7 +178,7 @@ public:
         return resolveAll(out);
     }
 
-private:
+  private:
     struct Reference
     {
         ResourceDictionary* home;
@@ -390,7 +390,7 @@ private:
         return {};
     }
 
-private:
+  private:
     std::shared_ptr<const ItemConnectors> m_items; // for keyed DataTemplates of this dictionary
 
     Framework& m_ui;
@@ -410,7 +410,7 @@ private:
 // XamlLoader's view of a Framework: handles are ElementIds of that root's tree.
 class FrameworkLoadTarget final : public XamlLoadTarget
 {
-public:
+  public:
     explicit FrameworkLoadTarget(Framework& ui, const ComponentLoadOptions* options = nullptr) noexcept
         : m_ui(ui), m_options(options)
     {
@@ -423,6 +423,29 @@ public:
 
     XamlHandle create(const XamlIRType& type, XamlHandle parent, std::string& error) override
     {
+        if (type.contract || m_ui.sourceControls().contains(type.className))
+        {
+            try
+            {
+                auto object = m_ui.sourceControls().create(type, error);
+                if (!object)
+                    return 0;
+                const auto id = m_ui.insert(std::move(object), parent);
+                if (!id)
+                    error = "source control insertion failed";
+                return id;
+            }
+            catch (const std::exception& exception)
+            {
+                error = exception.what();
+                return 0;
+            }
+            catch (...)
+            {
+                error = "source control factory failed";
+                return 0;
+            }
+        }
         const auto kind = kindOf(type);
         if (!kind)
         {
@@ -437,6 +460,12 @@ public:
 
     bool isOfType(XamlHandle existing, const XamlIRType& type) const override
     {
+        if (type.contract)
+        {
+            const auto* object = m_ui.tree().uiElement(existing);
+            // Existing roots still require a registered matching construction contract.
+            return m_ui.sourceControls().matches(type) && object && object->className() == type.className;
+        }
         const auto kind = kindOf(type);
         return kind && m_ui.tree().is(existing, *kind);
     }
@@ -447,6 +476,16 @@ public:
         const PropertyDescriptor* d = descriptor(property);
         if (!d)
             return "unknown property (compiled against another schema?)";
+        if (m_ui.sourceControls().property(property.name))
+        {
+            const auto instance = m_ui.tree().object(object);
+            const auto* element = m_ui.tree().uiElement(object);
+            if (!element || !m_ui.sourceControls().ownsProperty(element->className(), property.name))
+                return "source property is not declared on this object";
+            if (instance->setValue(*d, value) != PropertySetResult::kOk)
+                return "source property rejected the value";
+            return {};
+        }
         m_ui.set(object, d, value);
         return {};
     }
@@ -907,7 +946,7 @@ public:
         m_ui.applyTemplate(owner, root, std::move(scope));
     }
 
-private:
+  private:
     std::shared_ptr<const ItemConnectors> itemConnectors() const
     {
         if (!m_options || (!m_options->itemXBind && !m_options->itemConnector))
@@ -969,6 +1008,8 @@ private:
     const PropertyDescriptor* descriptor(const XamlIRProperty& property) const
     {
         const PropertyDescriptor* d = m_ui.property(property.name);
+        if (!d)
+            d = m_ui.sourceControls().property(property.name);
         return d && d->id == property.id ? d : nullptr;
     }
 
@@ -1008,7 +1049,7 @@ ResourceTemplateFactory dataTemplateFactory(std::shared_ptr<const XamlIR> ir, us
         }
         FrameworkLoadTarget target(ui, &local);
         const auto result =
-            XamlLoader(controlTypeRegistry()).instantiateDataTemplate(ir, begin, target, options);
+            XamlLoader(ui.sourceControls().types()).instantiateDataTemplate(ir, begin, target, options);
         if (!result.ok)
             throw std::runtime_error(result.error);
         // Each instance is its own name scope (x:Name repeats in every container).
@@ -1027,7 +1068,8 @@ ResourceTemplateFactory templateFactory(std::shared_ptr<const XamlIR> ir, usize 
     return [ir = std::move(ir), begin](Framework& ui, ElementId owner) -> std::shared_ptr<void>
     {
         FrameworkLoadTarget target(ui);
-        const auto result = XamlLoader(controlTypeRegistry()).instantiateTemplate(ir, begin, target, owner);
+        const auto result =
+            XamlLoader(ui.sourceControls().types()).instantiateTemplate(ir, begin, target, owner);
         if (!result.ok)
             throw std::runtime_error(result.error);
         return nullptr; // the instance lives in the tree, registered by completeTemplate
@@ -1093,7 +1135,7 @@ ComponentLoad loadComponent(Framework& ui, std::span<const u8> vxbf, const Compo
                     handler(ui, owner);
             });
     FrameworkLoadTarget target(ui, &options);
-    XamlLoader loader(controlTypeRegistry());
+    XamlLoader loader(ui.sourceControls().types());
     const XamlLoadResult result = loader.load(vxbf, target, loadOptions);
     load.ok = result.ok;
     load.error = result.error;

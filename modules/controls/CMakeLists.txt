@@ -9,6 +9,8 @@ velora_module(controls
         velora/controls/ElementFactory.cpp
         velora/controls/EventSubscription.cpp
         velora/controls/InputContext.cpp
+        velora/controls/XamlTypeCatalog.cpp
+        velora/controls/SourceControlRegistry.cpp
         velora/controls/ControlTypes.cpp
         velora/controls/ElementSchema.cpp
         velora/controls/XamlComponent.cpp

@@ -3,8 +3,8 @@
 #include <string>
 #include <vector>
 #include <velora/globals.hpp>
-#include <velora/types/TypeId.hpp>
 #include <velora/runtime/property/PropertyTypes.hpp>
+#include <velora/types/TypeId.hpp>
 
 // XamlIR (R06.1): the compiled form of one XAML file — what velorac writes into a .vxbf and what
 // the XamlLoader (R07) replays. Declarative only: object types, property values, bindings,
@@ -24,6 +24,7 @@ struct XamlIRType
 {
     TypeId id;
     std::string className; // "Velora.UI.Button"
+    u64 contract = 0;      // 1.4: source-type declaration contract; zero for the fixed built-in schema
 };
 
 struct XamlIRProperty

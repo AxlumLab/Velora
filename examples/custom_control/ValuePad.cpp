@@ -1,10 +1,16 @@
 #include "ValuePad.hpp"
+#include "ValuePadTypes.hpp"
 
 #include <algorithm>
+#include <array>
 #include <cmath>
+#include <stdexcept>
 #include <string>
+#include <variant>
+#include <velora/controls/ElementFactory.hpp>
 #include <velora/controls/InputContext.hpp>
 #include <velora/graphics/Canvas.hpp>
+#include <velora/runtime/SchemaValue.hpp>
 
 namespace velora
 {
@@ -12,11 +18,47 @@ ValuePad::ValuePad() noexcept : UIElement(ElementKind::kUserControl)
 {
 }
 
+const XamlTypeDeclaration& ValuePad::declaration()
+{
+    static const auto catalog = []
+    {
+        XamlTypeCatalog types;
+        if (const auto error = types.append(kValuePadTypes); !error.empty())
+            throw std::runtime_error(error);
+        return types;
+    }();
+    const auto* type = catalog.find("Demo.ValuePad");
+    if (!type)
+        throw std::runtime_error("missing Demo.ValuePad declaration");
+    return *type;
+}
+
+std::string ValuePad::className() const
+{
+    return declaration().className;
+}
+
+std::string ValuePad::registerType(Framework& ui)
+{
+    const std::array properties = {&valueProperty()};
+    return ui.registerSourceControl(declaration(), [] { return createElement<ValuePad>(); }, properties);
+}
+
 const PropertyDescriptor& ValuePad::valueProperty()
 {
     static PropertyRegistry registry;
-    static const auto& property =
-        registry.define("ValuePad.Value", PropertyValue(0.0), PropertyFlags::kPaint);
+    static const auto& declaration = []() -> const XamlPropertyDeclaration&
+    {
+        const auto* property = ValuePad::declaration().property("Value");
+        if (!property)
+            throw std::runtime_error("missing ValuePad.Value declaration");
+        return *property;
+    }();
+    static const SchemaProperty schema{
+        declaration.name, declaration.kind, {}, declaration.defaultValue, kSchemaPaint};
+    static const auto& property = registry.define(
+        declaration.runtimeName, std::get<PropertyValue>(parseValue(schema, declaration.defaultValue)),
+        PropertyFlags::kPaint);
     return property;
 }
 

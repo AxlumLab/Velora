@@ -38,6 +38,17 @@ velora_add_core_test(velora_dependency_property_test tests/dependency_property_t
 velora_add_core_test(velora_controls_core_test tests/controls_core_test.cpp velora::controls)
 velora_add_core_test(velora_custom_control_test tests/custom_control_test.cpp velora::controls)
 target_sources(velora_custom_control_test PRIVATE examples/custom_control/ValuePad.cpp)
+include("${PROJECT_SOURCE_DIR}/examples/custom_control/Types.cmake")
+target_include_directories(velora_custom_control_test PRIVATE "${PROJECT_BINARY_DIR}/generated/examples")
+velora_add_core_test(velora_source_control_test tests/source_control_test.cpp velora::controls)
+target_sources(velora_source_control_test PRIVATE examples/custom_control/ValuePad.cpp)
+target_include_directories(velora_source_control_test PRIVATE "${PROJECT_BINARY_DIR}/generated/examples")
+if(VELORA_ENABLE_ANTLR)
+    target_compile_definitions(velora_source_control_test PRIVATE VELORA_TEST_SOURCE_XAML=1)
+    target_link_libraries(velora_source_control_test PRIVATE velora::markup)
+    velora_xaml_load(velora_source_control_test XAML SourcePage.xaml HEADERS SourcePage.hpp
+        TYPES ValuePad.vtypes BASE_DIR "${PROJECT_SOURCE_DIR}/examples/custom_control")
+endif()
 
 if(WIN32)
     velora_add_core_test(velora_platform_window_test tests/platform_window_test.cpp velora::platform ole32 uuid)

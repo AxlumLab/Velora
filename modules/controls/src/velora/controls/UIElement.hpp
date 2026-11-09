@@ -64,8 +64,9 @@ class UIElement : public DependencyObject
     {
         return m_kind == kind;
     }
-    // "Velora.UI.<Type>", or empty for an untyped element.
-    [[nodiscard]] std::string className() const;
+    // "Velora.UI.<Type>", or empty for an untyped element. Source controls override this with
+    // their stable declared class name; it must not change while the object is hosted.
+    [[nodiscard]] virtual std::string className() const;
     [[nodiscard]] TypeId typeId() const;
 
     // FrameworkElement.MeasureOverride/ArrangeOverride. The default lays out the first child in the

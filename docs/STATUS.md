@@ -66,9 +66,21 @@
 - 指针捕获由指针入口决定目标，通用事件不再被捕获对象重定向；新增回归覆盖捕获期间的焦点、键盘和 Toggle 状态事件来源。回调临时持有实际对象，允许输入回调中移除树节点并释放调用方最后引用。
 - `renderOverride` 可接管内容绘制，背景、子视觉、属性无效化和不可变 DisplayList 继续沿用现有管线。新增 `ValuePad` 示例及共用源码的回归测试，验证布局、拖动、键盘、Tab、禁用祖先、重绘和卸载。没有增加影子属性或新元素树。
 - Windows 独立示例实际启动，通过 Win32 消息检查拖动、捕获后的区域外移动、释放、End/Left；截图确认最终显示 `Value 99`，WM_CLOSE 后退出码为 0。截图在 `build/dev/extensions-native/01-start.png`、`02-after-input.png`，会话记录在同目录 `session.json`。这是单主指针消息验收，不代表触摸、多指或全部输入设备验收。
-- 示例暂沿用 UserControl schema 身份，C++ 工厂挂载，不支持正式自定义 XAML 类型注册。内建输入行为仍有 Framework 分派；完整卸载扩展、自动 UI 线程销毁、指针取消及多指输入仍待实现，不将 1C 或最终 SDK 标记为完成。
+- 此轮示例当时沿用 UserControl schema 身份，C++ 工厂挂载；源码声明与正式自定义 XAML 的首个切片后续已接入，见下一节。内建输入行为仍有 Framework 分派；完整卸载扩展、自动 UI 线程销毁、指针取消及多指输入仍待实现，不将 1C 或最终 SDK 标记为完成。
 - 本轮完整 `dev-debug` 构建（含新公开头独立编译及独立示例）与 **40/40** 回归通过（90.37s）；相关 `asan` custom_control/controls_core/controls/framework/visual_bridge 五项重建并 **5/5** 通过（1.28s）。源码布局、工作区、15 个改动 C++ 文件格式与 git diff 空白检查通过。未重跑 Release、完整 ASan 或真实 IME 验收。
 - 首轮构建曾重叠使用同一 dev 输出目录，随后出现 LNK1163 COMDAT 链接错误；结束重叠构建、清除两份受影响对象并重编后完整通过。失败记录保留在 `build/dev/extensions-full-build.log`、`extensions-rebuild.log`；最终证据为 `build/dev/extensions-object-rebuild.log`、`extensions-results.xml`、`build/asan/extensions-results.xml`。
+
+### 后续推进：源码类型声明与编译 XAML
+
+- 新增 `XamlTypeCatalog`，读取有版本的 `.vtypes` 并在完整校验后发布声明；首版支持内建基类及 Double/Integer/Boolean/String 的 Paint 属性。`using:Demo` 的类型解析、普通字面值、继承普通属性和 x:Name 已接入，未知类型/属性及不支持的表达式仍有诊断。
+- Framework 的 `SourceControlRegistry` 绑定声明、实际 C++ 工厂及依赖属性描述符，拒绝重复或不匹配的注册。ValuePad 的类名/TypeId 现在为 `Demo.ValuePad`；其依赖属性名称、种类和默认值与编译器读取同一份声明，未新增影子对象、影子属性或 ElementKind。
+- 引用自定义类型的 VXBF 1.4 保存实际引用类型的契约，新增无关源码类型不使原页面失效；内建页面继续写 1.3，1.0–1.3 仍按原格式读取。原 schema fingerprint、校验和、大小限制和结构校验保留，未知新版本拒绝。
+- 组件加载使用对应 Framework 的类型目录，核对契约与工厂输出；工厂异常、类型缺失或属性赋值失败转为带位置的错误并回滚。回归覆盖已有根值恢复、重复声明、契约变更、无关类型注册及工厂内注册时的生命周期。
+- `SourcePage.xaml` 通过 `velora_add_xaml(... TYPES ValuePad.vtypes)` 编译、生成连接代码并打包；示例窗口注册工厂后从正式资源组件创建 ValuePad。该 `.vtypes` 同时嵌入 C++，运行期不需要 XML/ANTLR。
+- 当前只支持源码叶控件的首批字面值语义，源码控件的 Binding/x:Bind、资源表达式、模板、内容、事件声明、自动反射声明生成及二进制插件加载仍待实现，不将 2A 或完整 WinUI 兼容计为完成。
+- 本轮完整 `dev-debug` 构建与 **41/41** 回归通过（91.88s），含 velorac 生成的源码控件组件、既有 Gallery、旧格式回归及安装消费。相关 `asan` source_control/custom_control/framework 三项重建并 **3/3** 通过（0.46s）。源码布局、工作区及 20 个改动 C++ 文件格式检查通过。未重跑 Release、完整 ASan 或真实 IME。
+- 编译 XAML 后的独立窗口再次通过相同 Win32 输入检查，截图确认 `Value 99`，WM_CLOSE 后退出码为 0；证据在 `build/dev/source-types-native/`。构建和测试记录为 `build/dev/source-types-final-build.log`、`source-types-results.xml`、`build/asan/source-types-results.xml`。
+- 全套回归后进一步将示例声明改为按名称查找并在缺失时抛出诊断，定向重建后 Debug **2/2**、ASan **3/3** 复测通过（0.10s、0.42s），独立窗口再次验证通过。记录为两个配置下的 `source-types-sample-build.log`、`source-types-sample-results.xml`。之后仅更新注释和文档。
 
 | 范围 | 当前事实 |
 | --- | --- |

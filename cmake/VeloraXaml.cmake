@@ -114,7 +114,7 @@ endfunction()
 # code-behind includes (relative to BASE_DIR, as the target includes them). REFLECT headers (with
 # rkclass annotations) get reflection metadata, against which x:Bind paths are checked and compiled.
 function(velora_xaml_load target)
-    cmake_parse_arguments(ARG "NO_EMBED" "BASE_DIR" "XAML;HEADERS;REFLECT" ${ARGN})
+    cmake_parse_arguments(ARG "NO_EMBED" "BASE_DIR" "XAML;HEADERS;REFLECT;TYPES" ${ARGN})
     if(TARGET velorac)
         set(tool "$<TARGET_FILE:velorac>")
         set(tool_dependency velorac)
@@ -148,6 +148,13 @@ function(velora_xaml_load target)
         endforeach()
         velora_reflect_generate(${target} BASE_DIR "${base}" INCLUDE_ROOT "${base}" HEADERS ${reflect_headers})
     endif()
+    set(type_args "")
+    set(type_files "")
+    foreach(types IN LISTS ARG_TYPES)
+        get_filename_component(types "${types}" ABSOLUTE BASE_DIR "${base}")
+        list(APPEND type_args --types "${types}")
+        list(APPEND type_files "${types}")
+    endforeach()
     foreach(xaml IN LISTS ARG_XAML)
         get_filename_component(xaml "${xaml}" ABSOLUTE BASE_DIR "${base}")
         file(RELATIVE_PATH relative "${base}" "${xaml}")
@@ -160,8 +167,8 @@ function(velora_xaml_load target)
         endif()
         add_custom_command(
             OUTPUT ${outputs}
-            COMMAND "${tool}" vxbf ${embed_arg} ${include_args} ${meta_args} "${xaml}" "${base}" "${out_dir}"
-            DEPENDS "${xaml}" ${tool_dependency} ${header_files} ${meta_files}
+            COMMAND "${tool}" vxbf ${embed_arg} ${include_args} ${meta_args} ${type_args} "${xaml}" "${base}" "${out_dir}"
+            DEPENDS "${xaml}" ${tool_dependency} ${header_files} ${meta_files} ${type_files}
             COMMENT "velorac vxbf ${relative}"
             VERBATIM)
         target_sources(${target} PRIVATE "${out_dir}/${relative_stem}.g.cpp")
@@ -258,7 +265,7 @@ endfunction()
 # contains no XAML bytes; it loads by URI. Default deployment embeds the *package* into the
 # executable, analogous to Qt's qrc. EXTERNAL puts Resources/<name>.vpak beside the executable.
 function(velora_add_xaml target)
-    cmake_parse_arguments(ARG "COMPRESS;EXTERNAL" "BASE_DIR;RESOURCES;PACKAGE;LANGUAGE;VERSION" "XAML;HEADERS;REFLECT" ${ARGN})
+    cmake_parse_arguments(ARG "COMPRESS;EXTERNAL" "BASE_DIR;RESOURCES;PACKAGE;LANGUAGE;VERSION" "XAML;HEADERS;REFLECT;TYPES" ${ARGN})
     if(NOT ARG_BASE_DIR OR NOT ARG_XAML)
         message(FATAL_ERROR "velora_add_xaml needs BASE_DIR and XAML")
     endif()
@@ -281,7 +288,7 @@ function(velora_add_xaml target)
         message(FATAL_ERROR "velora_add_xaml needs velorac or VELORAC_EXECUTABLE")
     endif()
     velora_xaml_load(${target} NO_EMBED BASE_DIR "${ARG_BASE_DIR}"
-        XAML ${ARG_XAML} HEADERS ${ARG_HEADERS} REFLECT ${ARG_REFLECT})
+        XAML ${ARG_XAML} HEADERS ${ARG_HEADERS} REFLECT ${ARG_REFLECT} TYPES ${ARG_TYPES})
     get_target_property(compiled ${target} VELORA_XAML_BINARIES)
     get_target_property(paths ${target} VELORA_XAML_PATHS)
     set(stage "${CMAKE_CURRENT_BINARY_DIR}/vpak/${target}/stage")

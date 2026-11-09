@@ -1,0 +1,4 @@
+velora-xaml-types	1
+type	Demo.ValuePad	UserControl
+property	Value	Double	ValuePad.Value	0
+end

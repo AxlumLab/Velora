@@ -23,7 +23,7 @@ namespace velora
 {
 
 inline constexpr u16 kVxbfMajor = 1;
-inline constexpr u16 kVxbfMinor = 3; // 1.3 typed DataTemplate accessors (older files still read)
+inline constexpr u16 kVxbfMinor = 4; // 1.4 source-type contracts; built-in-only output stays 1.3
 inline constexpr usize kVxbfMaxBytes = 64u * 1024u * 1024u;
 inline constexpr usize kVxbfMaxRecords = 1u << 20; // per table
 inline constexpr usize kVxbfMaxDepth = 256;

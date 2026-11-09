@@ -45,6 +45,8 @@ ElementId ElementTree::insert(std::shared_ptr<UIElement> element, ElementId pare
     if (!element || element->isInTree())
         return 0;
     std::string type = element->kind() ? std::string(schemaType(*element->kind()).name) : std::string();
+    if (const auto name = element->className(); !name.empty() && !name.starts_with("Velora.UI."))
+        type = name;
     return insertNode(std::move(type), std::move(element), parentId);
 }
 

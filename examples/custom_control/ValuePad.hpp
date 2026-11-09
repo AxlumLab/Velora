@@ -1,16 +1,20 @@
 #pragma once
 
 #include <velora/controls/UIElement.hpp>
+#include <velora/controls/XamlTypeCatalog.hpp>
 
 namespace velora
 {
 
-// A source control using the current UserControl schema identity. It does not add an enum,
-// proxy or second property store; extensible XAML type registration is a later step.
+class Framework;
+// A source control whose declaration is shared by the compiler and runtime factory.
 class ValuePad : public UIElement
 {
   public:
     ValuePad() noexcept;
+    [[nodiscard]] std::string className() const override;
+    [[nodiscard]] static const XamlTypeDeclaration& declaration();
+    static std::string registerType(Framework& ui);
     [[nodiscard]] f64 value() const;
     PropertySetResult setValue(f64 value);
     using DependencyObject::setValue;

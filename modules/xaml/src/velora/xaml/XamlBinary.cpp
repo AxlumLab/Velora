@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <array>
 #include <cstring>
 #include <format>
@@ -37,7 +38,7 @@ enum class ValueTag : u8
 
 class Writer
 {
-public:
+  public:
     void u8v(u8 v)
     {
         m_bytes.push_back(v);
@@ -73,7 +74,7 @@ public:
         return m_bytes;
     }
 
-private:
+  private:
     std::vector<u8> m_bytes;
 };
 
@@ -122,7 +123,7 @@ void writeValue(Writer& w, const PropertyValue& v)
     }
 }
 
-std::vector<u8> section(const XamlIR& ir, Section kind)
+std::vector<u8> section(const XamlIR& ir, Section kind, bool contracts)
 {
     Writer w;
     switch (kind)
@@ -143,6 +144,8 @@ std::vector<u8> section(const XamlIR& ir, Section kind)
             w.u64v(t.id.value.high);
             w.u64v(t.id.value.low);
             w.text(t.className);
+            if (contracts)
+                w.u64v(t.contract);
         }
         break;
     case Section::kProperties:
@@ -178,8 +181,10 @@ std::vector<u8> section(const XamlIR& ir, Section kind)
 
 class Reader
 {
-public:
-    Reader(std::span<const u8> bytes, std::string context) : m_bytes(bytes), m_context(std::move(context)) {}
+  public:
+    Reader(std::span<const u8> bytes, std::string context) : m_bytes(bytes), m_context(std::move(context))
+    {
+    }
 
     bool ok() const noexcept
     {
@@ -256,7 +261,7 @@ public:
         return ok() ? n : 0;
     }
 
-private:
+  private:
     std::span<const u8> m_bytes;
     usize m_at = 0;
     std::string m_context;
@@ -309,7 +314,7 @@ PropertyValue readValue(Reader& r)
     return {};
 }
 
-std::string readSection(XamlIR& ir, Section kind, std::span<const u8> bytes)
+std::string readSection(XamlIR& ir, Section kind, std::span<const u8> bytes, bool contracts)
 {
     Reader r(bytes, std::format("section {}", static_cast<u32>(kind)));
     switch (kind)
@@ -323,12 +328,14 @@ std::string readSection(XamlIR& ir, Section kind, std::span<const u8> bytes)
             ir.strings.push_back(r.text());
         break;
     case Section::kTypes:
-        for (u32 n = r.count(20); n-- && r.ok();)
+        for (u32 n = r.count(contracts ? 28 : 20); n-- && r.ok();)
         {
             XamlIRType t;
             t.id.value.high = r.u64v();
             t.id.value.low = r.u64v();
             t.className = r.text();
+            if (contracts)
+                t.contract = r.u64v();
             if (r.ok() && t.id != typeIdFor(t.className))
                 r.fail("type id does not match its class name");
             ir.types.push_back(std::move(t));
@@ -369,18 +376,19 @@ std::string readSection(XamlIR& ir, Section kind, std::span<const u8> bytes)
 
 std::vector<u8> writeVxbf(const XamlIR& ir)
 {
+    const bool contracts = std::ranges::any_of(ir.types, [](const auto& type) { return type.contract != 0; });
     constexpr Section kinds[kSectionCount] = {Section::kMeta,   Section::kStrings,
                                               Section::kTypes,  Section::kProperties,
                                               Section::kValues, Section::kInstructions};
     std::vector<std::vector<u8>> bodies;
     for (const auto kind : kinds)
-        bodies.push_back(section(ir, kind));
+        bodies.push_back(section(ir, kind, contracts));
 
     Writer w;
     for (const char c : {'V', 'X', 'B', 'F'})
         w.u8v(static_cast<u8>(c));
     w.u16v(kVxbfMajor);
-    w.u16v(kVxbfMinor);
+    w.u16v(contracts ? kVxbfMinor : 3);
     w.u32v(0); // flags
     w.u64v(ir.schemaFingerprint);
     w.u32v(static_cast<u32>(kSectionCount));
@@ -417,7 +425,7 @@ std::variant<XamlIR, VxbfError> readVxbf(std::span<const u8> bytes, u64 expected
     const u64 fingerprint = header.u64v();
     const u32 sections = header.u32v();
     const u32 checksum = header.u32v();
-    if (major != kVxbfMajor)
+    if (major != kVxbfMajor || minor > kVxbfMinor)
         return error(
             std::format("unsupported version {}.{} (reader {}.{})", major, minor, kVxbfMajor, kVxbfMinor));
     if (expectedFingerprint && fingerprint != expectedFingerprint)
@@ -440,7 +448,8 @@ std::variant<XamlIR, VxbfError> readVxbf(std::span<const u8> bytes, u64 expected
         seen[kind] = true;
         if (offset < kHeaderBytes || offset > bytes.size() || size > bytes.size() - offset)
             return error("section outside the file");
-        if (auto message = readSection(ir, static_cast<Section>(kind), bytes.subspan(offset, size));
+        if (auto message =
+                readSection(ir, static_cast<Section>(kind), bytes.subspan(offset, size), minor >= 4);
             !message.empty())
             return error(std::move(message));
     }

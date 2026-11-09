@@ -1,6 +1,8 @@
+#include "SourcePage.g.hpp"
 #include "ValuePad.hpp"
 
 #include <memory>
+#include <stdexcept>
 #include <velora/application/XamlApplication.hpp>
 #include <velora/application/XamlWindow.hpp>
 #include <velora/controls/ElementFactory.hpp>
@@ -21,16 +23,17 @@ class CustomWindow final : public XamlWindow
         if (!Create(options))
             return;
         auto& ui = GetFramework();
-        const auto panel = ui.create(ElementKind::kStackPanel);
-        ui.set(panel, ui.props().Margin, Thickness{24, 24, 24, 24});
-        const auto hint = ui.create(ElementKind::kTextBlock, panel);
-        ui.set(hint, ui.props().Text, "Drag or Tab, then arrows. Shift: step 10.");
-        ui.set(hint, ui.props().Margin, Thickness{0, 0, 0, 16});
-        auto pad = createElement<ValuePad>();
-        pad->setValue(30);
-        ui.insert(pad, panel);
-        SetRoot(panel);
+        if (const auto error = ValuePad::registerType(ui); !error.empty())
+            throw std::runtime_error(error);
+        Demo::SourcePage_component::Names names;
+        const auto loaded = Demo::SourcePage_component::initializeComponent(ui, m_controller, names);
+        if (!loaded.ok)
+            throw std::runtime_error(loaded.error);
+        SetRoot(ui.tree().element(*loaded.root));
     }
+
+  private:
+    Demo::SourcePage m_controller;
 };
 
 class CustomApp final : public XamlApplication

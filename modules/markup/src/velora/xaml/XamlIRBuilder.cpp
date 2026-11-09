@@ -19,8 +19,9 @@ bool numeric(ValueKind kind)
 
 class IRBuilder
 {
-public:
-    IRBuilder(std::string_view sourceName, const MetadataCatalog* catalog) : m_catalog(catalog)
+  public:
+    IRBuilder(std::string_view sourceName, const MetadataCatalog* catalog, const XamlTypeCatalog* sourceTypes)
+        : m_catalog(catalog), m_sourceTypes(sourceTypes)
     {
         m_result.ir.sourceName = std::string(sourceName);
         m_result.ir.schemaFingerprint = schemaFingerprint();
@@ -51,7 +52,7 @@ public:
         return std::move(m_result);
     }
 
-private:
+  private:
     // ---- helpers ----------------------------------------------------------------------------
 
     void error(const Span& span, std::string message)
@@ -113,6 +114,17 @@ private:
     {
         if (element.name.ns != kXamlPresentationNs)
         {
+            if (element.name.ns.starts_with("using:") && m_sourceTypes)
+            {
+                const auto className = element.name.ns.substr(6) + "." + element.name.local;
+                if (const auto* declaration = m_sourceTypes->find(className))
+                {
+                    sourceObject(element, root, *declaration);
+                    return;
+                }
+                error(element.nameSpan, "no source type declaration for '" + className + "'");
+                return;
+            }
             error(element.nameSpan, "'" + element.name.local + "': custom and non-presentation types" +
                                         std::string(kUnsupported));
             return;
@@ -152,6 +164,51 @@ private:
             }
         if (m_uid != kXamlNoIndex)
             emit(XamlIROp::kSetUid, element.nameSpan, 0, std::exchange(m_uid, kXamlNoIndex));
+        emit(XamlIROp::kEndObject, element.span);
+    }
+
+    void sourceObject(const XamlElement& element, bool root, const XamlTypeDeclaration& declaration)
+    {
+        if (!m_templates.empty() || m_dataTemplates)
+        {
+            error(element.nameSpan, "source controls inside templates" + std::string(kUnsupported));
+            return;
+        }
+        const auto& base = *findSchemaType(declaration.baseType);
+        const u32 type = m_result.ir.type(declaration.className);
+        m_result.ir.types[type].contract = declaration.contract();
+        emit(XamlIROp::kBeginObject, element.nameSpan, type);
+        std::vector<std::string> assigned;
+        for (const auto& a : element.attributes)
+        {
+            if (a.kind == XamlAttributeKind::kNamespaceDeclaration || a.kind == XamlAttributeKind::kIgnored ||
+                a.kind == XamlAttributeKind::kXmlAttribute)
+                continue;
+            if (a.markup || a.name.local == "Style" || a.name.local == "Template" || a.name.local == "Uid" ||
+                hasSchemaEvent(base, a.name.local))
+            {
+                error(a.span, "source controls currently accept literal properties and x:Name only");
+                continue;
+            }
+            const auto* property = a.owner.empty() && a.kind == XamlAttributeKind::kProperty
+                                       ? declaration.property(a.name.local)
+                                       : nullptr;
+            if (!property)
+            {
+                attribute(base, a, root, assigned);
+                continue;
+            }
+            const SchemaProperty schema{
+                property->name, property->kind, {}, property->defaultValue, kSchemaPaint};
+            auto value = parseValue(schema, a.value);
+            if (auto* message = std::get_if<std::string>(&value))
+                error(a.valueSpan, *message);
+            else
+                emit(XamlIROp::kSetValue, a.span, m_result.ir.property(property->id(), property->runtimeName),
+                     m_result.ir.value(std::get<PropertyValue>(std::move(value))));
+        }
+        if (!children(element).empty() || !text(element).empty())
+            error(element.span, "source control content" + std::string(kUnsupported));
         emit(XamlIROp::kEndObject, element.span);
     }
 
@@ -1545,6 +1602,7 @@ private:
     };
 
     const MetadataCatalog* m_catalog = nullptr;
+    const XamlTypeCatalog* m_sourceTypes = nullptr;
     XamlIROp m_xbindOp = XamlIROp::kSetXBind;        // kSetItemsSource while compiling ListView.ItemsSource
     int m_dataTemplates = 0;                         // DataTemplates being compiled
     std::vector<std::string> m_itemTypes;            // their x:DataType (C++), empty when absent
@@ -1564,9 +1622,9 @@ private:
 } // namespace
 
 XamlIRResult buildXamlIR(const XamlDocument& document, std::string_view sourceName,
-                         const MetadataCatalog* catalog)
+                         const MetadataCatalog* catalog, const XamlTypeCatalog* sourceTypes)
 {
-    return IRBuilder(sourceName, catalog).run(document);
+    return IRBuilder(sourceName, catalog, sourceTypes).run(document);
 }
 
 } // namespace velora
