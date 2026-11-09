@@ -158,10 +158,21 @@ ElementId Framework::insert(std::shared_ptr<UIElement> element, ElementId parent
     if (!element || !element->kind() || element->isInTree() || !isOwnerThread())
         return 0;
     const ElementKind kind = *element->kind();
-    const ElementId id = m_tree.insert(std::move(element), parent);
-    if (id)
+    const ElementId id = m_tree.insert(element, parent);
+    if (!id)
+        return 0;
+    try
+    {
         initializeElement(id, kind);
-    return id;
+        m_tree.onRemoved(id, [element] { element->onDetached(); });
+        element->onAttached(*this, id);
+        return m_tree.contains(id) ? id : 0;
+    }
+    catch (...)
+    {
+        m_tree.remove(id);
+        throw;
+    }
 }
 
 void Framework::initializeElement(ElementId id, ElementKind kind)

@@ -122,7 +122,11 @@ std::string XamlTypeCatalog::append(std::string_view text)
             else if (fields[2] == "Boolean")
                 p.kind = ValueKind::kBoolean;
             else if (fields[2] == "String")
+            {
                 p.kind = ValueKind::kString;
+                if (p.defaultValue == "\"\"")
+                    p.defaultValue.clear();
+            }
             else
                 return error("unsupported property kind");
             const SchemaProperty schema{p.name, p.kind, {}, p.defaultValue, kSchemaPaint};

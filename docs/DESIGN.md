@@ -29,7 +29,8 @@ Velora 面向新应用，使用 C++23 和编译式 XAML，保留属性、绑定�
 | graphics | 绘图与文本服务接口；当前 text 与 graphics 同一物理库 |
 | composition | 保留式视觉树、无效化、绘制快照、帧调度 |
 | platform/application | 原生窗口与输入、UI 调度器、应用/窗口/XamlRoot 生命周期 |
-| fluent/markup | 主题模板与资源；仅构建期使用的反射/XAML 编译器 |
+| fluent | WinUI 2.3 内化后的实际控件 C++、模板与主题资源；依赖 controls 通用底座 |
+| markup | 仅构建期使用的反射/XAML 编译器 |
 
 一个逻辑模块可由多个源文件或内部目标组成，不要求每模块必有一个 DLL。旧 Framework/ElementTree 的调度职责应逐步收敛，保持工作路径，不另造并行运行时。
 

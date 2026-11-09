@@ -27,6 +27,7 @@ if(WIN32 AND VELORA_ENABLE_ANTLR)
     add_subdirectory(examples/n04_startup)
     add_subdirectory(examples/gallery)
     add_subdirectory(examples/custom_control)
+    add_subdirectory(examples/fluent_controls)
 endif()
 
 include(cmake/VeloraInstall.cmake)

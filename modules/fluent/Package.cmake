@@ -9,7 +9,8 @@ if(TARGET velorac)
             SystemResources
             WinUICornerRadius
             WinUIButton
-            WinUITextBox)
+            WinUITextBox
+            PersonPictureResources)
         add_custom_command(
             OUTPUT "${_stage}/Themes/${_dictionary}.vxbf"
             COMMAND "${CMAKE_COMMAND}" -E make_directory "${_compiled}" "${_stage}/Themes"
@@ -20,6 +21,25 @@ if(TARGET velorac)
             VERBATIM)
         list(APPEND _staged "${_stage}/Themes/${_dictionary}.vxbf")
     endforeach()
+    add_custom_command(
+        OUTPUT "${_stage}/Controls/PersonPictureView.vxbf"
+        COMMAND "${CMAKE_COMMAND}" -E make_directory "${_stage}/Controls"
+        COMMAND "$<TARGET_FILE:velorac>" vxbf
+            "${PROJECT_SOURCE_DIR}/modules/fluent/resources/Controls/PersonPictureView.xaml"
+            "${PROJECT_SOURCE_DIR}/modules/fluent/resources" "${_compiled}"
+        COMMAND "${CMAKE_COMMAND}" -E copy "${_compiled}/Controls/PersonPictureView.vxbf"
+            "${_stage}/Controls/PersonPictureView.vxbf"
+        DEPENDS "${PROJECT_SOURCE_DIR}/modules/fluent/resources/Controls/PersonPictureView.xaml" velorac
+        VERBATIM)
+    list(APPEND _staged "${_stage}/Controls/PersonPictureView.vxbf")
+    add_custom_command(
+        OUTPUT "${_stage}/Licenses/WinUI2.3-LICENSE.txt"
+        COMMAND "${CMAKE_COMMAND}" -E make_directory "${_stage}/Licenses"
+        COMMAND "${CMAKE_COMMAND}" -E copy_if_different
+            "${PROJECT_SOURCE_DIR}/modules/fluent/LICENSE-WinUI2.3.txt"
+            "${_stage}/Licenses/WinUI2.3-LICENSE.txt"
+        DEPENDS "${PROJECT_SOURCE_DIR}/modules/fluent/LICENSE-WinUI2.3.txt" VERBATIM)
+    list(APPEND _staged "${_stage}/Licenses/WinUI2.3-LICENSE.txt")
     set(VELORA_FLUENT_PACKAGE "${PROJECT_BINARY_DIR}/modules/fluent/Velora.Fluent.vpak" CACHE INTERNAL "Fluent resource package")
     add_custom_command(
         OUTPUT "${VELORA_FLUENT_PACKAGE}"

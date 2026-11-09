@@ -1,0 +1,18 @@
+{
+  "repository": "https://github.com/microsoft/microsoft-ui-xaml",
+  "tag": "v2.3.191129002",
+  "commit": "2237b09d9ba6052414ddccf3d61316de20564303",
+  "license": "MIT",
+  "files": {
+    "dev/PersonPicture/InitialsGenerator.cpp": "6fa9936658742674c21a91273b2b5ceb26616f5def0e5f2861fa98be81f14208",
+    "dev/PersonPicture/InitialsGenerator.h": "9b961f6c00c3e6c08f2c0b74a9832f3e9834eaec1c0a887099807faff7c2529d",
+    "dev/PersonPicture/PersonPicture.cpp": "5574e07cbaa90fa48c49be9f9c548a738f1930eb76b02155d2fbb110b7cda203",
+    "dev/PersonPicture/PersonPicture.xaml": "ecf102968c528f64f243bd0ed632139a5c1ec013fd55c328a4d9cea2634f0f6f",
+    "dev/PersonPicture/PersonPicture_themeresources.xaml": "b65e673f81fcb313d069f7879db4ac61921a47bee6c5b94f03029c1b16eed54b",
+    "dev/PersonPicture/PersonPictureAutomationPeer.cpp": "9c6f6249ced1682791bf5abb4623539f6c83d5351b139db442e1a2dd6a2bac23",
+    "dev/PersonPicture/PersonPicture.idl": "2f6da99977028bb8e408df7143762531b558a3b6754b8f5d2b6f5f9b8063b8c3",
+    "dev/PersonPicture/PersonPicture.h": "0afd3f77a058906e37adf8f12a39f9ed28c7ab72365558c756d9ba01201f8de3",
+    "dev/PersonPicture/Strings/en-us/Resources.resw": "01369d2743d9e344ff770aa7f0fd08a42daa5b2650f8df4c5fa7c0f0148f3128"
+  },
+  "implementation": "Velora-owned C++ and compiled XAML in modules/fluent; full upstream reference is not distributed."
+}

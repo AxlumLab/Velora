@@ -10,6 +10,24 @@ UIElement::UIElement(std::optional<ElementKind> kind) noexcept : m_kind(kind)
 
 UIElement::~UIElement() = default;
 
+void UIElement::onAttached(Framework&, ElementId)
+{
+}
+
+void UIElement::onDetached() noexcept
+{
+}
+
+std::string UIElement::automationName() const
+{
+    return {};
+}
+
+std::optional<AutomationControlType> UIElement::automationControlType() const noexcept
+{
+    return std::nullopt;
+}
+
 void UIElement::onPointerPressed(InputContext&, PointerEventArgs&)
 {
 }

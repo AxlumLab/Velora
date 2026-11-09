@@ -46,6 +46,9 @@ bool templated(Framework& ui, ElementId e)
 
 std::string nameOf(Framework& ui, ElementId e)
 {
+    if (const auto* object = ui.tree().uiElement(e))
+        if (auto name = object->automationName(); !name.empty())
+            return name;
     const auto& p = ui.props();
     for (const auto* d : {p.Content, p.Text, p.Header})
         if (d)
@@ -61,6 +64,9 @@ AutomationNode build(Framework& ui, ElementId e)
     node.element = e;
     const auto kind = ui.tree().kind(e);
     node.type = kind ? automationType(*kind) : AutomationControlType::kGroup;
+    if (const auto* object = ui.tree().uiElement(e))
+        if (const auto type = object->automationControlType())
+            node.type = *type;
     node.name = nameOf(ui, e);
     node.enabled =
         !ui.tree().property(e, *p.IsEnabled).isBool() || ui.tree().property(e, *p.IsEnabled).asBool();

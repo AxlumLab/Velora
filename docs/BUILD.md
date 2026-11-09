@@ -4,6 +4,10 @@
 
 ## 1. 核心检查
 
+Fluent 内部控件示例：构建 `dev-debug` 后运行 `build/dev/examples/fluent_controls/Debug/velora_fluent_gallery.exe`。CMake 自动部署匹配的 `Velora.Fluent.vpak` 与 MIT 许可证；示例从编译 XAML 创建模块内的 PersonPicture，可切换群组和递增徽章。
+
+ASan 的 Fluent 模板测试可复用同一编译资源包（不是复用 dev 的原生代码）：先构建 dev，再配置 `cmake --preset asan -DVELORA_FLUENT_TEST_PACKAGE=E:/Projects/velora/build/dev/modules/fluent/Velora.Fluent.vpak`。未提供资源包的核心配置只运行树外逻辑及缺失资源回滚检查，会明确报告模板检查未运行。
+
 源码控件示例可在 Windows `dev-debug` 构建后运行 `build/dev/examples/custom_control/Debug/velora_custom_control.exe`。拖动数值区、Tab 聚焦、方向键或 Shift+方向键修改值。`SourcePage.xaml` 通过 `TYPES ValuePad.vtypes` 编译并打包，窗口注册工厂后使用正式组件加载器创建控件。当前自定义类型编译只支持首批字面值语义，详细范围见 XAML-TOOLCHAIN.md。
 
 要求 CMake 3.25+、Ninja、支持当前 C++23 用法的编译器。Python 3 用于源码检查。
@@ -16,7 +20,7 @@ python scripts/CheckStyle.py
 python scripts/CheckWorkspace.py
 ```
 
-该配置关闭 ANTLR，因此不需要 tpkg 依赖，包含核心库、公开头独立编译以及 19 项非 Windows 行为测试（包含源码控件及类型注册/二进制加载用例；编译器用例在 dev 配置中运行）。在 Windows 上会额外启用 Windows 专用测试，需要可用 Windows SDK 与交互桌面。Linux 的 graphics/platform 路径不可作为产品后端使用，核心通过不表示 Linux UI 已实现。
+该配置关闭 ANTLR，因此不需要 tpkg 依赖，包含核心库、公开头独立编译以及 20 项非 Windows 行为测试（包含源码控件、Fluent 控件逻辑及类型注册/二进制加载用例；编译器用例在 dev 配置中运行）。在 Windows 上会额外启用 Windows 专用测试，需要可用 Windows SDK 与交互桌面。Linux 的 graphics/platform 路径不可作为产品后端使用，核心通过不表示 Linux UI 已实现。
 
 如果 Ninja 未在 PATH，配置时传入实际路径：
 

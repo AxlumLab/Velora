@@ -1,0 +1,11 @@
+velora-xaml-types	1
+type	Velora.Fluent.PersonPicture	UserControl
+property	DisplayName	String	PersonPicture.DisplayName	""
+property	Initials	String	PersonPicture.Initials	""
+property	IsGroup	Boolean	PersonPicture.IsGroup	False
+property	ProfilePicture	String	PersonPicture.ProfilePicture	""
+property	BadgeNumber	Integer	PersonPicture.BadgeNumber	0
+property	BadgeGlyph	String	PersonPicture.BadgeGlyph	""
+property	BadgeImageSource	String	PersonPicture.BadgeImageSource	""
+property	BadgeText	String	PersonPicture.BadgeText	""
+end

@@ -36,6 +36,8 @@ namespace velora
 class LayoutContext;
 class InputContext;
 class Canvas;
+class Framework;
+enum class AutomationControlType : u8;
 using ElementId = u64;
 
 // What MeasureOverride gets: the slot inside margin and explicit size, the same slot without padding
@@ -74,6 +76,12 @@ class UIElement : public DependencyObject
     virtual Size measureOverride(LayoutContext& context, ElementId self, const MeasureInput& input);
     virtual void arrangeOverride(LayoutContext& context, ElementId self, Box content,
                                  const std::vector<ElementId>& children);
+    // Logical tree hosting, not a native window Loaded event. Failure during attach rolls the
+    // insertion back; detach runs after removal with the object still alive.
+    virtual void onAttached(Framework& ui, ElementId self);
+    virtual void onDetached() noexcept;
+    [[nodiscard]] virtual std::string automationName() const;
+    [[nodiscard]] virtual std::optional<AutomationControlType> automationControlType() const noexcept;
 
     // Class input handling runs before this sender's instance handlers, along the same route.
     // Set handled to consume input. The host keeps this object alive during the callback.

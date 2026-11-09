@@ -45,7 +45,7 @@ EXTENSIONS = {".cpp", ".h", ".hpp", ".idl", ".xaml", ".resw"}
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--archive", type=Path, help="Local copy of the pinned upstream ZIP")
-    parser.add_argument("--output", type=Path, default=Path("third_party/winui2.3/reference"))
+    parser.add_argument("--output", type=Path, default=Path("build/reference/winui2.3/imported"))
     args = parser.parse_args()
     if args.archive:
         data = args.archive.read_bytes()

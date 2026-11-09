@@ -119,7 +119,7 @@ void VisualBridge::sync()
         if (!m_visuals.contains(element) || created.contains(element))
             continue;
         const bool size = property == m_properties.width->id || property == m_properties.height->id;
-        if (isRenderProperty(property) || size)
+        if (isRenderProperty(property) || size || property == m_properties.cornerRadius->id)
             updateSet.insert(element); // size also moves the clip
         if (!isRenderProperty(property))
             repaintSet.insert(element);
@@ -207,7 +207,10 @@ void VisualBridge::applyRenderProperties(ElementId element, VisualId visual)
     {
         const auto w = static_cast<float>(number(m_tree.property(element, *p.width)));
         const auto h = static_cast<float>(number(m_tree.property(element, *p.height)));
-        m_compositor.setClip(visual, {VisualClip::Kind::kRect, {0, 0, w, h}});
+        const auto radius = static_cast<float>(number(m_tree.property(element, *p.cornerRadius)));
+        m_compositor.setClip(visual, {radius > 0 ? VisualClip::Kind::kRoundedRect : VisualClip::Kind::kRect,
+                                      {0, 0, w, h},
+                                      std::max(0.0f, std::min(radius, std::min(w, h) / 2))});
     }
     else
     {

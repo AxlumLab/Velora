@@ -253,7 +253,13 @@ void Framework::registerPainters()
                       [this](Canvas& canvas, const ElementTree&, ElementId e, float w, float h)
                       {
                           if (const auto source = text(e, m_props.Source); !source.empty())
-                              canvas.drawImage({0, 0, w, h}, std::string(source));
+                          {
+                              const auto stretch = text(e, m_props.Stretch);
+                              canvas.drawImage({0, 0, w, h}, std::string(source),
+                                               stretch == "UniformToFill" ? ImageFit::kCover
+                                               : stretch == "Fill"        ? ImageFit::kStretch
+                                                                          : ImageFit::kContain);
+                          }
                       });
 }
 } // namespace velora

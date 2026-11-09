@@ -52,6 +52,7 @@ inline constexpr unsigned kSchemaMeasure = 1, kSchemaArrange = 2, kSchemaPaint =
     X(FontSize, "FontSize", Double, "", "14", kSchemaMeasure)                                                \
     X(Text, "Text", String, "", "", kSchemaMeasure)                                                          \
     X(PlaceholderText, "PlaceholderText", String, "", "", kSchemaPaint)                                      \
+    X(Stretch, "Stretch", Enum, "Uniform|UniformToFill|Fill", "Uniform", kSchemaPaint)                       \
     X(Content, "Content", String, "", "", kSchemaMeasure)                                                    \
     X(Spacing, "Spacing", Double, "", "0", kSchemaMeasure)                                                   \
     X(Orientation, "Orientation", Enum, "Vertical|Horizontal", "Vertical", kSchemaMeasure)                   \
@@ -186,7 +187,7 @@ inline constexpr std::string_view kSchemaTextBoxProperties[] = {
 inline constexpr std::string_view kSchemaButtonProperties[] = {
     "Content",         "FontSize",     "Foreground", "Background", "BorderBrush",
     "BorderThickness", "CornerRadius", "Padding",    "IsEnabled"};
-inline constexpr std::string_view kSchemaImageProperties[] = {"Source"};
+inline constexpr std::string_view kSchemaImageProperties[] = {"Source", "Stretch"};
 inline constexpr std::string_view kSchemaContentPresenterProperties[] = {
     "Content",     "FontSize",        "Foreground",   "Background",
     "BorderBrush", "BorderThickness", "CornerRadius", "Padding"};
@@ -298,7 +299,9 @@ template <ElementKind Kind> struct TypedElementId
 {
     u64 value = 0;
     constexpr TypedElementId() noexcept = default;
-    constexpr explicit TypedElementId(u64 id) noexcept : value(id) {}
+    constexpr explicit TypedElementId(u64 id) noexcept : value(id)
+    {
+    }
     constexpr operator u64() const noexcept
     {
         return value;

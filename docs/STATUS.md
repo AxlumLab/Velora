@@ -40,7 +40,7 @@
 - Toggle 行为改从有效值通知触发，涵盖直接 C++、Framework、样式、表达式、clearValue 和绑定更新；跨注册表按属性 ID 识别同一属性，避免对象 API 写入后漏事件/绑定写回/单选互斥。
 - Binding 在向目标发布值时抑制回写，并以短期共享持有和弱订阅支持事件中卸载目标；没有把 Binding 或控件复制成第二份状态。
 - RangeBase 后续已迁到对象侧，见下一节；三态 CheckBox、完整独立控件 SDK、自定义输入/绘制和控件继承体系仍待实现。
-- WinUI 本地源码 fork 基线为 `third_party/winui2.3/upstream/`，锁定 `v2.3.191129002` / `2237b09d9ba6052414ddccf3d61316de20564303`。完整 MIT 原文及 2930 个上游文件来源清单已保存。尚未接入新增上游控件或替换运行中的模板，不计为移植完成。
+- 当时将 WinUI 完整快照放在 `third_party/winui2.3/upstream/`；按用户随后纠正，此镜像现已移出受管源码，改为直接在 Fluent 内化实现。历史快照仅保留在本机忽略的 build/reference 中，当前来源及 MIT 见 modules/fluent/PORTING.md。
 - 本轮 API 变更后：完整 `dev-debug` 构建及 **39/39** 回归通过（82.30s）；`asan` 重建并运行 controls/framework 两项相关测试 **2/2** 通过，含 TwoWay 源 setter 次数及事件中卸载绑定目标的新增断言。证据为 `build/dev/toggle-debug-results.xml`、`build/asan/toggle-asan-results.xml`。本轮没有重跑 Release，前述 Release 39/39 属于上一轮 Windows 基线。
 - 加入许可证安装规则后，重新配置并复测安装消费用例通过；`share/licenses/Velora/WinUI2.3-LICENSE.txt` 与上游 MIT 原文 SHA-256 一致。
 
@@ -81,6 +81,15 @@
 - 本轮完整 `dev-debug` 构建与 **41/41** 回归通过（91.88s），含 velorac 生成的源码控件组件、既有 Gallery、旧格式回归及安装消费。相关 `asan` source_control/custom_control/framework 三项重建并 **3/3** 通过（0.46s）。源码布局、工作区及 20 个改动 C++ 文件格式检查通过。未重跑 Release、完整 ASan 或真实 IME。
 - 编译 XAML 后的独立窗口再次通过相同 Win32 输入检查，截图确认 `Value 99`，WM_CLOSE 后退出码为 0；证据在 `build/dev/source-types-native/`。构建和测试记录为 `build/dev/source-types-final-build.log`、`source-types-results.xml`、`build/asan/source-types-results.xml`。
 - 全套回归后进一步将示例声明改为按名称查找并在缺失时抛出诊断，定向重建后 Debug **2/2**、ASan **3/3** 复测通过（0.10s、0.42s），独立窗口再次验证通过。记录为两个配置下的 `source-types-sample-build.log`、`source-types-sample-results.xml`。之后仅更新注释和文档。
+
+### 当前推进：Fluent 内化 PersonPicture
+
+- `modules/fluent` 现在拥有控件 C++ 行为，依赖 controls 的通用属性/树/布局/输入/模板底座。首个实现为 PersonPicture：初始字母算法、显式 Initials 优先级、Group/Photo/Initials/NoPhotoOrInitials、图片/数字/字形徽章优先级、负数字与 `99+`、尺寸/字体比例均有实际行为。
+- 默认 XAML 模板、主题和声明直接位于 Fluent，正常编译进入资源包；不存在上游 WinRT 运行时或原仓工程依赖。完整 MIT 安装到 SDK，也放入 Fluent 资源包。整仓镜像已从当前源码树移除，原文件哈希及移植差异保存在 Fluent 模块。
+- 由该控件需要补齐 Framework 挂载/卸载回调、自动化名称/类型扩展，图片 UniformToFill 和圆角子视觉裁剪。挂载失败回滚；实际模板更新时可在回调中卸载控件并释放最后引用。模板名称域按实例隔离，Light/Dark/HighContrast 切换有回归。
+- Windows Fluent 示例实际显示 `AL`、`GH`、默认人像、群组、数字/字形/`99+` 徽章；Win32 消息验证群组切换、徽章 7→8、恢复缩写，关闭后退出码 0。截图与会话在 `build/dev/fluent-person-native/`。
+- 完整 `dev-debug` 构建及 **42/42** 回归通过（96.88s），含编译 XAML、Fluent 资源包和 SDK 安装消费。相关 ASan 回归 **4/4** 通过，Fluent 测试加载实际资源包，另已复测挂载失败回滚及模板回调中释放最后外部引用。15 个改动 C++ 文件格式、CheckStyle、CheckWorkspace 与 diff 检查通过。构建日志为 `build/dev/fluent-internal-build.log`，CTest 结果为 `build/dev/build/dev/fluent-internal-results.xml`、`build/asan/build/asan/fluent-internal-results.xml`；未重跑完整 ASan、Release 或真实 IME。
+- 这是内部控件的可运行切片，尚未声明完整 WinUI PersonPicture 兼容：Contact/PreferSmallImage/异步联系人照片、完整字体及模板替换契约、多语言辅助功能与 Windows UIA provider 等仍待实现；几何默认图标和部分系统调色板有明确差异，详见 `modules/fluent/PORTING.md`。
 
 | 范围 | 当前事实 |
 | --- | --- |

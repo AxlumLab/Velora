@@ -7,6 +7,7 @@
 - C++23 + XAML，面向新应用。保留 WPF/UWP 的属性、绑定、模板、资源与代码后台体验，不要求旧项目源码或 WinRT 二进制兼容。
 - 第一批产品平台为 Windows、Android。Windows 使用 Win32 + D2D + DirectWrite；Android 计划使用锁定版本的 Impeller standalone。其他平台暂不实现。
 - 视觉与交互目标为 WinUI 2.3 历史 Gallery。现有基础 Gallery 不代表完整验收。
+- WinUI 2.3 的控件逻辑、模板与资源直接内化到 modules/fluent/，成为 Velora 内部实现；controls 提供通用 UI 底座。不得把整个上游仓库镜像纳入产品源码并当作控件移植。派生文件保留 MIT 版权及来源，见 modules/fluent/PORTING.md。
 - 性能平衡启动、响应、内存、包体和功耗。Windows 用等价 UWP 负载对照，先测量再设目标。
 - 源码控件随应用构建、按需裁剪；计划支持无需重编宿主的原生插件，限定同一 SDK 构建及工具链配置。
 - 编辑器第一版做 XAML 文本编辑、预览和错误定位，允许重建页面。C++、生成连接契约改变可要求原生重编。

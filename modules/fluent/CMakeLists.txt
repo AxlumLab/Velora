@@ -1,13 +1,13 @@
-# Fluent resources (R11.1): the WinUI 2.3 theme dictionaries, default styles and control templates
-# shipped as the framework resource package Velora.Fluent.vpak, overridable by the application.
-#
-# `velora::fluent` holds resources, not behavior: no control C++ belongs here, so an application can
-# restyle every default without touching compiled control code. The library only mounts the
-# package (mountFluent).
-#
-# The MIT-licensed WinUI 2.3 excerpts live in resources/WinUI2.3.
-# Runtime package compilation and mounting remain separate from control implementation.
+# Internal Fluent controls and their compiled resources. WinUI 2.3 behavior is incorporated here
+# as ordinary Velora C++ controls; controls supplies the shared UI infrastructure.
 velora_module(fluent
     SOURCES velora/fluent/FluentPackage.cpp
-    PUBLIC velora::resources)
+        velora/fluent/InitialsGenerator.cpp
+        velora/fluent/PersonPicture.cpp
+    PUBLIC velora::controls velora::resources)
+file(READ "${CMAKE_CURRENT_SOURCE_DIR}/resources/FluentControls.vtypes" FLUENT_TYPES)
+configure_file(FluentTypes.hpp.in "${PROJECT_BINARY_DIR}/generated/fluent/FluentTypes.hpp" @ONLY)
+set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
+    "${CMAKE_CURRENT_SOURCE_DIR}/resources/FluentControls.vtypes")
+target_include_directories(velora_fluent PRIVATE "${PROJECT_BINARY_DIR}/generated/fluent")
 # The package itself is built by Package.cmake once velorac exists (modules/CMakeLists.txt).
