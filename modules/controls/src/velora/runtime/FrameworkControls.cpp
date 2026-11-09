@@ -4,8 +4,8 @@ namespace velora
 {
 // ---- Toggle and range controls ------------------------------------------------------
 // CheckBox, RadioButton and ToggleSwitch hold their state in IsChecked/IsOn; Slider and
-// ProgressBar in Value within [Minimum, Maximum]. Toggle effective-value notifications and
-// Framework's range setter route here, sharing group handling, write-back and events.
+// ProgressBar in Value within [Minimum, Maximum]. Effective-value notifications route here,
+// sharing group handling, write-back and events. RangeBase owns range normalization.
 
 namespace
 {
@@ -35,23 +35,6 @@ void Framework::toggle(ElementId element)
         set(element, m_props.IsChecked, PropertyValue(true));
     else if (kind == ElementKind::kToggleSwitch)
         set(element, m_props.IsOn, PropertyValue(!m_tree.property(element, *m_props.IsOn).asBool()));
-}
-
-// RangeBase coercion: Maximum is at least Minimum, and Value lies within them.
-PropertyValue Framework::coerceRange(ElementId element, const PropertyDescriptor* property,
-                                     PropertyValue value) const
-{
-    const auto kind = m_tree.kind(element);
-    if ((kind != ElementKind::kSlider && kind != ElementKind::kProgressBar) || !value.isDouble() ||
-        std::isnan(value.asDouble()))
-        return value;
-    const double minimum = number(element, m_props.Minimum);
-    if (property == m_props.Value)
-        return PropertyValue(
-            std::clamp(value.asDouble(), minimum, std::max(minimum, number(element, m_props.Maximum))));
-    if (property == m_props.Maximum)
-        return PropertyValue(std::max(value.asDouble(), minimum));
-    return value;
 }
 
 void Framework::controlValueChanged(ElementId element, const PropertyDescriptor* property)
@@ -110,20 +93,7 @@ void Framework::controlValueChanged(ElementId element, const PropertyDescriptor*
     }
     if (kind != ElementKind::kSlider && kind != ElementKind::kProgressBar)
         return;
-    if (property != m_props.Value)
-    {
-        // A new range may move Maximum (above Minimum) and Value (into the range); each
-        // re-coerced property keeps its source, and a moved Value raises ValueChanged.
-        for (const auto* dependent : {m_props.Maximum, m_props.Value})
-        {
-            const PropertyValue current = m_tree.property(element, *dependent);
-            if (const PropertyValue coerced = coerceRange(element, dependent, current); coerced != current)
-                set(element, dependent, coerced,
-                    m_tree.propertySource(element, *dependent).value_or(PropertySource::kLocal));
-        }
-        return;
-    }
-    if (kind == ElementKind::kSlider)
+    if (property == m_props.Value && kind == ElementKind::kSlider)
         m_tree.dispatch(element, m_events.ValueChanged->id);
 }
 

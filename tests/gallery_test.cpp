@@ -42,7 +42,7 @@ constexpr float kWidth = 960, kHeight = 720;
 
 class Harness
 {
-public:
+  public:
     Harness(GraphicsDevice& device, TextService& text, NativeWindow& window, std::string out)
         : m_out(std::move(out)),
           ui(compositor, [&text](std::string_view s, float size) { return text.measureWidth(s, size); })
@@ -50,7 +50,8 @@ public:
         ready = surface.attach(device, window.nativeHandle(),
                                {{static_cast<u32>(kWidth), static_cast<u32>(kHeight)}, 1.0f, false});
         Gallery::GalleryPage_component::Names componentNames;
-        const auto loaded = Gallery::GalleryPage_component::initializeComponent(ui, controller, componentNames);
+        const auto loaded =
+            Gallery::GalleryPage_component::initializeComponent(ui, controller, componentNames);
         if (!loaded.ok)
             throw std::runtime_error(loaded.error);
         root = ui.tree().element(*loaded.root);
@@ -113,8 +114,7 @@ public:
     void reveal(ElementId e)
     {
         const Box v = ui.bounds(names.Scroller), b = ui.bounds(e);
-        const double offset =
-            ui.tree().property(names.Scroller, *ui.props().VerticalOffset).asDouble();
+        const double offset = ui.tree().property(names.Scroller, *ui.props().VerticalOffset).asDouble();
         if (b.y < v.y || b.y + b.height > v.y + v.height)
             ui.changeView(names.Scroller, std::nullopt, offset + (b.y - v.y) - 40);
         frame();
@@ -239,6 +239,15 @@ void run(Harness& h)
     check(ui.viewport(n.FruitList).count == 8, "the ListView shows the bound fruits");
 
     // Ordinary C++ setters use the same objects created by the compiled XAML loader.
+    auto* volume = dynamic_cast<SliderElement*>(ui.tree().uiElement(n.VolumeSlider));
+    check(volume != nullptr, "compiled XAML creates the typed Slider object");
+    if (volume)
+    {
+        volume->setValue(35);
+        check(h.controller.volume() == 35 &&
+                  ui.tree().property(n.Progress, *ui.props().Value).asDouble() == 35,
+              "typed range Value writes back through x:Bind and updates ProgressBar");
+    }
     auto* notification = dynamic_cast<ToggleSwitchElement*>(ui.tree().uiElement(n.Notify));
     auto* newsletter = dynamic_cast<ToggleButtonElement*>(ui.tree().uiElement(n.Newsletter));
     check(notification && newsletter, "compiled XAML creates the typed Toggle objects");

@@ -39,10 +39,19 @@
 - `ToggleSwitchElement::isOn/setIsOn/isOnProperty`、`ToggleButtonElement::isChecked/setIsChecked/isCheckedProperty` 直接访问既有依赖属性。事件仍由宿主协调，未声称事件对象 API 已完成。
 - Toggle 行为改从有效值通知触发，涵盖直接 C++、Framework、样式、表达式、clearValue 和绑定更新；跨注册表按属性 ID 识别同一属性，避免对象 API 写入后漏事件/绑定写回/单选互斥。
 - Binding 在向目标发布值时抑制回写，并以短期共享持有和弱订阅支持事件中卸载目标；没有把 Binding 或控件复制成第二份状态。
-- RangeBase 仍须走 Framework 的范围校验路径；三态 CheckBox、完整独立控件 SDK、自定义输入/绘制和控件继承体系仍待实现。
+- RangeBase 后续已迁到对象侧，见下一节；三态 CheckBox、完整独立控件 SDK、自定义输入/绘制和控件继承体系仍待实现。
 - WinUI 本地源码 fork 基线为 `third_party/winui2.3/upstream/`，锁定 `v2.3.191129002` / `2237b09d9ba6052414ddccf3d61316de20564303`。完整 MIT 原文及 2930 个上游文件来源清单已保存。尚未接入新增上游控件或替换运行中的模板，不计为移植完成。
 - 本轮 API 变更后：完整 `dev-debug` 构建及 **39/39** 回归通过（82.30s）；`asan` 重建并运行 controls/framework 两项相关测试 **2/2** 通过，含 TwoWay 源 setter 次数及事件中卸载绑定目标的新增断言。证据为 `build/dev/toggle-debug-results.xml`、`build/asan/toggle-asan-results.xml`。本轮没有重跑 Release，前述 Release 39/39 属于上一轮 Windows 基线。
 - 加入许可证安装规则后，重新配置并复测安装消费用例通过；`share/licenses/Velora/WinUI2.3-LICENSE.txt` 与上游 MIT 原文 SHA-256 一致。
+
+### 后续推进：RangeBase 对象 API 与远端仓库
+
+- GitHub 仓库为 `https://github.com/FlybirdLab/Velora`，main 保留本地重新初始化的基线及远端原有 MIT 许可证提交，通过合并接续历史，没有强推。上游 WinUI 许可证仍单独保留。
+- `SliderElement`、`ProgressBarElement` 共用 `RangeBaseElement` 的实际依赖属性；提供 Minimum/Maximum/Value 类型化访问及 Slider StepFrequency。Framework 不再单独执行范围校验或修正。
+- 普通 C++、Framework、Binding/表达式和清除属性共用校验；依赖值在通知前一并修正，表达式订阅保留。新增用例覆盖非法数值/类型、遮蔽样式、clearValue、跨线程拒绝、TwoWay 写回和事件中卸载目标；Gallery 用例检查编译 XAML 创建的 Slider 类型化写入经 x:Bind 驱动 ProgressBar。
+- 当前仍是破坏性截断，不保存被截断的原始值，也未实现完整 WinUI RangeBase 事件参数和 coercion 语义。不是新增上游控件移植完成。
+- 本轮完整 `dev-debug` 构建与 **39/39** 回归通过（108.81s），含 Gallery 和安装消费；相关 `asan` controls/dependency_property/framework 三项重建并 **3/3** 通过（0.44s）。CheckStyle、CheckWorkspace、git diff 空白检查通过。未重跑 Release、全套 ASan 或原生 Gallery 消息验收。证据为 `build/dev/range-final-build.log`、`build/dev/range-debug-results.xml`、`build/asan/range-asan-results.xml`。
+- 安装规则新增 Velora 自身 MIT 许可证。安装后的 `Velora-LICENSE.txt`、`WinUI2.3-LICENSE.txt` 分别与两份源码 LICENSE 的 SHA-256 一致。
 
 | 范围 | 当前事实 |
 | --- | --- |

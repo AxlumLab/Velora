@@ -150,7 +150,7 @@ struct VisualStateGroup
 
 class Framework
 {
-public:
+  public:
     struct Properties
     {
 #define VELORA_FRAMEWORK_PROPERTY(member, name, kind, choices, value, flags)                                 \
@@ -410,7 +410,7 @@ public:
     // Called after layout whenever the ListView's viewport changes; owned by the element.
     void onViewport(ElementId list, std::function<void()> callback);
 
-private:
+  private:
     Size measure(ElementId element, Size available);
     void arrange(ElementId element, Box slot);
     // The element's own MeasureOverride/ArrangeOverride (velora/controls), with the common inputs.
@@ -434,8 +434,6 @@ private:
     static bool pressable(std::optional<ElementKind> kind);
     static bool interactive(std::optional<ElementKind> kind);
     void toggle(ElementId element);
-    PropertyValue coerceRange(ElementId element, const PropertyDescriptor* property,
-                              PropertyValue value) const;
     void controlValueChanged(ElementId element, const PropertyDescriptor* property);
     void sliderTo(ElementId slider, float x);
     bool controlKey(Key key);

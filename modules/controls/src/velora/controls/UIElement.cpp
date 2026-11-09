@@ -4,7 +4,9 @@
 namespace velora
 {
 
-UIElement::UIElement(std::optional<ElementKind> kind) noexcept : m_kind(kind) {}
+UIElement::UIElement(std::optional<ElementKind> kind) noexcept : m_kind(kind)
+{
+}
 
 UIElement::~UIElement() = default;
 
@@ -65,8 +67,9 @@ std::shared_ptr<UIElement> createElementObject(std::optional<ElementKind> kind)
     case ElementKind::kToggleSwitch:
         return std::make_shared<ToggleSwitchElement>();
     case ElementKind::kSlider:
+        return std::make_shared<SliderElement>();
     case ElementKind::kProgressBar:
-        return std::make_shared<RangeBaseElement>(*kind);
+        return std::make_shared<ProgressBarElement>();
     case ElementKind::kImage:
         return std::make_shared<ImageElement>();
     case ElementKind::kListView:

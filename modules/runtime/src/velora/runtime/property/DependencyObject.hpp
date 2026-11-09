@@ -41,21 +41,21 @@ enum class PropertySetResult : u8
 // arranging or rendering means.
 class IPropertyInvalidation
 {
-public:
+  public:
     virtual void invalidate(DependencyObject& object, const PropertyDescriptor& property) = 0;
 
-protected:
+  protected:
     ~IPropertyInvalidation() = default;
 };
 
 class DependencyObject
 {
-public:
+  public:
     using ChangedHandler = std::function<void(DependencyObject&, const PropertyDescriptor&,
                                               const PropertyValue& oldValue, const PropertyValue& newValue)>;
 
     DependencyObject();
-    ~DependencyObject();
+    virtual ~DependencyObject();
     DependencyObject(const DependencyObject&) = delete;
     DependencyObject& operator=(const DependencyObject&) = delete;
 
@@ -69,8 +69,8 @@ public:
     }
     [[nodiscard]] std::optional<PropertyValue> readLocalValue(const PropertyDescriptor& property) const;
     [[nodiscard]] const PropertyValue& getAnimationBaseValue(const PropertyDescriptor& property) const;
-    [[nodiscard]] std::optional<PropertySource>
-    valueSource(const PropertyDescriptor& property) const noexcept;
+    [[nodiscard]] std::optional<PropertySource> valueSource(
+        const PropertyDescriptor& property) const noexcept;
     [[nodiscard]] const PropertyValue* layerValue(const PropertyDescriptor& property,
                                                   PropertySource source) const noexcept;
 
@@ -121,13 +121,13 @@ public:
     // property that ends where it started notifies nothing. Batches nest.
     class ChangeBatch
     {
-    public:
+      public:
         explicit ChangeBatch(DependencyObject& object) noexcept;
         ~ChangeBatch();
         ChangeBatch(const ChangeBatch&) = delete;
         ChangeBatch& operator=(const ChangeBatch&) = delete;
 
-    private:
+      private:
         DependencyObject& m_object;
         std::shared_ptr<bool> m_alive;
     };
@@ -149,7 +149,16 @@ public:
 
     static constexpr u32 kMaxNotificationDepth = 32;
 
-private:
+  protected:
+    // All value writers, including expressions, use object-specific validation. Normalization
+    // runs inside a notification batch so observers see consistent dependent properties.
+    virtual bool validatePropertyValue(const PropertyDescriptor&, const PropertyValue&) const;
+    virtual void normalizePropertyValues(const PropertyDescriptor&);
+    // Replaces the effective layer's value without detaching its expression. This is destructive
+    // normalization: the original unclamped value is not retained for later restoration.
+    void normalizeValue(const PropertyDescriptor& property, PropertyValue value);
+
+  private:
     struct Handler
     {
         u64 token;

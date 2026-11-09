@@ -16,6 +16,7 @@ velora_module(controls
         velora/controls/ContentElements.cpp
         velora/controls/TextAndFixedElements.cpp
         velora/controls/ToggleElements.cpp
+        velora/controls/RangeElements.cpp
         velora/runtime/ElementTree.cpp
         velora/runtime/VisualBridge.cpp
         velora/runtime/SchemaValue.cpp

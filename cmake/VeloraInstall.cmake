@@ -1,5 +1,7 @@
 include_guard(GLOBAL)
 
+install(FILES "${PROJECT_SOURCE_DIR}/LICENSE"
+    DESTINATION "${CMAKE_INSTALL_DATADIR}/licenses/Velora" RENAME Velora-LICENSE.txt)
 install(FILES "${PROJECT_SOURCE_DIR}/third_party/winui2.3/LICENSE"
     DESTINATION "${CMAKE_INSTALL_DATADIR}/licenses/Velora" RENAME WinUI2.3-LICENSE.txt)
 

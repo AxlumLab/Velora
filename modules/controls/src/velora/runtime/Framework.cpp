@@ -89,7 +89,7 @@ Framework::Framework(Compositor& compositor, TextMeasurer measure)
             // Object APIs use process-wide descriptors; Framework uses its own registry.
             // Both identify the same property by ID, not by descriptor address.
             const auto* registered = incoming.owner.empty() ? m_registry.find(incoming.name)
-                                                          : m_registry.find(incoming.owner, incoming.name);
+                                                            : m_registry.find(incoming.owner, incoming.name);
             const auto& d = registered && registered->id == incoming.id ? *registered : incoming;
             if (&d == m_props.Content)
                 contentChanged(element);
@@ -108,7 +108,8 @@ Framework::Framework(Compositor& compositor, TextMeasurer measure)
                 for (const auto& b : it->second)
                     if (b.ownerProperty == &d)
                         set(b.target, b.property, m_tree.property(element, d), PropertySource::kTemplate);
-            if (m_tree.contains(element) && (&d == m_props.IsChecked || &d == m_props.IsOn))
+            if (m_tree.contains(element) &&
+                (&d == m_props.IsChecked || &d == m_props.IsOn || &d == m_props.Value))
                 controlValueChanged(element, &d);
         });
     m_bridge = std::make_unique<VisualBridge>(m_tree, m_compositor, m_visual);

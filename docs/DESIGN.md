@@ -53,7 +53,11 @@ ui.on(id, ui.events().Toggled, [] { /* 响应有效值变化 */ });
 toggle->setIsOn(false); // 挂载后触发宿主事件及 TwoWay 写回
 ```
 
-`isOnProperty()` 可用于既有依赖属性层级 API；CheckBox/RadioButton 对应 `ToggleButtonElement::isChecked/setIsChecked/isCheckedProperty`。工厂应用与 XAML 相同的默认值，不创建代理或第二套状态。上述只是已交付的 Toggle 切片：目前事件仍通过 Framework 注册，三态 CheckBox、普通控件完整继承层次、virtual 输入/绘制及 RangeBase 对象侧校验仍待实现。
+`isOnProperty()` 可用于既有依赖属性层级 API；CheckBox/RadioButton 对应 `ToggleButtonElement::isChecked/setIsChecked/isCheckedProperty`。工厂应用与 XAML 相同的默认值，不创建代理或第二套状态。目前事件仍通过 Framework 注册，三态 CheckBox、普通控件完整继承层次、virtual 输入/绘制仍待实现。
+
+`SliderElement` 与 `ProgressBarElement` 继承 `RangeBaseElement`，公开 `minimum/maximum/value`、对应 setter 和静态属性描述符；Slider 另有 `stepFrequency/setStepFrequency`。范围校验在对象中执行，覆盖普通属性写入、表达式发布和清除属性后的回退。依赖属性提供受保护的校验与值规范化扩展点，在一批通知前调整关联值；不会创建第二份属性存储，也不会因截断值而解除表达式。
+
+当前范围行为保留原实现的破坏性截断：Maximum 至少为 Minimum，Value 位于两者之间，非有限值和负步长被拒绝；放宽范围不会自动恢复之前被截断的原始值。这不是完整 WinUI coercion 语义的完成声明，仍须对照参考环境补齐。绑定源发布越界值时只截断目标，不递归改写源；之后的用户写入及范围变化继续使用 TwoWay 写回。
 
 ## 5. 后端与发布
 

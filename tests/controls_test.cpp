@@ -1,19 +1,19 @@
 // Toggle, range and Canvas controls: layout, pointer and keyboard activation, events,
 // RadioButton groups, range coercion, Canvas placement and ordinary C++ element ownership.
+#include <array>
 #include <cmath>
 #include <cstdio>
 #include <limits>
+#include <memory>
 #include <string>
 #include <string_view>
-#include <vector>
 #include <thread>
-#include <array>
-#include <memory>
-#include <velora/reflect/Accessors.hpp>
-#include <velora/controls/BuiltinElements.hpp>
-#include <velora/globals.hpp>
-#include <velora/controls/ElementFactory.hpp>
+#include <vector>
 #include <velora/composition/Compositor.hpp>
+#include <velora/controls/BuiltinElements.hpp>
+#include <velora/controls/ElementFactory.hpp>
+#include <velora/globals.hpp>
+#include <velora/reflect/Accessors.hpp>
 #include <velora/runtime/Framework.hpp>
 
 using namespace velora;
@@ -169,8 +169,8 @@ void toggleObjectApi()
 
     auto expression = std::make_shared<PropertyExpression>();
     toggle->setExpression(ToggleSwitchElement::isOnProperty(), PropertySource::kLocal, expression, true);
-    toggle->updateExpressionValue(ToggleSwitchElement::isOnProperty(), PropertySource::kLocal,
-                                 *expression, false);
+    toggle->updateExpressionValue(ToggleSwitchElement::isOnProperty(), PropertySource::kLocal, *expression,
+                                  false);
     check(!toggle->isOn() && events == 5, "expression installation and updates raise toggle events");
     PropertySetResult result = PropertySetResult::kOk;
     std::thread([&] { result = toggle->setIsOn(true); }).join();
@@ -189,7 +189,12 @@ void toggleObjectApi()
     check(!first->isChecked() && second->isChecked() && unchecked == 1 && checked == 1,
           "object writes preserve radio group exclusivity and events");
 
-    f.ui.on(id, f.ui.events().Toggled, [&] { ++events; f.ui.tree().remove(id); });
+    f.ui.on(id, f.ui.events().Toggled,
+            [&]
+            {
+                ++events;
+                f.ui.tree().remove(id);
+            });
     toggle->setIsOn(true);
     check(!toggle->isInTree() && toggle->isOn() && events == 6,
           "a toggle handler can remove its own element");
@@ -209,9 +214,9 @@ void toggleBindingLifetime()
             set(enabled, value, "Enabled");
         }
     } model;
-    static const std::array properties = {
-        property("Enabled", [](void* object) { return static_cast<Model*>(object)->enabled; },
-                 [](void* object, bool value) { static_cast<Model*>(object)->setEnabled(value); })};
+    static const std::array properties = {property(
+        "Enabled", [](void* object) { return static_cast<Model*>(object)->enabled; },
+        [](void* object, bool value) { static_cast<Model*>(object)->setEnabled(value); })};
     static const TypeAccessors accessors{&typeid(Model), "ToggleModel", properties, observableOf<Model>};
     registerAccessors(accessors);
     Fixture f;
@@ -234,8 +239,112 @@ void toggleBindingLifetime()
     check(!toggle->isInTree() && f.ui.bindingStats().bindings == 0,
           "source event removal releases bindings after in-flight evaluation");
     model.setEnabled(true);
-    check(!toggle->isOn() && f.ui.bindingErrors().empty(),
-          "removed target has no live source subscription");
+    check(!toggle->isOn() && f.ui.bindingErrors().empty(), "removed target has no live source subscription");
+}
+
+void rangeObjectApi()
+{
+    Fixture f;
+    auto slider = createElement<SliderElement>();
+    check(near(slider->minimum(), 0) && near(slider->maximum(), 100) && near(slider->stepFrequency(), 1),
+          "typed Slider uses schema defaults");
+    slider->setMinimum(-10);
+    slider->setValue(-50);
+    check(near(slider->value(), -10), "off-tree RangeBase clamps typed writes");
+    const auto id = f.ui.insert(slider, f.stack);
+    int events = 0;
+    f.ui.on(id, f.ui.events().ValueChanged, [&] { ++events; });
+    slider->setValue(40);
+    slider->setValue(40);
+    slider->setValue(20, PropertySource::kStyle);
+    check(events == 1 && near(slider->value(), 40), "range notifications use effective values");
+    slider->clearValue(SliderElement::valueProperty());
+    check(events == 2 && near(slider->value(), 20), "clearing local Value publishes the style");
+
+    auto expression = std::make_shared<PropertyExpression>();
+    slider->setExpression(SliderElement::valueProperty(), PropertySource::kLocal, expression, 500.0);
+    check(events == 3 && near(slider->value(), 100) &&
+              slider->expression(SliderElement::valueProperty(), PropertySource::kLocal) == expression.get(),
+          "clamping expression values preserves the subscription");
+    slider->updateExpressionValue(SliderElement::valueProperty(), PropertySource::kLocal, *expression, -30.0);
+    check(events == 4 && near(slider->value(), -10), "expression updates use object range rules");
+    check(slider->setValue(SliderElement::valueProperty(), PropertyValue(true)) ==
+                  PropertySetResult::kInvalidValue &&
+              slider->setMaximum(std::numeric_limits<f64>::infinity()) == PropertySetResult::kInvalidValue &&
+              slider->setStepFrequency(-1) == PropertySetResult::kInvalidValue &&
+              !slider->updateExpressionValue(SliderElement::valueProperty(), PropertySource::kLocal,
+                                             *expression, std::numeric_limits<f64>::quiet_NaN()) &&
+              events == 4,
+          "all range writers reject invalid types and non-finite values without events");
+    bool consistent = true;
+    slider->addPropertyChanged(
+        [&](DependencyObject&, const PropertyDescriptor&, const PropertyValue&, const PropertyValue&)
+        {
+            consistent =
+                consistent && slider->minimum() <= slider->value() && slider->value() <= slider->maximum();
+        });
+    slider->setMinimum(150);
+    check(consistent && near(slider->maximum(), 150) && near(slider->value(), 150) && events == 5,
+          "range observers see normalized dependent properties and one ValueChanged");
+    PropertySetResult result = PropertySetResult::kOk;
+    std::thread([&] { result = slider->setValue(200); }).join();
+    check(result == PropertySetResult::kWrongThread && events == 5, "RangeBase retains thread affinity");
+    f.ui.on(id, f.ui.events().ValueChanged,
+            [&]
+            {
+                ++events;
+                f.ui.tree().remove(id);
+            });
+    slider->setMinimum(200);
+    check(!slider->isInTree() && near(slider->value(), 200), "range callbacks may unload their control");
+    slider->setMinimum(250);
+    check(events == 6 && near(slider->value(), 250), "detached ranges no longer notify the former host");
+
+    auto progress = createElement<ProgressBarElement>();
+    progress->setMaximum(30);
+    progress->setValue(80, PropertySource::kStyle);
+    progress->setValue(15);
+    progress->setMaximum(20);
+    progress->clearValue(ProgressBarElement::valueProperty());
+    check(near(progress->value(), 20), "clearing a range revalidates the newly exposed style value");
+}
+
+void rangeBindingLifetime()
+{
+    struct Model : Observable
+    {
+        f64 amount = 200;
+        int writes = 0;
+        void setAmount(f64 value)
+        {
+            ++writes;
+            set(amount, value, "Amount");
+        }
+    } model;
+    static const std::array properties = {property(
+        "Amount", [](void* object) { return static_cast<Model*>(object)->amount; },
+        [](void* object, f64 value) { static_cast<Model*>(object)->setAmount(value); })};
+    static const TypeAccessors accessors{&typeid(Model), "RangeModel", properties, observableOf<Model>};
+    registerAccessors(accessors);
+    Fixture f;
+    auto slider = createElement<SliderElement>();
+    const auto id = f.ui.insert(slider, f.stack);
+    f.ui.set(id, f.p.DataContext, ObjectRef{&model, &typeid(Model)});
+    f.ui.bind(id, f.p.Value, "Amount", BindingMode::kTwoWay);
+    check(near(slider->value(), 100) && near(model.amount, 200) && model.writes == 0,
+          "Binding clamps the target without feeding a source publication back");
+    slider->setValue(50);
+    check(near(model.amount, 50) && model.writes == 1, "typed range writes back exactly once");
+    slider->setMaximum(25);
+    check(near(slider->value(), 25) && near(model.amount, 25) && model.writes == 2,
+          "dependent range normalization preserves TwoWay write-back");
+    f.ui.on(id, f.ui.events().ValueChanged, [&] { f.ui.tree().remove(id); });
+    model.setAmount(10);
+    check(!slider->isInTree() && f.ui.bindingStats().bindings == 0,
+          "a range source event can unload its bound target");
+    model.setAmount(5);
+    check(near(slider->value(), 10) && f.ui.bindingErrors().empty(),
+          "unloaded range unsubscribes from its model");
 }
 
 void slider()
@@ -361,6 +470,8 @@ int main()
     toggleSwitch();
     toggleObjectApi();
     toggleBindingLifetime();
+    rangeObjectApi();
+    rangeBindingLifetime();
     slider();
     progressAndCanvas();
     retainedControls();

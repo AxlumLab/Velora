@@ -139,33 +139,12 @@ void Framework::set(ElementId owner, const PropertyDescriptor* property, Propert
 {
     if (!property)
         return;
-    const auto kind = m_tree.kind(owner);
-    if (kind && isRangeBase(*kind) && value.isDouble())
-    {
-        const bool range = property == m_props.Value || property == m_props.Minimum ||
-                           property == m_props.Maximum;
-        const bool step = *kind == ElementKind::kSlider && property == m_props.StepFrequency;
-        if ((range || step) && (!std::isfinite(value.asDouble()) || (step && value.asDouble() < 0)))
-            return;
-    }
     if (property == m_props.Content)
     {
         setContentValue(owner, std::move(value), source);
         return;
     }
-    const bool control = property == m_props.Value || property == m_props.Minimum ||
-                         property == m_props.Maximum;
-    if (!control || !m_tree.contains(owner))
-    {
-        m_tree.setProperty(owner, *property, std::move(value), source);
-        return;
-    }
-    // Range coercion stays here until RangeBase owns it. Toggle changes are observed
-    // at the effective-value boundary, including object, binding and clearValue writes.
-    const PropertyValue before = m_tree.property(owner, *property);
-    m_tree.setProperty(owner, *property, coerceRange(owner, property, std::move(value)), source);
-    if (m_tree.contains(owner) && m_tree.property(owner, *property) != before)
-        controlValueChanged(owner, property);
+    m_tree.setProperty(owner, *property, std::move(value), source);
 }
 void Framework::setContentValue(ElementId owner, PropertyValue value, PropertySource source)
 {
@@ -246,4 +225,4 @@ void Framework::contentChanged(ElementId owner)
                                                                   : std::numeric_limits<ElementId>::max());
     }
 }
-}
+} // namespace velora

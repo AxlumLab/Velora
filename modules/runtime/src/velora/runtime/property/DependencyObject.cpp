@@ -7,6 +7,27 @@ namespace velora
 
 DependencyObject::DependencyObject() = default;
 
+bool DependencyObject::validatePropertyValue(const PropertyDescriptor&, const PropertyValue&) const
+{
+    return true;
+}
+
+void DependencyObject::normalizePropertyValues(const PropertyDescriptor&)
+{
+}
+
+void DependencyObject::normalizeValue(const PropertyDescriptor& property, PropertyValue value)
+{
+    PropertyValue before = getValue(property);
+    if (before == value)
+        return;
+    if (const auto source = m_store.source(property.id))
+        m_store.update(property.id, *source, std::move(value));
+    else
+        m_store.set(property.id, PropertySource::kDefaultStyle, std::move(value));
+    changed(property, std::move(before));
+}
+
 DependencyObject::~DependencyObject()
 {
     *m_alive = false;
@@ -74,8 +95,10 @@ PropertySetResult DependencyObject::write(const PropertyDescriptor& property, Pr
 {
     if (!isOwnerThread())
         return PropertySetResult::kWrongThread;
-    if (property.validate && !value.empty() && !property.validate(value))
+    if (!validatePropertyValue(property, value) ||
+        (property.validate && !value.empty() && !property.validate(value)))
         return PropertySetResult::kInvalidValue;
+    ChangeBatch batch(*this);
     PropertyValue before = getValue(property);
     PropertyExpression* current = m_store.expression(property.id, source);
     if (current && current->keepWhenOverwritten(value))
@@ -83,6 +106,7 @@ PropertySetResult DependencyObject::write(const PropertyDescriptor& property, Pr
     else
         m_store.set(property.id, source, std::move(value)); // replaces (and detaches) the expression
     changed(property, std::move(before));
+    normalizePropertyValues(property);
     return PropertySetResult::kOk;
 }
 
@@ -90,9 +114,11 @@ bool DependencyObject::erase(const PropertyDescriptor& property, PropertySource 
 {
     if (!isOwnerThread() || !m_store.layer(property.id, source))
         return false;
+    ChangeBatch batch(*this);
     PropertyValue before = getValue(property);
     m_store.clear(property.id, source);
     changed(property, std::move(before));
+    normalizePropertyValues(property);
     return true;
 }
 
@@ -104,11 +130,14 @@ PropertySetResult DependencyObject::setExpression(const PropertyDescriptor& prop
         return PropertySetResult::kWrongThread;
     if (property.readOnly)
         return PropertySetResult::kReadOnly;
-    if (property.validate && !initialValue.empty() && !property.validate(initialValue))
+    if (!validatePropertyValue(property, initialValue) ||
+        (property.validate && !initialValue.empty() && !property.validate(initialValue)))
         return PropertySetResult::kInvalidValue;
+    ChangeBatch batch(*this);
     PropertyValue before = getValue(property);
     m_store.set(property.id, source, std::move(initialValue), std::move(expression));
     changed(property, std::move(before));
+    normalizePropertyValues(property);
     return PropertySetResult::kOk;
 }
 
@@ -117,11 +146,14 @@ bool DependencyObject::updateExpressionValue(const PropertyDescriptor& property,
 {
     if (!isOwnerThread() || m_store.expression(property.id, source) != &expression)
         return false;
-    if (property.validate && !value.empty() && !property.validate(value))
+    if (!validatePropertyValue(property, value) ||
+        (property.validate && !value.empty() && !property.validate(value)))
         return false;
+    ChangeBatch batch(*this);
     PropertyValue before = getValue(property);
     m_store.update(property.id, source, std::move(value));
     changed(property, std::move(before));
+    normalizePropertyValues(property);
     return true;
 }
 
@@ -153,7 +185,7 @@ void DependencyObject::changed(const PropertyDescriptor& property, PropertyValue
     {
         // Coalesce: the first old value of the batch is the one that counts.
         const bool known = std::any_of(m_pending.begin(), m_pending.end(),
-                                       [&](const Pending& p) { return p.property == &property; });
+                                       [&](const Pending& p) { return p.property->id == property.id; });
         if (!known)
             m_pending.push_back({&property, std::move(oldValue)});
         return;
