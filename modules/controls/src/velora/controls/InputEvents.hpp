@@ -19,7 +19,8 @@ enum class Key
     kDown,
     kPageUp,
     kPageDown,
-    kTab
+    kTab,
+    kEscape
 };
 
 struct RoutedEventArgs

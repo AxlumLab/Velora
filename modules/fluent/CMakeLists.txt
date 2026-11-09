@@ -5,6 +5,8 @@ velora_module(fluent
     SOURCES velora/fluent/FluentPackage.cpp
         velora/fluent/InitialsGenerator.cpp
         velora/fluent/PersonPicture.cpp
+        velora/fluent/NumberBox.cpp
+        velora/fluent/NumberBoxParser.cpp
     PUBLIC velora::controls velora::resources)
 file(READ "${CMAKE_CURRENT_SOURCE_DIR}/resources/FluentControls.vtypes" FLUENT_TYPES)
 configure_file(FluentTypes.hpp.in "${PROJECT_BINARY_DIR}/generated/fluent/FluentTypes.hpp" @ONLY)

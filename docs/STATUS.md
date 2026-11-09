@@ -98,6 +98,14 @@
 - 这些输入尚未编译、安装、打包或注册；可运行控件范围没有因此扩大。直接内化时用现有 Velora 底座替换依赖，不引入通用 WinRT 兼容层。系统提供逻辑的模板目录及实验 API 仍需单独实现/审查，不能从文件存在推断完整兼容。依赖替换范围与下一批顺序见 `modules/fluent/PORTING.md`。
 - 本轮逐文件来源/导入哈希校验、重复导入一致性、CheckStyle 和 CheckWorkspace 通过；Windows Debug 的 fluent_controls/source_control/fluent 定向回归 **3/3** 通过（0.18s），日志 `build/dev/fluent-staging-tests.log`。本轮未改变运行时代码，未重复完整构建、完整回归或 ASan；这些未编译的输入没有通过编译验收。
 
+### 当前接通：NumberBox 内联编辑
+
+- NumberBox 已从待移植输入改写为 Fluent 实际 C++ 对象、共享类型声明和编译模板，Windows 示例正式 XAML 可创建。支持数值/文本同步、最小最大值修正、禁用验证、循环增减、空值 NaN、表达式、标题与提示、Hidden/Inline 增减按钮；没有加入第二份属性存储或上游 WinRT 运行时。
+- 提交草稿通过 Enter/失焦，Escape 恢复数值显示；Up/Down、PageUp/PageDown 和实际按钮接入现有输入与事件路由。增加 Windows Escape 映射。ValueChanged 使用实际属性通知及可移除 token；C++、Framework、样式、TwoWay 写回和编译 XAML 均有覆盖。资源缺失回滚、重新挂载、提交回调中卸载并释放最后外部引用有回归。
+- 表达式算法保留上游优先级和左结合规则，改为有界解析；支持 invariant decimal/科学计数法，明确拒绝除零、非有限结果和错误括号。格式化当前为最多 12 位有效数字，与原数字格式服务仍有差异。Compact Popup、RepeatButton 长按、滚轮、本地数字格式、完整模板/状态和 UIA pattern 均未完成，详见 Fluent PORTING.md。SplitButton/DropDownButton 仍需 Flyout/Popup 底座，不计为已接通。
+- Windows 实际窗口验证 `2+3*4` → Enter 显示 `14` → Up/PageUp 显示 `25` → 无效草稿 Escape 恢复 `25` → 点击增量显示 `26`；关闭退出码 0。截图与会话为 `build/dev/fluent-numberbox-native/`。
+- 完整 Debug 构建（含新增公开头独立编译）及 **42/42** 回归通过（109.45s，含 SDK 安装消费），日志 `build/dev/numberbox-full-build.log`、`numberbox-full-tests.log`、`numberbox-results.xml`；相关 ASan framework/controls_core/fluent_controls **3/3** 通过（1.20s），实际加载 Fluent 模板，日志 `build/asan/numberbox-tests.log`。格式 8 个改动 C++ 文件、来源哈希、CheckStyle、CheckWorkspace 和 diff 检查通过。未重跑 Release、完整 ASan 或真实 IME。
+
 | 范围 | 当前事实 |
 | --- | --- |
 | 控件对象 | UIElement/BuiltinElements、createElement、shared_ptr 元素树和 virtual 布局已有实现；一部分行为仍集中在 Framework |

@@ -34,6 +34,8 @@ std::optional<Key> keyOf(u32 code)
         return Key::kDelete; // VK_DELETE
     case 0x0D:
         return Key::kEnter; // VK_RETURN
+    case 0x1B:
+        return Key::kEscape; // VK_ESCAPE
     case 'A':
         return Key::kA;
     case 0x26:

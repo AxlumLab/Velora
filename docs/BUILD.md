@@ -4,7 +4,7 @@
 
 ## 1. 核心检查
 
-Fluent 内部控件示例：构建 `dev-debug` 后运行 `build/dev/examples/fluent_controls/Debug/velora_fluent_gallery.exe`。CMake 自动部署匹配的 `Velora.Fluent.vpak` 与 MIT 许可证；示例从编译 XAML 创建模块内的 PersonPicture，可切换群组和递增徽章。
+Fluent 内部控件示例：构建 `dev-debug` 后运行 `build/dev/examples/fluent_controls/Debug/velora_fluent_gallery.exe`。CMake 自动部署匹配的 `Velora.Fluent.vpak` 与 MIT 许可证；示例从编译 XAML 创建模块内的 PersonPicture 和 NumberBox。可切换群组、递增徽章，或在数字编辑器输入 `2+3*4` 后按 Enter，再用增减按钮或方向键调整。
 
 ASan 的 Fluent 模板测试可复用同一编译资源包（不是复用 dev 的原生代码）：先构建 dev，再配置 `cmake --preset asan -DVELORA_FLUENT_TEST_PACKAGE=E:/Projects/velora/build/dev/modules/fluent/Velora.Fluent.vpak`。未提供资源包的核心配置只运行树外逻辑及缺失资源回滚检查，会明确报告模板检查未运行。
 

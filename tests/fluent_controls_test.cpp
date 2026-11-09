@@ -13,6 +13,8 @@
 #include <velora/controls/XamlComponent.hpp>
 #include <velora/fluent/FluentPackage.hpp>
 #include <velora/fluent/InitialsGenerator.hpp>
+#include <velora/fluent/NumberBox.hpp>
+#include <velora/fluent/NumberBoxParser.hpp>
 #include <velora/fluent/PersonPicture.hpp>
 #include <velora/graphics/DisplayList.hpp>
 #include <velora/xaml/XamlBinary.hpp>
@@ -23,7 +25,7 @@ namespace
 int failures = 0;
 void check(bool passed, const char* name)
 {
-    std::printf("Fluent PersonPicture %s: %s\n", name, passed ? "PASS" : "FAIL");
+    std::printf("Fluent %s: %s\n", name, passed ? "PASS" : "FAIL");
     failures += !passed;
 }
 
@@ -220,12 +222,201 @@ void attached()
     check(weak.expired() && retiringUi.tree().node_count() == 0,
           "template-part callbacks may unload the control and release its last external reference");
 }
+void numberProperties()
+{
+    for (const auto& [input, expected] : std::vector<std::pair<std::string, f64>>{
+             {"2+3*4", 14}, {"(2+3)*4", 20}, {"2^3^2", 64}, {"-2*-3", 6}, {"1e-3 + 1", 1.001}})
+        check(NumberBoxParser::compute(input) == expected, ("NumberBox expression: " + input).c_str());
+    for (const auto* input :
+         {"", "()", "1+", "(1", "1)", "1 2", "2(3)", "1/0", "2^9999", "nan", "inf", "-(2)", "1;2"})
+        check(!NumberBoxParser::compute(input),
+              (std::string("NumberBox rejects expression: ") + input).c_str());
+    const std::string bounded = "2+3garbage";
+    check(NumberBoxParser::compute(std::string_view(bounded.data(), 3)) == 5 &&
+              !NumberBoxParser::compute("2+3", false),
+          "NumberBox bounded input and expression opt-in");
+    auto box = createElement<NumberBox>();
+    check(box->value() == 0 && box->text() == "0" && box->smallChange() == 1 && box->largeChange() == 10,
+          "NumberBox upstream numeric defaults");
+    box->setMaximum(10);
+    box->setMinimum(2);
+    int events = 0;
+    f64 observedBefore = 0, observedAfter = 0;
+    const auto token = box->addValueChanged(
+        [&](f64 before, f64 after)
+        {
+            ++events;
+            observedBefore = before;
+            observedAfter = after;
+        });
+    box->setValue(50);
+    check(box->value() == 10 && box->text() == "10" && events == 1 && observedBefore == 2 &&
+              observedAfter == 10,
+          "NumberBox normalization publishes one final ValueChanged");
+    box->setValue(50);
+    check(events == 1, "NumberBox clipped writes do not publish spurious value changes");
+    box->setAcceptsExpression(true);
+    box->setText("1+2*2");
+    check(box->value() == 5 && box->text() == "5", "NumberBox Text evaluates and formats Value");
+    box->setText("broken");
+    check(box->value() == 5 && box->text() == "5", "NumberBox invalid text restores formatted value");
+    box->setValidationMode("Disabled");
+    box->setText("broken");
+    check(box->text() == "broken" && box->value() == 5, "NumberBox disabled validation retains invalid text");
+    box->setValue(20);
+    check(box->value() == 20, "NumberBox disabled validation permits out-of-range values");
+    box->setValidationMode("InvalidInputOverwritten");
+    check(box->value() == 10 && box->text() == "10", "NumberBox validation mode restores range");
+    box->setIsWrapEnabled(true);
+    box->stepValue(1);
+    check(box->value() == 2, "NumberBox wraps past maximum");
+    box->stepValue(-1);
+    check(box->value() == 10, "NumberBox wraps below minimum");
+    box->setMaximum(1);
+    check(box->minimum() == 1 && box->maximum() == 1 && box->value() == 1,
+          "NumberBox Maximum lowers Minimum consistently");
+    box->setMinimum(3);
+    check(box->minimum() == 3 && box->maximum() == 3 && box->value() == 3,
+          "NumberBox Minimum raises Maximum consistently");
+    box->setText("  ");
+    const int emptyEvents = events;
+    box->setText("");
+    box->stepValue(1);
+    check(std::isnan(box->value()) && box->text().empty() && events == emptyEvents,
+          "NumberBox empty text is NaN and spin preserves empty value");
+    check(box->setSmallChange(std::numeric_limits<f64>::infinity()) == PropertySetResult::kInvalidValue &&
+              box->setValue(NumberBox::valueProperty(), true) == PropertySetResult::kInvalidValue &&
+              box->setSpinButtonPlacementMode("Compact") == PropertySetResult::kInvalidValue &&
+              box->setValidationMode("unknown") == PropertySetResult::kInvalidValue &&
+              box->setHeader(std::string("\xff")) == PropertySetResult::kInvalidValue,
+          "NumberBox all writers reject invalid values and unsupported modes");
+    box->removePropertyChanged(token);
+    box->setValidationMode("Disabled");
+    box->setValue(1.23456789012345);
+    box->setText("invalid");
+    box->cancelInput();
+    check(box->value() == 1.23456789012345 && box->text() != "invalid",
+          "NumberBox cancel restores formatted text without rounding stored Value");
+    auto styled = createElement<NumberBox>();
+    styled->setValue(NumberBox::maximumProperty(), 10.0, PropertySource::kStyle);
+    styled->setValue(NumberBox::valueProperty(), 50.0, PropertySource::kStyle);
+    check(styled->value() == 10 && styled->text() == "10",
+          "NumberBox style writes use the same validation and normalization");
+    Compositor compositor;
+    Framework ui(compositor);
+    bool refused = false;
+    try
+    {
+        ui.insert(styled);
+    }
+    catch (const std::runtime_error&)
+    {
+        refused = true;
+    }
+    check(refused && !styled->isInTree() && ui.tree().node_count() == 0,
+          "NumberBox missing template rolls back attachment");
+}
+
+void numberAttached()
+{
+    Compositor compositor;
+    Framework ui(compositor);
+    auto box = createElement<NumberBox>();
+    box->setHeader("Quantity");
+    box->setMinimum(0);
+    box->setMaximum(100);
+    box->setAcceptsExpression(true);
+    box->setSpinButtonPlacementMode("Inline");
+    const auto id = ui.insert(box);
+    ui.update(320, 120);
+    const auto input = ui.templateChild(id, "InputBox");
+    const auto up = ui.templateChild(id, "UpSpinButton");
+    check(input && up && ui.bounds(input).width > 0,
+          "NumberBox actual compiled template attaches and lays out");
+    ui.focus(input);
+    ui.key(Key::kA, false, true);
+    ui.textInput("2+3*4");
+    check(box->value() == 0, "NumberBox draft stays uncommitted while editing");
+    ui.key(Key::kEnter);
+    check(box->value() == 14 && box->text() == "14" &&
+              ui.tree().property(input, *ui.props().Text).asString() == "14",
+          "NumberBox Enter commits expression through actual input route");
+    ui.key(Key::kUp);
+    ui.key(Key::kPageUp);
+    ui.key(Key::kDown);
+    check(box->value() == 24, "NumberBox arrow and page keys step the actual object");
+    ui.key(Key::kA, false, true);
+    ui.textInput("invalid");
+    ui.key(Key::kEscape);
+    check(box->value() == 24 && ui.tree().property(input, *ui.props().Text).asString() == "24",
+          "NumberBox Escape discards uncommitted draft");
+    ui.key(Key::kA, false, true);
+    ui.textInput("8");
+    ui.focus(up);
+    ui.key(Key::kEnter);
+    check(box->value() == 9, "NumberBox focus loss validates before spin-button activation");
+    box->setValue(100);
+    check(!ui.tree().property(up, *ui.props().IsEnabled).asBool(),
+          "NumberBox disables increment at upper bound");
+    ui.set(id, ui.props().IsEnabled, false);
+    ui.focus(input);
+    ui.key(Key::kDown);
+    check(box->value() == 100, "NumberBox disabled ancestor blocks input");
+    ui.set(id, ui.props().IsEnabled, true);
+    auto source = createElement<NumberBox>();
+    const auto sourceId = ui.insert(source);
+    ui.bindElement(id, &NumberBox::valueProperty(), sourceId, &NumberBox::valueProperty(),
+                   BindingMode::kTwoWay);
+    source->setValue(7);
+    box->stepValue(1);
+    check(box->value() == 8 && source->value() == 8,
+          "NumberBox TwoWay binding uses normalized actual properties");
+    ui.tree().remove(id);
+    const auto again = ui.insert(box);
+    check(ui.templateChild(again, "InputBox") && !ui.tree().contains(input),
+          "NumberBox reattachment rebuilds template and subscriptions");
+    check(NumberBox::registerType(ui).empty(), "NumberBox source type registers with shared declaration");
+    XamlIR ir;
+    ir.sourceName = "number.xaml";
+    ir.schemaFingerprint = schemaFingerprint();
+    const auto type = ir.type(box->className());
+    ir.types[type].contract = NumberBox::declaration().contract();
+    const auto property = ir.property(NumberBox::valueProperty().id, NumberBox::valueProperty().name);
+    const auto value = ir.value(PropertyValue(42.0));
+    ir.instructions = {{XamlIROp::kBeginObject, type, 0, 0, 1, 1},
+                       {XamlIROp::kSetValue, property, value, 0, 1, 2},
+                       {XamlIROp::kEndObject, 0, 0, 0, 1, 3}};
+    const auto loaded = loadComponent(ui, writeVxbf(ir));
+    check(loaded.ok && std::dynamic_pointer_cast<NumberBox>(loaded.root)->value() == 42,
+          "NumberBox compiled XAML instantiates actual internal class");
+    ui.set(again, &NumberBox::valueProperty(), 1000.0);
+    check(box->value() == 100 && box->text() == "100",
+          "NumberBox Framework property writes normalize identically");
+    Compositor retiringCompositor;
+    Framework retiringUi(retiringCompositor);
+    auto retiring = createElement<NumberBox>();
+    const std::weak_ptr<NumberBox> weak = retiring;
+    const auto retiringId = retiringUi.insert(retiring);
+    retiring->addValueChanged(
+        [&](f64, f64)
+        {
+            retiringUi.tree().remove(retiringId);
+            retiring.reset();
+        });
+    const auto retiringInput = retiringUi.templateChild(retiringId, "InputBox");
+    retiringUi.focus(retiringInput);
+    retiringUi.textInput("5");
+    retiringUi.key(Key::kEnter);
+    check(weak.expired() && retiringUi.tree().node_count() == 0,
+          "NumberBox commit callback may remove control and release last external reference");
+}
 } // namespace
 
 int main(int argc, char** argv)
 {
     initials();
     properties();
+    numberProperties();
     if (argc == 2)
     {
         const auto error = mountFluent(argv[1]);
@@ -235,6 +426,7 @@ int main(int argc, char** argv)
             return 1;
         }
         attached();
+        numberAttached();
     }
     else
         std::puts("Fluent template checks: NOT_RUN (no compiled package supplied)");

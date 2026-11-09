@@ -21,17 +21,19 @@ if(TARGET velorac)
             VERBATIM)
         list(APPEND _staged "${_stage}/Themes/${_dictionary}.vxbf")
     endforeach()
-    add_custom_command(
-        OUTPUT "${_stage}/Controls/PersonPictureView.vxbf"
-        COMMAND "${CMAKE_COMMAND}" -E make_directory "${_stage}/Controls"
-        COMMAND "$<TARGET_FILE:velorac>" vxbf
-            "${PROJECT_SOURCE_DIR}/modules/fluent/resources/Controls/PersonPictureView.xaml"
-            "${PROJECT_SOURCE_DIR}/modules/fluent/resources" "${_compiled}"
-        COMMAND "${CMAKE_COMMAND}" -E copy "${_compiled}/Controls/PersonPictureView.vxbf"
-            "${_stage}/Controls/PersonPictureView.vxbf"
-        DEPENDS "${PROJECT_SOURCE_DIR}/modules/fluent/resources/Controls/PersonPictureView.xaml" velorac
-        VERBATIM)
-    list(APPEND _staged "${_stage}/Controls/PersonPictureView.vxbf")
+    foreach(_control IN ITEMS PersonPicture NumberBox)
+        add_custom_command(
+            OUTPUT "${_stage}/Controls/${_control}View.vxbf"
+            COMMAND "${CMAKE_COMMAND}" -E make_directory "${_stage}/Controls"
+            COMMAND "$<TARGET_FILE:velorac>" vxbf
+                "${PROJECT_SOURCE_DIR}/modules/fluent/resources/Controls/${_control}View.xaml"
+                "${PROJECT_SOURCE_DIR}/modules/fluent/resources" "${_compiled}"
+            COMMAND "${CMAKE_COMMAND}" -E copy "${_compiled}/Controls/${_control}View.vxbf"
+                "${_stage}/Controls/${_control}View.vxbf"
+            DEPENDS "${PROJECT_SOURCE_DIR}/modules/fluent/resources/Controls/${_control}View.xaml" velorac
+            VERBATIM)
+        list(APPEND _staged "${_stage}/Controls/${_control}View.vxbf")
+    endforeach()
     add_custom_command(
         OUTPUT "${_stage}/Licenses/WinUI2.3-LICENSE.txt"
         COMMAND "${CMAKE_COMMAND}" -E make_directory "${_stage}/Licenses"

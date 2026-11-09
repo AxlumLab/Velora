@@ -9,3 +9,17 @@ property	BadgeGlyph	String	PersonPicture.BadgeGlyph	""
 property	BadgeImageSource	String	PersonPicture.BadgeImageSource	""
 property	BadgeText	String	PersonPicture.BadgeText	""
 end
+type	Velora.Fluent.NumberBox	UserControl
+property	Value	Double	NumberBox.Value	0
+property	Minimum	Double	NumberBox.Minimum	-1.7976931348623157e308
+property	Maximum	Double	NumberBox.Maximum	1.7976931348623157e308
+property	SmallChange	Double	NumberBox.SmallChange	1
+property	LargeChange	Double	NumberBox.LargeChange	10
+property	Text	String	NumberBox.Text	""
+property	Header	String	NumberBox.Header	""
+property	PlaceholderText	String	NumberBox.PlaceholderText	""
+property	IsWrapEnabled	Boolean	NumberBox.IsWrapEnabled	False
+property	AcceptsExpression	Boolean	NumberBox.AcceptsExpression	False
+property	ValidationMode	String	NumberBox.ValidationMode	InvalidInputOverwritten
+property	SpinButtonPlacementMode	String	NumberBox.SpinButtonPlacementMode	Hidden
+end

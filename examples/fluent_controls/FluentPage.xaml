@@ -2,13 +2,16 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:fluent="using:Velora.Fluent" x:Class="Demo.FluentPage">
     <StackPanel Margin="24" Spacing="20">
-        <TextBlock Text="Velora Fluent — PersonPicture" FontSize="24"/>
+        <TextBlock Text="Velora Fluent" FontSize="24"/>
         <StackPanel Orientation="Horizontal" Spacing="24">
             <fluent:PersonPicture x:Name="Avatar" DisplayName="Ada Lovelace" BadgeNumber="7"/>
             <fluent:PersonPicture DisplayName="Grace Hopper"/>
             <fluent:PersonPicture DisplayName="张三" BadgeGlyph="!"/>
             <fluent:PersonPicture IsGroup="True" BadgeNumber="120"/>
         </StackPanel>
+        <fluent:NumberBox x:Name="Quantity" Header="Quantity — expressions enabled" Value="5"
+                          Minimum="0" Maximum="100" AcceptsExpression="True"
+                          SpinButtonPlacementMode="Inline" Width="300" HorizontalAlignment="Left"/>
         <StackPanel Orientation="Horizontal" Spacing="12">
             <Button Content="Toggle group" Click="toggleGroup"/>
             <Button Content="Increment badge" Click="incrementBadge"/>

@@ -7,6 +7,7 @@
 #include <velora/application/XamlApplication.hpp>
 #include <velora/application/XamlWindow.hpp>
 #include <velora/fluent/FluentPackage.hpp>
+#include <velora/fluent/NumberBox.hpp>
 #include <velora/fluent/PersonPicture.hpp>
 #include <windows.h>
 
@@ -26,11 +27,13 @@ class FluentWindow final : public XamlWindow
         WindowOptions options;
         options.title = "Velora Fluent controls";
         options.width = 600;
-        options.height = 330;
+        options.height = 450;
         if (!Create(options))
             return;
         auto& ui = GetFramework();
         if (const auto error = PersonPicture::registerType(ui); !error.empty())
+            throw std::runtime_error(error);
+        if (const auto error = NumberBox::registerType(ui); !error.empty())
             throw std::runtime_error(error);
         Demo::FluentPage_component::Names names;
         const auto loaded = Demo::FluentPage_component::initializeComponent(ui, m_controller, names);

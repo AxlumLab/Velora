@@ -62,3 +62,17 @@ python scripts/StageFluentSources.py --check
 - 显式非方形布局只保证显示区域为圆形，不像上游 SizeChanged 那样回写调用方 Width/Height。自动化名称目前为 en-US，未接入全部语言复数规则；Windows UIA provider 本身仍待实现。
 
 因此该控件是可运行的内部实现切片，不标记为 WinUI 2.3 PersonPicture 全量兼容完成。后续从真实使用和对照测试继续补齐这些差异。
+
+## NumberBox 内联编辑切片
+
+`src/velora/fluent/NumberBox.{hpp,cpp}` 和 `NumberBoxParser.{hpp,cpp}` 直接内化上游 `NumberBox.cpp/.idl`、`NumberBoxParser.cpp/.h` 的数值行为；实际模板为 `resources/Controls/NumberBoxView.xaml`。原始哈希仍见 `porting/Sources.json`，派生文件保留 MIT。原输入不参与构建，正式工厂创建一个实际 NumberBox 对象。
+
+- 支持 Value、Minimum、Maximum、SmallChange、LargeChange、Text、Header、PlaceholderText、IsWrapEnabled、AcceptsExpression、ValidationMode 和 Hidden/Inline 的 SpinButtonPlacementMode。数值默认值沿用此提交的 IDL（Value 为 0、范围为正负最大有限 Double、增量 1/10）；空文本变为 NaN，空值不响应增减。
+- Value/Text、范围调整、禁用验证、循环增减和最终 ValueChanged 回调经过现有依赖属性存储。直接 C++、Framework、样式和 TwoWay 使用同一校验/归一化路径；目前范围修正仍为破坏性归一化，不宣称完整 coercion 语义。`addValueChanged` 返回现有属性订阅 token，可用 `removePropertyChanged` 解除；XAML 事件声明仍待扩展。
+- 编辑器保留未提交草稿；Enter/失焦验证，Escape 恢复数值显示，Up/Down 和 PageUp/PageDown 使用大小增量。焦点进入选中文本，提交后光标位于末尾。当前只有 KeyDown，因此 Enter/Escape 在按下时生效，上游使用 KeyUp；游戏手柄、完整触摸和滚轮未接入。
+- 表达式保留上游的操作符优先级、括号、负数字以及包括 `^` 在内的左结合规则。替换 WinRT 数字解析器后使用有界、无递归的 invariant decimal 解析，支持科学计数法；限制输入长度为 65536 字节，拒绝除零、非有限结果及错误括号，而非将运算错误当作空值。`-(...)` 不支持，与上游负数字分词边界一致。
+- 格式化当前为最多 12 位有效数字的 invariant 表示，未实现 DecimalFormatter/显示舍入、本地数字与分组符。取消草稿不会将舍入后的显示值重新写回 Value。
+- 模板复用现有 Fluent TextBox/Button 主题，有真实标题、编辑器和内联增减按钮；尚未复刻完整原模板/状态/字体和自定义样式替换。内联按钮暂使用减号/加号，没有 RepeatButton 长按重复。Compact 弹出模式明确拒绝，不能静默退回 Inline。
+- 内部 automation 名称来自 Header、类型为 Edit；完整 RangeValue/Value pattern 和 Windows UIA provider 未完成。
+
+Windows 示例 `FluentPage.xaml` 从编译 XAML 创建实际 NumberBox；注册接口为 `NumberBox::registerType`。挂载使用当前 Fluent 编译资源包，失败回滚；卸载解除模板事件订阅并清除借用宿主，重新挂载创建新部件。该切片尚不计为完整 WinUI 2.3 NumberBox 兼容。
