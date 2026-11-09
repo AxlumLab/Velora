@@ -6,6 +6,39 @@ WinUI 2.3 的逻辑、模板和资源直接改写为本模块的普通 C++ 控�
 
 完整上游镜像已从受版本管理的源码树移除。本机参考缓存位于忽略的 `build/reference/winui2.3/`，不是依赖或交付物；干净工作区可按来源链接取得具体参考文件，不必重新把整仓加入项目。
 
+## 批量引入，逐族内化
+
+按新的批量引入要求，`porting/` 保存此提交中全部 49 个控件/支持源码目录的待改写输入，另包含公共 IDL 和紧凑密度样式，共 1243 个文件。这里的“目录”包含公共算法、材料、布局和资源，并非 49 个已实现控件。引入 C++、头文件、IDL、模板、主题、原有语言资源及所需图片；不引入上游工程、激活运行时、生成投影、测试应用或设计工具。
+
+这些文件将逐族改写为 Velora 实现，不通过伪造 `winrt::` 命名空间或实现通用 WinRT/XAML 兼容层来运行原仓。`porting/` 不进入 CMake 源列表、公开头安装、XAML 编译或 VPAK；当前正式 PersonPicture 位于 `src/` 和 `resources/`，保留同名的待移植输入不产生第二个运行时对象或类型注册。
+
+来源与阶段清单在 [porting/Sources.json](porting/Sources.json)：每个文件记录原路径、原始 SHA-256、导入后 SHA-256，每个目录记录 `source-staged` 状态。只规范 UTF-8/LF、行尾空白、文件末空行及 XAML 混合缩进；`ItemsRepeater.common.cpp` 的文件名改为 `ItemsRepeaterCommon.cpp`。原文件中的版权和注释保留，全部输入受模块 MIT 许可证覆盖。
+
+校验已入库输入不需要参考缓存：
+
+```powershell
+python scripts/StageFluentSources.py --check
+```
+
+初次导入使用 `python scripts/StageFluentSources.py --reference build/reference/winui2.3`，逐文件核对固定提交的原始哈希后写入。脚本拒绝覆盖修改过的输入。实际适配在 `src/velora/fluent/`、`resources/` 进行，遵循 Velora 格式和 API 规则；适配完成后的输入可在对应迁移提交中删除，并同步来源清单。不能为通过构建而给未适配控件注册空工厂或把它们映射成无行为的基础控件。
+
+### 底座替换范围
+
+| 上游依赖 | Velora 对应能力和当前缺口 |
+| --- | --- |
+| WinRT 对象、生成 `.g.h`/`.properties`、装箱值 | 普通 C++ 类、现有 DependencyObject 和类型声明；逐类手写实际属性/事件，不生成 COM 投影 |
+| DependencyProperty、属性回调、Binding | 现有有效值存储与绑定；补齐元数据、coercion 和源码控件表达式语义，禁止另一套属性表 |
+| FrameworkElement、Control、模板部件、VisualState | 现有 UIElement/Framework、模板名称域和状态系统；完善继承、模板替换、内容属性及完整 setter/动画语义 |
+| Dispatcher、Loaded/Unloaded、事件 revoker | 现有 Windows 调度、挂载/卸载和 RAII 订阅；补齐异步取消、UI 线程销毁约束 |
+| Pointer/Key、焦点、Popup/Flyout、拖放 | 现有输入/捕获/焦点；弹出层、完整触摸/拖放和菜单交互仍需实现 |
+| Observable collections、Repeater、ScrollViewer | 保留控件算法，接入 Velora 树和布局；集合通知、容器回收、虚拟化及完整滚动协议待补齐 |
+| Composition、Brush、几何、文字与字体 | 现有合成、D2D/DirectWrite；补齐动画、效果、字体 API，不把效果缺失静默算作兼容 |
+| ResourceLoader、ImageSource、Contact、UIA | 现有资源 URI/包和图片管线；本地化、联系人服务与 Windows UIA provider 待实现 |
+
+模板输入中的 CalendarView、DatePicker、Slider、ContentDialog 等目录没有完整 C++ 控件逻辑；上游依赖 Windows 系统控件。复制目录不能取得这些实现，须由 Velora 实现行为并对照模板/API 验收。`Contracts/Microsoft.UI.Xaml.idl` 中的 experimental/版本条件也要逐项审查，固定提交中的全部源码不能直接算作 2.3 正式公开 API。
+
+下一批先从 Toggle/Range 基础类、主题/模板与弹出层补齐开始，再接入 NumberBox/SplitButton/DropDownButton，随后推进集合/虚拟化及导航控件。每批以可运行控件和相关回归为交付，已导入输入不计为可用控件。
+
 ## PersonPicture 首个实现切片
 
 实际实现位于 `src/velora/fluent/PersonPicture.{hpp,cpp}`、`InitialsGenerator.{hpp,cpp}`；模板为 `resources/Controls/PersonPictureView.xaml`，主题为 `resources/WinUI2.3/PersonPictureResources.xaml`。它们进入 `velora::fluent` 与 `Velora.Fluent.vpak` 正常构建。

@@ -91,6 +91,13 @@
 - 完整 `dev-debug` 构建及 **42/42** 回归通过（96.88s），含编译 XAML、Fluent 资源包和 SDK 安装消费。相关 ASan 回归 **4/4** 通过，Fluent 测试加载实际资源包，另已复测挂载失败回滚及模板回调中释放最后外部引用。15 个改动 C++ 文件格式、CheckStyle、CheckWorkspace 与 diff 检查通过。构建日志为 `build/dev/fluent-internal-build.log`，CTest 结果为 `build/dev/build/dev/fluent-internal-results.xml`、`build/asan/build/asan/fluent-internal-results.xml`；未重跑完整 ASan、Release 或真实 IME。
 - 这是内部控件的可运行切片，尚未声明完整 WinUI PersonPicture 兼容：Contact/PreferSmallImage/异步联系人照片、完整字体及模板替换契约、多语言辅助功能与 Windows UIA provider 等仍待实现；几何默认图标和部分系统调色板有明确差异，详见 `modules/fluent/PORTING.md`。
 
+### 后续推进：批量引入 Fluent 待移植输入
+
+- 按用户要求改为先批量引入控件相关输入、再逐族改写。`modules/fluent/porting/` 引入固定提交下 49 个控件/支持目录，以及公共 IDL、紧凑密度样式，共 1243 个文件；不是完整上游仓库，未引入上游工程、生成代码、激活运行时或测试应用。
+- `Sources.json` 区分 `source-staged` 与正式实现；原始及规范化后文件均有 SHA-256。`StageFluentSources.py` 先核验原始来源再写入，支持不依赖参考缓存的 `--check`，拒绝覆盖修改后的文件。版权注释与模块 MIT 保留。
+- 这些输入尚未编译、安装、打包或注册；可运行控件范围没有因此扩大。直接内化时用现有 Velora 底座替换依赖，不引入通用 WinRT 兼容层。系统提供逻辑的模板目录及实验 API 仍需单独实现/审查，不能从文件存在推断完整兼容。依赖替换范围与下一批顺序见 `modules/fluent/PORTING.md`。
+- 本轮逐文件来源/导入哈希校验、重复导入一致性、CheckStyle 和 CheckWorkspace 通过；Windows Debug 的 fluent_controls/source_control/fluent 定向回归 **3/3** 通过（0.18s），日志 `build/dev/fluent-staging-tests.log`。本轮未改变运行时代码，未重复完整构建、完整回归或 ASan；这些未编译的输入没有通过编译验收。
+
 | 范围 | 当前事实 |
 | --- | --- |
 | 控件对象 | UIElement/BuiltinElements、createElement、shared_ptr 元素树和 virtual 布局已有实现；一部分行为仍集中在 Framework |

@@ -1,5 +1,6 @@
 # Internal Fluent controls and their compiled resources. WinUI 2.3 behavior is incorporated here
 # as ordinary Velora C++ controls; controls supplies the shared UI infrastructure.
+# porting/ contains staged migration inputs only; never glob it into this target or the SDK.
 velora_module(fluent
     SOURCES velora/fluent/FluentPackage.cpp
         velora/fluent/InitialsGenerator.cpp
