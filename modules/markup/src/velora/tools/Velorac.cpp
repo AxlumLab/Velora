@@ -577,7 +577,8 @@ int embedPackage(const std::vector<std::string>& args)
            << "#include <velora/resources/ResourceProvider.hpp>\n\n"
            << "namespace\n{\nconst velora::u8 kPackage[] = {";
     for (std::size_t i = 0; i < bytes->size(); ++i)
-        source << (i % 20 == 0 ? "\n    " : " ") << static_cast<unsigned char>((*bytes)[i]) << ',';
+        source << (i % 20 == 0 ? "\n    " : " ")
+               << static_cast<velora::u32>(static_cast<velora::u8>((*bytes)[i])) << ',';
     source << "\n};\nconst bool kMounted = []\n{\n"
            << "    const auto error = velora::ResourceManager::instance().mountEmbeddedPackage("
            << "velora::ResourceNamespace::" << ns << ", kPackage);\n"

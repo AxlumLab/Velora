@@ -202,7 +202,10 @@ void idleWait(NativeWindow& window)
     window.pump();
     bool idle = false;
     auto elapsed = clock::duration{};
-    for (int attempt = 0; attempt < 5 && !idle; ++attempt)
+    // Window creation, DPI and IME changes can post more than five batches of messages.
+    // Allow the queue to settle, but still require a real 80 ms timeout below.
+    const auto deadline = clock::now() + std::chrono::seconds(2);
+    while (!idle && clock::now() < deadline)
     {
         const auto begin = clock::now();
         idle = !window.waitEvents(80);

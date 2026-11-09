@@ -22,6 +22,14 @@ python scripts/CheckWorkspace.py
 cmake --preset core-check -DCMAKE_MAKE_PROGRAM=/absolute/path/to/ninja
 ```
 
+Windows 上的 `core-check` 使用 Ninja，需要先进入 x64 MSVC 开发环境。可直接打开 Visual Studio 的 Developer PowerShell，或在普通 PowerShell 中运行（安装目录由 vswhere 查询）：
+
+```powershell
+$vsInstall = & "${env:ProgramFiles(x86)}/Microsoft Visual Studio/Installer/vswhere.exe" -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
+Import-Module "$vsInstall/Common7/Tools/Microsoft.VisualStudio.DevShell.dll"
+Enter-VsDevShell -VsInstallPath $vsInstall -SkipAutomaticLocation -DevCmdArguments '-arch=x64 -host_arch=x64'
+```
+
 ## 2. Windows 完整开发构建
 
 要求 Visual Studio 2022 C++ 工具链、Windows SDK、Ninja、CMake 3.25+、Java 11+ 和用户环境中的 tpkg。tpkg 的安装与源配置由其自身环境提供，本包不携带缓存或依赖二进制。
@@ -54,6 +62,8 @@ ctest --preset dev-release
 ```
 
 完整配置构建 velorac、生成 XAML/反射代码、基础 Gallery 及测试。需要原生窗口的测试在可交互桌面运行。失败必须按实际原因处理，不把图形测试删掉或改成空成功。
+
+`velora_gallery_test` 会将 D2D 回读截图写入 `build/dev/gallery-screenshots/`。实际示例为 `build/dev/examples/gallery/Debug/velora_gallery.exe`。平台测试默认不发送真实键盘输入；在可交互桌面上运行 `build/dev/Debug/velora_platform_window_test.exe --live-ime` 可尝试 Microsoft Pinyin 的 TSF/IMM 组合输入。若输出 `NOT_RUN`，即使进程退出码为 0，也不能记作真实 IME 验收通过。
 
 Windows 内存检查配置不依赖 ANTLR：
 

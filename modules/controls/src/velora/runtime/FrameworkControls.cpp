@@ -4,8 +4,8 @@ namespace velora
 {
 // ---- Toggle and range controls ------------------------------------------------------
 // CheckBox, RadioButton and ToggleSwitch hold their state in IsChecked/IsOn; Slider and
-// ProgressBar in Value within [Minimum, Maximum]. Framework::set routes changes of those
-// properties here, so programmatic, XAML and user changes share coercion and events.
+// ProgressBar in Value within [Minimum, Maximum]. Toggle effective-value notifications and
+// Framework's range setter route here, sharing group handling, write-back and events.
 
 namespace
 {
@@ -60,6 +60,8 @@ void Framework::controlValueChanged(ElementId element, const PropertyDescriptor*
     // TwoWay {Binding} sources follow user and programmatic changes alike.
     if (property == m_props.IsChecked || property == m_props.IsOn || property == m_props.Value)
         m_bindings->writeBack(element, *property);
+    if (!m_tree.contains(element))
+        return;
     if (property == m_props.IsChecked &&
         (kind == ElementKind::kCheckBox || kind == ElementKind::kRadioButton))
     {

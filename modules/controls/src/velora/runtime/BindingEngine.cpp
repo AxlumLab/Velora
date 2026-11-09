@@ -106,7 +106,7 @@ void BindingEngine::bind(ElementId element, const PropertyDescriptor& target, Va
     auto [it, first] = m_bindings.try_emplace(element);
     if (first)
         m_tree.onRemoved(element, [this, element] { m_bindings.erase(element); });
-    auto b = std::make_unique<Binding>();
+    auto b = std::make_shared<Binding>();
     b->element = element;
     b->target = &target;
     b->kind = kind;
@@ -124,7 +124,7 @@ void BindingEngine::bind(ElementId element, const PropertyDescriptor& target, Va
 void BindingEngine::dataContextChanged(ElementId root)
 {
     std::vector<ElementId> pending{root};
-    std::vector<Binding*> affected;
+    std::vector<std::shared_ptr<Binding>> affected;
     while (!pending.empty())
     {
         const ElementId e = pending.back();
@@ -132,11 +132,11 @@ void BindingEngine::dataContextChanged(ElementId root)
         if (const auto it = m_bindings.find(e); it != m_bindings.end())
             for (const auto& b : it->second)
                 if (!(e == root && b->target == &m_dataContext))
-                    affected.push_back(b.get()); // reads the parent's
+                    affected.push_back(b); // reads the parent's
         const auto& children = m_tree.children(e);
         pending.insert(pending.end(), children.begin(), children.end());
     }
-    for (Binding* b : affected)
+    for (const auto& b : affected)
         evaluate(*b); // OneTime bindings, too, follow a new DataContext
 }
 
@@ -145,9 +145,13 @@ void BindingEngine::writeBack(ElementId element, const PropertyDescriptor& targe
     const auto it = m_bindings.find(element);
     if (it == m_bindings.end())
         return;
-    for (const auto& b : it->second)
+    const auto bindings = it->second; // callbacks may remove the target and its bindings
+    for (const auto& b : bindings)
     {
-        if (b->target != &target || b->mode != BindingMode::kTwoWay || !b->leafOwner || b->cache.empty())
+        if (!m_tree.contains(element))
+            return;
+        if (b->writing || b->evaluating || b->target != &target || b->mode != BindingMode::kTwoWay ||
+            !b->leafOwner || b->cache.empty())
             continue;
         const auto* a = b->cache.back().accessor;
         if (!a || !a->set)
@@ -199,6 +203,16 @@ const BindingEngine::Binding::Step& BindingEngine::step(Binding& b, std::size_t 
 
 void BindingEngine::evaluate(Binding& b)
 {
+    if (b.writing || b.evaluating || !m_tree.contains(b.element))
+        return;
+    // A target change raises control events; handlers may remove the element.
+    const auto lifetime = b.shared_from_this();
+    struct Evaluation
+    {
+        bool& active;
+        explicit Evaluation(bool& value) : active(value) { active = true; }
+        ~Evaluation() { active = false; }
+    } evaluation(b.evaluating);
     ++m_evaluations;
     b.subscriptions.clear();
     b.leafOwner = {};
@@ -231,7 +245,11 @@ void BindingEngine::evaluate(Binding& b)
         if (auto* observable = s.table->observable ? s.table->observable(object.object) : nullptr;
             observable && b.mode != BindingMode::kOneTime)
             b.subscriptions.push_back(
-                observe(*observable, b.ids[i], [this, binding = &b] { evaluate(*binding); }));
+                observe(*observable, b.ids[i], [this, weak = b.weak_from_this()]
+                {
+                    if (const auto binding = weak.lock())
+                        evaluate(*binding);
+                }));
         if (i + 1 < b.names.size())
         {
             if (!a->getObject)

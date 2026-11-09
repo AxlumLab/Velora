@@ -153,15 +153,15 @@ void Framework::set(ElementId owner, const PropertyDescriptor* property, Propert
         setContentValue(owner, std::move(value), source);
         return;
     }
-    const bool control = property == m_props.IsChecked || property == m_props.IsOn ||
-                         property == m_props.Value || property == m_props.Minimum ||
+    const bool control = property == m_props.Value || property == m_props.Minimum ||
                          property == m_props.Maximum;
     if (!control || !m_tree.contains(owner))
     {
         m_tree.setProperty(owner, *property, std::move(value), source);
         return;
     }
-    // Checked/value semantics: range coercion, radio groups and change events.
+    // Range coercion stays here until RangeBase owns it. Toggle changes are observed
+    // at the effective-value boundary, including object, binding and clearValue writes.
     const PropertyValue before = m_tree.property(owner, *property);
     m_tree.setProperty(owner, *property, coerceRange(owner, property, std::move(value)), source);
     if (m_tree.contains(owner) && m_tree.property(owner, *property) != before)

@@ -93,7 +93,7 @@ public:
     }
 
 private:
-    struct Binding
+    struct Binding : std::enable_shared_from_this<Binding>
     {
         ElementId element = 0;
         const PropertyDescriptor* target = nullptr;
@@ -112,6 +112,7 @@ private:
         std::vector<Subscription> subscriptions;
         ObjectRef leafOwner; // object owning the last step, for write-back
         bool writing = false;
+        bool evaluating = false;
         BindingOptions options;
     };
 
@@ -122,7 +123,7 @@ private:
 
     ElementTree& m_tree;
     const PropertyDescriptor& m_dataContext;
-    std::unordered_map<ElementId, std::vector<std::unique_ptr<Binding>>> m_bindings;
+    std::unordered_map<ElementId, std::vector<std::shared_ptr<Binding>>> m_bindings;
     std::vector<std::string> m_errors;
     std::size_t m_evaluations = 0, m_lookups = 0;
 };

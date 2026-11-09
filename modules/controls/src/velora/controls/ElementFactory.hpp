@@ -1,6 +1,8 @@
 #pragma once
 
 #include <memory>
+#include <concepts>
+#include <utility>
 #include <velora/controls/UIElement.hpp>
 #include <velora/runtime/Framework.hpp>
 
@@ -30,5 +32,19 @@ struct ElementProperties
 
 // A new element of `kind` with the type's defaults in the DefaultStyle layer.
 [[nodiscard]] std::shared_ptr<UIElement> createElement(ElementKind kind);
+
+namespace detail
+{
+void applyElementDefaults(UIElement& element);
+}
+
+// Creates the actual C++ element with the same defaults as the XAML/built-in factory.
+template <std::derived_from<UIElement> T, class... Args>
+[[nodiscard]] std::shared_ptr<T> createElement(Args&&... args)
+{
+    auto element = std::make_shared<T>(std::forward<Args>(args)...);
+    detail::applyElementDefaults(*element);
+    return element;
+}
 
 } // namespace velora

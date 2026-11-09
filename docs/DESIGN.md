@@ -41,6 +41,20 @@ Velora 面向新应用，使用 C++23 和编译式 XAML，保留属性、绑定�
 
 UI 对象的创建、修改与实际析构在所属 UI 线程执行。异步工作默认持有弱引用或树标识，回到 UI 线程后再使用对象。需要支持工作线程释放最后引用时，由统一工厂的轻量 deleter 投递到 UI 调度器；这只是线程调度，不重建旧对象分配器、页面域或外部引用计数协议。关闭前停止任务、解除绑定、卸载树并排空待销毁对象。残留强引用属于生命周期错误，应诊断并修正持有方，不能强行跨线程析构或提前卸载插件。此规则需先于插件交付验证。
 
+### 当前普通 C++ API 切片
+
+类型化工厂与 Toggle 属性已接入同一实际对象，示例（包含 `BuiltinElements.hpp` 和 `ElementFactory.hpp`）：
+
+```cpp
+auto toggle = velora::createElement<velora::ToggleSwitchElement>();
+toggle->setIsOn(true); // 可以先在树外配置
+const auto id = ui.insert(toggle, parent);
+ui.on(id, ui.events().Toggled, [] { /* 响应有效值变化 */ });
+toggle->setIsOn(false); // 挂载后触发宿主事件及 TwoWay 写回
+```
+
+`isOnProperty()` 可用于既有依赖属性层级 API；CheckBox/RadioButton 对应 `ToggleButtonElement::isChecked/setIsChecked/isCheckedProperty`。工厂应用与 XAML 相同的默认值，不创建代理或第二套状态。上述只是已交付的 Toggle 切片：目前事件仍通过 Framework 注册，三态 CheckBox、普通控件完整继承层次、virtual 输入/绘制及 RangeBase 对象侧校验仍待实现。
+
 ## 5. 后端与发布
 
 Android 后端适配绘图命令和文本测量，平台层另行接入 surface 重建、触摸、IME、前后台及屏幕参数变化。首先打通窗口、文本、输入和资源回收，再验收控件。Impeller standalone 可被非 Flutter 应用使用，但目前不承诺 API 稳定；必须锁定上游提交和构建参数，通过 tpkg 管理。[官方说明](https://github.com/flutter/flutter/blob/master/engine/src/flutter/impeller/toolkit/interop/README.md)

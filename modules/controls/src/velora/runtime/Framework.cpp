@@ -82,8 +82,15 @@ Framework::Framework(Compositor& compositor, TextMeasurer measure)
         *member = &m_eventRegistry.define("UIElement", name, "void(RoutedEventArgs&)");
     m_bindings = std::make_unique<BindingEngine>(m_tree, *m_props.DataContext);
     m_tree.subscribe(
-        [this](ElementId element, const PropertyDescriptor& d)
+        [this](ElementId element, const PropertyDescriptor& incoming)
         {
+            if (!m_tree.contains(element))
+                return;
+            // Object APIs use process-wide descriptors; Framework uses its own registry.
+            // Both identify the same property by ID, not by descriptor address.
+            const auto* registered = incoming.owner.empty() ? m_registry.find(incoming.name)
+                                                          : m_registry.find(incoming.owner, incoming.name);
+            const auto& d = registered && registered->id == incoming.id ? *registered : incoming;
             if (&d == m_props.Content)
                 contentChanged(element);
             if (&d == m_props.DataContext)
@@ -93,12 +100,16 @@ Framework::Framework(Compositor& compositor, TextMeasurer measure)
             }
             if (!m_elementBindings.empty() || !m_accessorBindings.empty())
                 elementPropertyChanged(element, d);
+            if (!m_tree.contains(element))
+                return;
             if (&d == m_props.IsPressed || &d == m_props.IsPointerOver || &d == m_props.IsEnabled)
                 updateCommonState(element);
             if (const auto it = m_templateBindings.find(element); it != m_templateBindings.end())
                 for (const auto& b : it->second)
                     if (b.ownerProperty == &d)
                         set(b.target, b.property, m_tree.property(element, d), PropertySource::kTemplate);
+            if (m_tree.contains(element) && (&d == m_props.IsChecked || &d == m_props.IsOn))
+                controlValueChanged(element, &d);
         });
     m_bridge = std::make_unique<VisualBridge>(m_tree, m_compositor, m_visual);
     registerPainters();

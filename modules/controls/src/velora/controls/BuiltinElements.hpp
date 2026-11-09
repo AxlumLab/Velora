@@ -79,10 +79,14 @@ public:
 // ---- Fixed-look controls (TextAndFixedElements.cpp) -------------------------------------------------
 
 // CheckBox and RadioButton: a 20-DIP glyph, a gap and the text content.
+// Boolean state only; nullable IsChecked/three-state behavior is not implemented yet.
 class ToggleButtonElement final : public UIElement
 {
 public:
     explicit ToggleButtonElement(ElementKind kind) noexcept : UIElement(kind) {}
+    [[nodiscard]] bool isChecked() const;
+    PropertySetResult setIsChecked(bool value, PropertySource source = PropertySource::kLocal);
+    [[nodiscard]] static const PropertyDescriptor& isCheckedProperty();
     Size measureOverride(LayoutContext&, ElementId, const MeasureInput&) override;
 };
 
@@ -90,6 +94,9 @@ class ToggleSwitchElement final : public UIElement
 {
 public:
     ToggleSwitchElement() noexcept : UIElement(ElementKind::kToggleSwitch) {}
+    [[nodiscard]] bool isOn() const;
+    PropertySetResult setIsOn(bool value, PropertySource source = PropertySource::kLocal);
+    [[nodiscard]] static const PropertyDescriptor& isOnProperty();
     Size measureOverride(LayoutContext&, ElementId, const MeasureInput&) override;
 };
 

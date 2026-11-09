@@ -6,6 +6,11 @@
 #include <string>
 #include <string_view>
 #include <vector>
+#include <thread>
+#include <array>
+#include <memory>
+#include <velora/reflect/Accessors.hpp>
+#include <velora/controls/BuiltinElements.hpp>
 #include <velora/globals.hpp>
 #include <velora/controls/ElementFactory.hpp>
 #include <velora/composition/Compositor.hpp>
@@ -143,6 +148,96 @@ void toggleSwitch()
           "a click turns it on with Toggled and no Click");
 }
 
+void toggleObjectApi()
+{
+    Fixture f;
+    auto toggle = createElement<ToggleSwitchElement>();
+    check(toggle->setIsOn(true) == PropertySetResult::kOk && toggle->isOn(),
+          "typed toggle configures its actual property off-tree");
+    const auto id = f.ui.insert(toggle, f.stack);
+    int events = 0;
+    f.ui.on(id, f.ui.events().Toggled, [&] { ++events; });
+    toggle->setIsOn(false);
+    toggle->setIsOn(false);
+    check(!toggle->isOn() && events == 1, "typed writes raise Toggled once per effective change");
+    toggle->setIsOn(true, PropertySource::kStyle);
+    check(!toggle->isOn() && events == 1, "masked style writes do not raise Toggled");
+    toggle->clearValue(ToggleSwitchElement::isOnProperty());
+    check(toggle->isOn() && events == 2, "clearValue exposes the style and raises Toggled");
+    f.ui.set(id, f.p.IsOn, false);
+    check(!toggle->isOn() && events == 3, "Framework and object APIs share values and events");
+
+    auto expression = std::make_shared<PropertyExpression>();
+    toggle->setExpression(ToggleSwitchElement::isOnProperty(), PropertySource::kLocal, expression, true);
+    toggle->updateExpressionValue(ToggleSwitchElement::isOnProperty(), PropertySource::kLocal,
+                                 *expression, false);
+    check(!toggle->isOn() && events == 5, "expression installation and updates raise toggle events");
+    PropertySetResult result = PropertySetResult::kOk;
+    std::thread([&] { result = toggle->setIsOn(true); }).join();
+    check(result == PropertySetResult::kWrongThread && !toggle->isOn() && events == 5,
+          "typed API preserves owner-thread validation");
+
+    auto first = createElement<ToggleButtonElement>(ElementKind::kRadioButton);
+    auto second = createElement<ToggleButtonElement>(ElementKind::kRadioButton);
+    const auto firstId = f.ui.insert(first, f.stack);
+    const auto secondId = f.ui.insert(second, f.stack);
+    int unchecked = 0, checked = 0;
+    f.ui.on(firstId, f.ui.events().Unchecked, [&] { ++unchecked; });
+    f.ui.on(secondId, f.ui.events().Checked, [&] { ++checked; });
+    first->setIsChecked(true);
+    second->setIsChecked(true);
+    check(!first->isChecked() && second->isChecked() && unchecked == 1 && checked == 1,
+          "object writes preserve radio group exclusivity and events");
+
+    f.ui.on(id, f.ui.events().Toggled, [&] { ++events; f.ui.tree().remove(id); });
+    toggle->setIsOn(true);
+    check(!toggle->isInTree() && toggle->isOn() && events == 6,
+          "a toggle handler can remove its own element");
+    toggle->setIsOn(false);
+    check(!toggle->isOn() && events == 6, "detached objects no longer call the former host");
+}
+
+void toggleBindingLifetime()
+{
+    struct Model : Observable
+    {
+        bool enabled = true;
+        int writes = 0;
+        void setEnabled(bool value)
+        {
+            ++writes;
+            set(enabled, value, "Enabled");
+        }
+    } model;
+    static const std::array properties = {
+        property("Enabled", [](void* object) { return static_cast<Model*>(object)->enabled; },
+                 [](void* object, bool value) { static_cast<Model*>(object)->setEnabled(value); })};
+    static const TypeAccessors accessors{&typeid(Model), "ToggleModel", properties, observableOf<Model>};
+    registerAccessors(accessors);
+    Fixture f;
+    auto toggle = createElement<ToggleSwitchElement>();
+    const auto id = f.ui.insert(toggle, f.stack);
+    f.ui.set(id, f.p.DataContext, ObjectRef{&model, &typeid(Model)});
+    int events = 0;
+    f.ui.on(id, f.ui.events().Toggled, [&] { ++events; });
+    f.ui.bind(id, f.p.IsOn, "Enabled", BindingMode::kTwoWay);
+    check(toggle->isOn() && events == 1 && model.writes == 0,
+          "initial Binding publication raises the event without writing back");
+    toggle->setIsOn(false);
+    check(!model.enabled && model.writes == 1 && events == 2,
+          "typed TwoWay setter writes the model exactly once");
+    model.setEnabled(true);
+    check(toggle->isOn() && model.writes == 2 && events == 3,
+          "source change does not feed back into its own setter");
+    f.ui.on(id, f.ui.events().Toggled, [&] { f.ui.tree().remove(id); });
+    model.setEnabled(false);
+    check(!toggle->isInTree() && f.ui.bindingStats().bindings == 0,
+          "source event removal releases bindings after in-flight evaluation");
+    model.setEnabled(true);
+    check(!toggle->isOn() && f.ui.bindingErrors().empty(),
+          "removed target has no live source subscription");
+}
+
 void slider()
 {
     Fixture f;
@@ -264,6 +359,8 @@ int main()
     checkBox();
     radioGroups();
     toggleSwitch();
+    toggleObjectApi();
+    toggleBindingLifetime();
     slider();
     progressAndCanvas();
     retainedControls();

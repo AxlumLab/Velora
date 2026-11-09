@@ -13,6 +13,7 @@
 #include <string_view>
 #include <utility>
 #include <velora/composition/Compositor.hpp>
+#include <velora/controls/BuiltinElements.hpp>
 #include <velora/graphics/Graphics.hpp>
 #include <velora/platform/windowing/NativeWindow.hpp>
 #include <velora/runtime/Framework.hpp>
@@ -236,6 +237,28 @@ void run(Harness& h)
     const Pixel red = h.at(shapes.x + 30, shapes.y + 40);
     check(red.r > 200 && red.g < 60 && red.b < 80, "Canvas children are drawn at their positions");
     check(ui.viewport(n.FruitList).count == 8, "the ListView shows the bound fruits");
+
+    // Ordinary C++ setters use the same objects created by the compiled XAML loader.
+    auto* notification = dynamic_cast<ToggleSwitchElement*>(ui.tree().uiElement(n.Notify));
+    auto* newsletter = dynamic_cast<ToggleButtonElement*>(ui.tree().uiElement(n.Newsletter));
+    check(notification && newsletter, "compiled XAML creates the typed Toggle objects");
+    if (!notification || !newsletter)
+        return;
+    notification->setIsOn(true);
+    check(h.controller.notifications(), "typed IsOn writes back through x:Bind");
+    newsletter->setIsChecked(true);
+    check(h.controller.settings().newsletter(), "typed IsChecked writes back through Binding");
+    int unchecked = 0;
+    ui.on(n.Newsletter, ui.events().Unchecked, [&] { ++unchecked; });
+    h.controller.settings().setNewsletter(false);
+    check(!newsletter->isChecked() && unchecked == 1 && ui.bindingErrors().empty(),
+          "source-driven Binding raises Unchecked once without write-back recursion");
+    // Removal during source publication must not destroy an in-flight binding evaluation.
+    ui.on(n.Newsletter, ui.events().Checked, [&] { ui.tree().remove(n.Newsletter); });
+    h.controller.settings().setNewsletter(true);
+    check(!ui.tree().contains(n.Newsletter), "a source-driven control event may unload its target");
+    h.controller.settings().setNewsletter(false);
+    check(ui.bindingErrors().empty(), "removed toggle no longer observes the binding source");
 }
 
 } // namespace
