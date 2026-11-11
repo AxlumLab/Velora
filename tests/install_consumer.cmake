@@ -1,5 +1,5 @@
 # Installs the build tree into WORK_DIR/install and builds and runs examples/consumer against
-# it with find_package(Velora). Inputs: BUILD_DIR, SOURCE_DIR, WORK_DIR, CONFIG, TPKG_DIR, MAKE_PROGRAM.
+# it with find_package(Velora). Inputs: BUILD_DIR, SOURCE_DIR, WORK_DIR, CONFIG, RHODIUM_DIR, MAKE_PROGRAM.
 set(ROOT_DIR "${BUILD_DIR}")
 file(REAL_PATH "${ROOT_DIR}" _root)
 file(REAL_PATH "${WORK_DIR}" _work)
@@ -17,7 +17,7 @@ function(run step)
 endfunction()
 run("install" "${CMAKE_COMMAND}" --install "${BUILD_DIR}" --config "${CONFIG}" --prefix "${WORK_DIR}/install")
 set(args -G "${GENERATOR}" "-DCMAKE_BUILD_TYPE=${CONFIG}"
-    "-DCMAKE_PREFIX_PATH=${WORK_DIR}/install" "-Dtpkg_DIR=${TPKG_DIR}"
+    "-DCMAKE_PREFIX_PATH=${WORK_DIR}/install" "-Drhodium_DIR=${RHODIUM_DIR}"
     "-DCMAKE_CXX_COMPILER=${CXX_COMPILER}")
 if(GENERATOR MATCHES "Visual Studio")
     list(APPEND args -A "${GENERATOR_PLATFORM}" "-DCMAKE_CONFIGURATION_TYPES=${CONFIG}")

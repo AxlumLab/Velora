@@ -104,23 +104,23 @@ git remote set-url origin https://github.com/AxlumLab/Velora.git
 
 ### 2. 准备工具链与依赖
 
-需要 Visual Studio 2022 C++ 工具链、Windows SDK、CMake 3.25+、Python 3，以及完整构建使用的 Java 11+ 和 tpkg。`core-check` 使用 Ninja，并需要 x64 MSVC 开发终端；`dev` 使用 Visual Studio 2022 的多配置生成器。环境初始化方式见 [BUILD.md](docs/BUILD.md)。
+需要 Visual Studio 2022 C++ 工具链、Windows SDK、CMake 3.25+、Python 3，以及完整构建使用的 Java 11+ 和 rhodium。`core-check` 使用 Ninja，并需要 x64 MSVC 开发终端；`dev` 使用 Visual Studio 2022 的多配置生成器。环境初始化方式见 [BUILD.md](docs/BUILD.md)。
 
-第三方依赖由 [tpkg.lua](tpkg.lua) 和 [tpkg.lock.toml](tpkg.lock.toml) 锁定。先为 Debug 恢复并生成 ANTLR C++ runtime 导出：
-
-```powershell
-tpkg restore --toolchain windows-msvc-x64 --locked --config debug
-tpkg generate --toolchain windows-msvc-x64 --config debug
-```
-
-生成文件应位于 `.tpkg/generated/cmake/tpkgConfig.cmake`。如需 Release，再单独恢复对应 CRT 配置：
+第三方依赖由 [rhodium.lua](rhodium.lua) 和 [tpkg.lock.toml](tpkg.lock.toml) 锁定。先为 Debug 恢复并生成 ANTLR C++ runtime 导出：
 
 ```powershell
-tpkg restore --toolchain windows-msvc-x64 --locked --config release
-tpkg generate --toolchain windows-msvc-x64 --config release --output .tpkg/generated/cmake-release
+rhodium restore --toolchain windows-msvc-x64 --locked --config debug
+rhodium generate --toolchain windows-msvc-x64 --config debug
 ```
 
-还需要 ANTLR **4.13.2 complete jar**。CMake 会检查锁定的 SHA-256，并尝试读取 tpkg 缓存；未找到时在下一步指定本地路径。tpkg 的安装和源配置由使用者环境提供，仓库不携带依赖缓存。
+生成文件应位于 `.rhodium/generated/cmake/rhodiumConfig.cmake`。如需 Release，再单独恢复对应 CRT 配置：
+
+```powershell
+rhodium restore --toolchain windows-msvc-x64 --locked --config release
+rhodium generate --toolchain windows-msvc-x64 --config release --output .rhodium/generated/cmake-release
+```
+
+还需要 ANTLR **4.13.2 complete jar**。CMake 会检查锁定的 SHA-256，并尝试读取 `.rhodium/tools/antlr4-4.13.2-complete.jar`；未找到时在下一步指定本地路径。rhodium 的安装和源配置由使用者环境提供，仓库不携带依赖缓存。
 
 ### 3. 构建并运行 Fluent Gallery
 
@@ -142,7 +142,7 @@ cmake --build --preset dev-debug --target velora_fluent_gallery --parallel 4
 
 ### 4. 仅构建核心库
 
-核心配置关闭 ANTLR，不需要先恢复 tpkg 或 jar；它不构建完整 XAML 工具链和 Windows 示例。
+核心配置关闭 ANTLR，不需要先恢复 rhodium 或 jar；它不构建完整 XAML 工具链和 Windows 示例。
 
 ```powershell
 cmake --preset core-check
@@ -208,7 +208,7 @@ avatar->setBadgeNumber(3);
 
 参与开发前阅读 [AGENTS.md](AGENTS.md) 和 [START-HERE.md](START-HERE.md)。C++ 使用 C++23、Allman 花括号、4 空格及 UTF-8/LF；源码放在 `modules/<module>/src/velora/`，生成代码留在构建目录。不要手改生成输出、删除测试掩盖回归或把占位实现标为完成。
 
-`build/`、`.tpkg/`、本地编辑器设置、Python 缓存和备份不进入 Git。提交应按独立主题拆分；改动控件时同步真实状态与来源说明。
+`build/`、`.rhodium/`、本地编辑器设置、Python 缓存和备份不进入 Git。提交应按独立主题拆分；改动控件时同步真实状态与来源说明。
 
 ## 后续方向与文档
 

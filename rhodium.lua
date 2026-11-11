@@ -1,4 +1,4 @@
--- Velora's third-party dependencies, all managed by tpkg. Only the ANTLR C++ runtime is
+-- Velora's third-party dependencies, all managed by Rhodium. Only the ANTLR C++ runtime is
 -- needed, by the build-time compilers (modules/markup).
 package("Velora")
 version("0.1.0")

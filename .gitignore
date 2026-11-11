@@ -1,5 +1,6 @@
 # Build output and third-party packages
 /build/
+/.rhodium/
 /.tpkg/
 
 # Local editor/client settings and backups

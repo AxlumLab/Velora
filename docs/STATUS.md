@@ -2,6 +2,12 @@
 
 基线日期：2026-11-09。来源为用户提供的 velora.zip，经本次清理后形成独立源码树。本文记录实际状态；DESIGN.md 和其他设计文档中的“待实现”不能视为交付。
 
+## Rhodium 依赖迁移（2026-11-11）
+
+依赖清单改为 `rhodium.lua`，缓存和 CMake 导出改用 `.rhodium/`、`rhodium::`。保留 `tpkg.lock.toml` 的锁定记录、ANTLR 提交和 artifact ID；这是 Rhodium 当前支持的锁文件名。ANTLR jar 保存在 `.rhodium/tools/`，并继续校验原 SHA-256。
+
+旧 `.tpkg/` 已清理。使用新编译的 Rhodium Release 分别完成 Debug、Release 的 `restore --locked`，重复还原均跳过 Git 同步和依赖构建；当前保留一份源码、两套构建目录和两份对应产物。GC 清理孤立缓存后，两种配置仍可命中缓存。`dev-release` 构建通过；本轮验收范围按用户要求限定为包管理还原，不推进 Velora 自身测试或控件兼容验收。功能组数量不变：尚未接入 0、部分接入 38、完整兼容验收通过 0。
+
 ## Windows 本机基线（2026-11-09）
 
 当前按用户要求只推进 Windows，Android/Impeller 暂缓。环境为 Windows 10 build 19044、Visual Studio 2022 17.14.39、MSVC 19.44.35228、Windows SDK 10.0.26100.0、CMake 4.4.0-rc3、Ninja 1.13.2、Java 25.0.3、Python 3.11。依赖通过 tpkg 的锁定配置恢复，Debug/Release 使用各自 ANTLR runtime 导出。

@@ -22,7 +22,7 @@ python scripts/CheckStyle.py
 python scripts/CheckWorkspace.py
 ```
 
-该配置关闭 ANTLR，因此不需要 tpkg 依赖，包含核心库、公开头独立编译以及 21 项非 Windows 行为测试（包含源码控件、Fluent 控件逻辑及类型注册/二进制加载用例；编译器用例在 dev 配置中运行）。在 Windows 上会额外启用 Windows 专用测试，需要可用 Windows SDK 与交互桌面。Linux 的 graphics/platform 路径不可作为产品后端使用，核心通过不表示 Linux UI 已实现。
+该配置关闭 ANTLR，因此不需要 rhodium 依赖，包含核心库、公开头独立编译以及 21 项非 Windows 行为测试（包含源码控件、Fluent 控件逻辑及类型注册/二进制加载用例；编译器用例在 dev 配置中运行）。在 Windows 上会额外启用 Windows 专用测试，需要可用 Windows SDK 与交互桌面。Linux 的 graphics/platform 路径不可作为产品后端使用，核心通过不表示 Linux UI 已实现。
 
 如果 Ninja 未在 PATH，配置时传入实际路径：
 
@@ -40,18 +40,18 @@ Enter-VsDevShell -VsInstallPath $vsInstall -SkipAutomaticLocation -DevCmdArgumen
 
 ## 2. Windows 完整开发构建
 
-要求 Visual Studio 2022 C++ 工具链、Windows SDK、Ninja、CMake 3.25+、Java 11+ 和用户环境中的 tpkg。tpkg 的安装与源配置由其自身环境提供，本包不携带缓存或依赖二进制。
+要求 Visual Studio 2022 C++ 工具链、Windows SDK、Ninja、CMake 3.25+、Java 11+ 和用户环境中的 rhodium。rhodium 的安装与源配置由其自身环境提供，本包不携带缓存或依赖二进制。
 
 在支持 MSVC 的开发终端中，为 Debug 与 Release 分别恢复并生成依赖。以下沿用项目原构建命令与当前 VeloraDependencies.cmake 的导出路径：
 
 ```powershell
-tpkg restore --toolchain windows-msvc-x64 --locked --config debug
-tpkg restore --toolchain windows-msvc-x64 --locked --config release
-tpkg generate --toolchain windows-msvc-x64 --config debug
-tpkg generate --toolchain windows-msvc-x64 --config release --output .tpkg/generated/cmake-release
+rhodium restore --toolchain windows-msvc-x64 --locked --config debug
+rhodium restore --toolchain windows-msvc-x64 --locked --config release
+rhodium generate --toolchain windows-msvc-x64 --config debug
+rhodium generate --toolchain windows-msvc-x64 --config release --output .rhodium/generated/cmake-release
 ```
 
-必须存在 `.tpkg/generated/cmake/tpkgConfig.cmake`，Release 导出目录为 `.tpkg/generated/cmake-release/`。检查它们确实指向对应配置的 ANTLR C++ runtime，不混用 MSVC Debug/Release CRT。tpkg.lua 和 tpkg.lock.toml 是依赖依据。
+必须存在 `.rhodium/generated/cmake/rhodiumConfig.cmake`，Release 导出目录为 `.rhodium/generated/cmake-release/`。检查它们确实指向对应配置的 ANTLR C++ runtime，不混用 MSVC Debug/Release CRT。rhodium.lua 和 tpkg.lock.toml 是依赖依据。
 
 另需 ANTLR 4.13.2 complete jar，Java 用它生成解析器。模块要求 SHA-256：
 
@@ -59,7 +59,7 @@ tpkg generate --toolchain windows-msvc-x64 --config release --output .tpkg/gener
 eae2dfa119a64327444672aff63e9ec35a20180dc5b8090b7a6ab85125df4d76
 ```
 
-仓库会尝试读取 tpkg 下载缓存中的该文件，找不到时显式指定其本地路径，不跳过校验：
+仓库默认读取 `.rhodium/tools/antlr4-4.13.2-complete.jar`，该构建工具独立于依赖源码缓存，避免被 GC 当作孤立依赖清理。找不到时显式指定其本地路径，不跳过校验：
 
 ```powershell
 cmake --preset dev -DVELORA_ANTLR_TOOL_JAR=C:/tools/antlr-4.13.2-complete.jar

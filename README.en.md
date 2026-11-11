@@ -104,23 +104,23 @@ git remote set-url origin https://github.com/AxlumLab/Velora.git
 
 ### 2. Prepare the toolchain and dependencies
 
-You need the Visual Studio 2022 C++ toolchain, a Windows SDK, CMake 3.25+, and Python 3. Full builds also require Java 11+ and tpkg. `core-check` uses Ninja in an x64 MSVC developer terminal; `dev` uses the Visual Studio 2022 multi-configuration generator. Environment initialization is described in [BUILD.md](docs/BUILD.md).
+You need the Visual Studio 2022 C++ toolchain, a Windows SDK, CMake 3.25+, and Python 3. Full builds also require Java 11+ and rhodium. `core-check` uses Ninja in an x64 MSVC developer terminal; `dev` uses the Visual Studio 2022 multi-configuration generator. Environment initialization is described in [BUILD.md](docs/BUILD.md).
 
-Dependencies are pinned by [tpkg.lua](tpkg.lua) and [tpkg.lock.toml](tpkg.lock.toml). Restore and generate the Debug ANTLR C++ runtime exports first:
-
-```powershell
-tpkg restore --toolchain windows-msvc-x64 --locked --config debug
-tpkg generate --toolchain windows-msvc-x64 --config debug
-```
-
-The exports must exist at `.tpkg/generated/cmake/tpkgConfig.cmake`. For Release, restore the matching CRT configuration separately:
+Dependencies are pinned by [rhodium.lua](rhodium.lua) and [tpkg.lock.toml](tpkg.lock.toml). Restore and generate the Debug ANTLR C++ runtime exports first:
 
 ```powershell
-tpkg restore --toolchain windows-msvc-x64 --locked --config release
-tpkg generate --toolchain windows-msvc-x64 --config release --output .tpkg/generated/cmake-release
+rhodium restore --toolchain windows-msvc-x64 --locked --config debug
+rhodium generate --toolchain windows-msvc-x64 --config debug
 ```
 
-The **ANTLR 4.13.2 complete jar** is also required. CMake verifies its pinned SHA-256 and checks the tpkg cache. If it cannot find the jar, supply its local path during configuration. tpkg installation and source configuration belong to the user's environment; dependency caches are not shipped in this repository.
+The exports must exist at `.rhodium/generated/cmake/rhodiumConfig.cmake`. For Release, restore the matching CRT configuration separately:
+
+```powershell
+rhodium restore --toolchain windows-msvc-x64 --locked --config release
+rhodium generate --toolchain windows-msvc-x64 --config release --output .rhodium/generated/cmake-release
+```
+
+The **ANTLR 4.13.2 complete jar** is also required. CMake verifies its pinned SHA-256 and checks `.rhodium/tools/antlr4-4.13.2-complete.jar`. If it cannot find the jar, supply its local path during configuration. rhodium installation and source configuration belong to the user's environment; dependency caches are not shipped in this repository.
 
 ### 3. Build and run the Fluent Gallery
 
@@ -142,7 +142,7 @@ This argument runs one initialization path and displays the window. It is not a 
 
 ### 4. Build only the core libraries
 
-The core configuration disables ANTLR and does not require tpkg exports or the jar. It does not build the full XAML toolchain or Windows examples.
+The core configuration disables ANTLR and does not require rhodium exports or the jar. It does not build the full XAML toolchain or Windows examples.
 
 ```powershell
 cmake --preset core-check
@@ -208,7 +208,7 @@ During the current integration phase, development validation is limited to compi
 
 Read [AGENTS.md](AGENTS.md) and [START-HERE.md](START-HERE.md) before contributing. C++ code uses C++23, Allman braces, four spaces, and UTF-8/LF. Sources live under `modules/<module>/src/velora/`; generated code stays in build directories. Do not edit generated outputs, remove tests to hide regressions, or label placeholders as completed features.
 
-Build output, `.tpkg/`, local editor settings, Python caches, and backups stay out of Git. Split commits by independent topic and update implementation status and provenance when changing controls.
+Build output, `.rhodium/`, local editor settings, Python caches, and backups stay out of Git. Split commits by independent topic and update implementation status and provenance when changing controls.
 
 ## Next steps and documentation
 

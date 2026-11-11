@@ -1,6 +1,6 @@
 include_guard(GLOBAL)
 
-option(VELORA_ENABLE_ANTLR "Build XAML and reflection compilers (requires tpkg and ANTLR jar)" ON)
+option(VELORA_ENABLE_ANTLR "Build XAML and reflection compilers (requires rhodium and ANTLR jar)" ON)
 option(VELORA_EMBED_RESOURCES "Embed the complete .vpak in the binary (Qt qrc-style); OFF deploys under Resources/" ON)
 option(VELORA_BUILD_TESTS "Configure CTest unit and integration test programs" OFF)
 

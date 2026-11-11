@@ -2,7 +2,7 @@
 
 当前仓库：[AxlumLab/Velora](https://github.com/AxlumLab/Velora)。项目介绍与快速开始见 [中文 README](README.md) / [English README](README.en.md)。
 
-使用独立工作目录；生成文件放在 `build/`，依赖由 tpkg 恢复到 `.tpkg/`，不要从旧源码包复制构建缓存或生成代码。
+使用独立工作目录；生成文件放在 `build/`，依赖由 rhodium 恢复到 `.rhodium/`，不要从旧源码包复制构建缓存或生成代码。
 
 ## 开始之前
 

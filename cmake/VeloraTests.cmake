@@ -213,15 +213,15 @@ if(VELORA_ENABLE_ANTLR)
     endif()
 
     # The installed package works for a standalone find_package(Velora) application.
-    # The consumer links the tpkg artifacts of the configuration under test.
-    get_filename_component(_tpkg_debug "${TPKG_DEPS_FILE}" DIRECTORY)
-    get_filename_component(_tpkg_release "${TPKG_RELEASE_DEPS_FILE}" DIRECTORY)
-    set(_tpkg_dir "$<IF:$<CONFIG:Debug>,${_tpkg_debug},${_tpkg_release}>")
+    # The consumer links the rhodium artifacts of the configuration under test.
+    get_filename_component(_rhodium_debug "${RHODIUM_DEPS_FILE}" DIRECTORY)
+    get_filename_component(_rhodium_release "${RHODIUM_RELEASE_DEPS_FILE}" DIRECTORY)
+    set(_rhodium_dir "$<IF:$<CONFIG:Debug>,${_rhodium_debug},${_rhodium_release}>")
     add_test(NAME velora_install_consumer
         COMMAND "${CMAKE_COMMAND}"
             -DBUILD_DIR=${CMAKE_BINARY_DIR} -DSOURCE_DIR=${PROJECT_SOURCE_DIR}
             -DWORK_DIR=${CMAKE_CURRENT_BINARY_DIR}/install-consumer -DCONFIG=$<CONFIG>
-            -DTPKG_DIR=${_tpkg_dir} -DMAKE_PROGRAM=${CMAKE_MAKE_PROGRAM}
+            -DRHODIUM_DIR=${_rhodium_dir} -DMAKE_PROGRAM=${CMAKE_MAKE_PROGRAM}
             "-DGENERATOR=${CMAKE_GENERATOR}" "-DGENERATOR_PLATFORM=${CMAKE_GENERATOR_PLATFORM}"
             "-DCXX_COMPILER=${CMAKE_CXX_COMPILER}"
             -P ${PROJECT_SOURCE_DIR}/tests/install_consumer.cmake)

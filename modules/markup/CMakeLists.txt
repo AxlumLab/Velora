@@ -2,9 +2,9 @@
 # velorac tool. Applications never link these at run time.
 set(VELORA_ANTLR_TOOL_JAR "" CACHE FILEPATH "Pinned ANTLR 4.13.2 complete jar")
 set(_antlr_sha256 "eae2dfa119a64327444672aff63e9ec35a20180dc5b8090b7a6ab85125df4d76")
-# Default: the pinned jar in the tpkg download cache (its directory is the jar's SHA-256).
+# Default: the checksum-verified build tool retained outside managed dependency caches.
 set(_antlr_cached
-    "${PROJECT_SOURCE_DIR}/.tpkg/packages/_archives/antlr4-tool/${_antlr_sha256}/download/antlr4-4.13.2-complete.jar")
+    "${PROJECT_SOURCE_DIR}/.rhodium/tools/antlr4-4.13.2-complete.jar")
 if(NOT EXISTS "${VELORA_ANTLR_TOOL_JAR}" AND EXISTS "${_antlr_cached}")
     set(VELORA_ANTLR_TOOL_JAR "${_antlr_cached}" CACHE FILEPATH "Pinned ANTLR 4.13.2 complete jar" FORCE)
 endif()
@@ -15,8 +15,8 @@ file(SHA256 "${VELORA_ANTLR_TOOL_JAR}" _sha)
 if(NOT _sha STREQUAL _antlr_sha256)
     message(FATAL_ERROR "ANTLR tool jar checksum mismatch: ${_sha}")
 endif()
-if(NOT TARGET tpkg::antlr4-runtime)
-    message(FATAL_ERROR "ANTLR C++ runtime missing from the tpkg exports")
+if(NOT TARGET rhodium::antlr4-runtime)
+    message(FATAL_ERROR "ANTLR C++ runtime missing from the rhodium exports")
 endif()
 find_package(Java 11 COMPONENTS Runtime REQUIRED)
 
@@ -67,7 +67,7 @@ velora_module(markup
         velora/xaml/CodeBehindWriter.cpp
         velora/xaml/ReswReader.cpp
     PUBLIC velora::reflect velora::controls velora::resources
-    PRIVATE tpkg::antlr4-runtime)
+    PRIVATE rhodium::antlr4-runtime)
 target_sources(velora_markup PRIVATE ${_reflect_parser} ${_xaml_parser})
 target_include_directories(velora_markup PRIVATE "${_reflect_parser_DIR}" "${_xaml_parser_DIR}")
 target_compile_definitions(velora_markup PRIVATE ANTLR4CPP_STATIC)
