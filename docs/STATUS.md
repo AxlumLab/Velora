@@ -245,20 +245,31 @@ Windows Debug Gallery 构建通过；`--preview-suggestions` 确认三条建议�
 
 Windows Debug Gallery 构建通过；`--preview-navigation` 确认 Expanded、侧栏打开、Home 选中和内容实际挂载，原生窗口可见并正常关闭、退出码 0。证据为 `build/dev/navigation-fixed-build.log`、`build/dev/navigation-startup.json`。首次启动因编译组件已有父节点、错误使用 adopt 而失败，现改用同树 reparent；保留首次构建日志。未新增或执行回归、ASan、截图验收，自适应模式、顶部布局、菜单/设置/返回及生命周期完整交互仍待统一验证。
 
+### 后续推进：TreeView 与 TreeViewNode（2026-11-11）
+
+本批接入正式 TreeView 控件与 C++ TreeViewNode 模型。节点直接保存字符串 Content、IsExpanded、HasUnrealizedChildren 与实际 Children，Parent 为弱回指，Depth/HasChildren 为只读依赖属性；内部隐藏根深度 -1，首层可见根深度 0。拒绝重复父级、重复节点、跨 UI 线程和环，首版可见深度限制为 512。
+
+- setRootNodes/setChildren/appendChild/removeChild 管理原节点对象；展开状态驱动前序可见行，折叠不销毁节点数据。HasUnrealizedChildren 可显示展开入口，Expanding 回调可同步补子节点，模型变更合并后刷新。控件以弱引用接收节点变化，未复制节点状态或引入对象投影。
+- SelectionMode 首版仅接受 None/Single，SelectedNode 是实际对象依赖属性。点击/Enter/Space 选择并调用，方向/Home/End 移动焦点，左右展开/折叠或进入子节点/返回父节点；重建尝试按节点恢复焦点，折叠后回到可见祖先。ContainerFromNode/NodeFromContainer 查询实际可见行，未实现 TreeViewItem 完整容器 API。
+- 提供可退订的选择、调用、展开/折叠通知。节点树经 C++ 接入，TreeView 本身由正式编译 XAML 创建；TreeViewNode 暂无对象 XAML/反射声明。首版 Content 仅字符串，多选/SelectedNodes、ItemsSource/ItemTemplate、通知集合、拖拽重排、虚拟化/回收、自动滚入焦点项、完整主题/UIA/RTL 尚未实现。
+- 当前用实际按钮/滚动容器实现可见行，变更会重建行；渲染行期间拒绝模型编辑。复杂事件重入、失败恢复、父节点销毁回调和完整生命周期仍待统一验收，不能视作完整上游迁移。
+
+Windows Debug Gallery 构建通过；`--preview-tree` 确认首层深度 0、main.cpp 深度 2、父节点/初选和对应可见行，原生窗口可见并正常关闭、退出码 0。证据为 `build/dev/tree-view-final-build.log`、`build/dev/tree-view-startup.json`。源码布局、工作区、改动文件格式和 diff 检查通过；未新增或执行回归、ASan、截图验收，展开/折叠、选择、集合更新和完整生命周期仍待统一验证。
+
 ### 控件接入数量快照（2026-11-11）
 
 以 StageFluentSources.py 的 49 个源码区域为范围，扣除 Collections、Common、CommonStyles、Effects、IconSource、inc、Interactions、LayoutPanel、Lights、Materials、ResourceHelper 这 11 个支撑区域，跟踪 38 个功能组。此口径不是最终 WinUI 2.3 正式公开类型清单；一个功能组可能包含多个控件，experimental 条件仍需审计。额外系统控件及 Button/TextBox 等通用底座不能用此数推算完整总数。
 
 | 接入状态 | 功能组数 | 范围 |
 | --- | --- | --- |
-| Fluent 部分接入 | 21 | AutoSuggestBox、ComboBox、CommandBarFlyout、ContentDialog、DropDownButton、FlipView、MenuBar、MenuFlyout、NavigationView、NumberBox、PersonPicture、Pivot、RadioButtons、RadioMenuFlyoutItem、RatingControl、SplitButton、SplitView、TabView、TeachingTip、ToolTip、TwoPaneView |
+| Fluent 部分接入 | 22 | AutoSuggestBox、ComboBox、CommandBarFlyout、ContentDialog、DropDownButton、FlipView、MenuBar、MenuFlyout、NavigationView、NumberBox、PersonPicture、Pivot、RadioButtons、RadioMenuFlyoutItem、RatingControl、SplitButton、SplitView、TabView、TeachingTip、ToolTip、TreeView、TwoPaneView |
 | 通用底座部分实现 | 4 | CheckBox、ProgressBar、ScrollViewer、Slider |
-| 尚未接入运行时 | 13 | 下列清单 |
+| 尚未接入运行时 | 12 | 下列清单 |
 | 完整 WinUI 2.3 兼容验收通过 | 0 | 当前接入期未进行最终统一验收 |
 
-剩余 13 组：AnimatedVisualPlayer、CalendarDatePicker、CalendarView、ColorPicker、DatePicker、ParallaxView、PullToRefresh、Repeater、ScrollBar、Scroller、SwipeControl、TimePicker、TreeView。此数不包含已接入组内部尚缺的 API、模板、主题、输入与辅助功能。
+剩余 12 组：AnimatedVisualPlayer、CalendarDatePicker、CalendarView、ColorPicker、DatePicker、ParallaxView、PullToRefresh、Repeater、ScrollBar、Scroller、SwipeControl、TimePicker。此数不包含已接入组内部尚缺的 API、模板、主题、输入与辅助功能。
 
-Fluent 正式 XAML 控件类型现为 29，另有 Flyout/MenuFlyout/ToolTip/CommandBarFlyout/ContentDialog/TeachingTip 等 C++ 服务。完整按类型的历史 Gallery/API 清单仍待固定，不能将“13 个功能组”写成“仅剩 13 个控件”。
+Fluent 正式 XAML 控件类型现为 30，另有 Flyout/MenuFlyout/ToolTip/CommandBarFlyout/ContentDialog/TeachingTip 等 C++ 服务，以及 C++ TreeViewNode 模型。完整按类型的历史 Gallery/API 清单仍待固定，不能将“12 个功能组”写成“仅剩 12 个控件”。
 
 | 范围 | 当前事实 |
 | --- | --- |

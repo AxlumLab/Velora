@@ -37,6 +37,7 @@
 #include <velora/fluent/TeachingTip.hpp>
 #include <velora/fluent/ToggleSplitButton.hpp>
 #include <velora/fluent/ToolTip.hpp>
+#include <velora/fluent/TreeView.hpp>
 #include <velora/fluent/TwoPaneView.hpp>
 #include <windows.h>
 
@@ -93,7 +94,8 @@ class FluentWindow final : public XamlWindow
                                   RadioButtons::registerType(ui),
                                   AutoSuggestBox::registerType(ui),
                                   NavigationView::registerType(ui),
-                                  NavigationViewItem::registerType(ui)})
+                                  NavigationViewItem::registerType(ui),
+                                  TreeView::registerType(ui)})
             if (!error.empty())
                 throw std::runtime_error(error);
         Demo::FluentPage_component::Names names;
@@ -102,6 +104,25 @@ class FluentWindow final : public XamlWindow
             throw std::runtime_error(loaded.error);
         m_controller.setPicture(std::dynamic_pointer_cast<PersonPicture>(names.Avatar));
         m_controller.setStatusElement(names.Status);
+        const auto projectTree = std::dynamic_pointer_cast<TreeView>(names.ProjectTree);
+        if (!projectTree)
+            throw std::runtime_error("TreeView factory mismatch");
+        const auto projectNode = std::make_shared<TreeViewNode>();
+        projectNode->setContent("Velora project");
+        const auto sourceNode = std::make_shared<TreeViewNode>();
+        sourceNode->setContent("Source files");
+        const auto mainNode = std::make_shared<TreeViewNode>();
+        mainNode->setContent("main.cpp");
+        sourceNode->setChildren({mainNode});
+        const auto resourcesNode = std::make_shared<TreeViewNode>();
+        resourcesNode->setContent("Resources");
+        projectNode->setChildren({sourceNode, resourcesNode});
+        projectNode->setIsExpanded(true);
+        sourceNode->setIsExpanded(true);
+        projectTree->setRootNodes({projectNode});
+        projectTree->setSelectedNode(mainNode);
+        projectTree->addItemInvoked([this](std::shared_ptr<TreeViewNode> node)
+                                    { m_controller.record("Tree item: " + node->content()); });
         const auto search = std::dynamic_pointer_cast<AutoSuggestBox>(names.Search);
         if (!search)
             throw std::runtime_error("AutoSuggestBox factory mismatch");
@@ -448,7 +469,14 @@ class FluentWindow final : public XamlWindow
             ui.update(GetAppWindow()->getWidth(), GetAppWindow()->getHeight());
             if (previewPanels)
             {
-                if (previewPanels == 6)
+                if (previewPanels == 7)
+                {
+                    if (projectNode->depth() != 0 || mainNode->depth() != 2 ||
+                        mainNode->parent() != sourceNode || projectTree->selectedNode() != mainNode ||
+                        !projectTree->containerFromNode(mainNode))
+                        throw std::runtime_error("TreeView startup failed");
+                }
+                else if (previewPanels == 6)
                 {
                     if (navigation->displayMode() != "Expanded" || !navigation->isPaneOpen() ||
                         navigation->selectedItem() != homeItem || !homeItem->isSelected() ||
@@ -600,6 +628,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR arguments, int)
                   : args.find("--preview-tabs") != std::string_view::npos        ? 4
                   : args.find("--preview-suggestions") != std::string_view::npos ? 5
                   : args.find("--preview-navigation") != std::string_view::npos  ? 6
+                  : args.find("--preview-tree") != std::string_view::npos        ? 7
                                                                                  : 0);
     try
     {

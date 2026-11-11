@@ -1,4 +1,7 @@
 velora-xaml-types	1
+type	Velora.Fluent.TreeView	UserControl
+property	SelectionMode	String	TreeView.SelectionMode	Single
+end
 type	Velora.Fluent.NavigationView	UserControl
 property	IsPaneOpen	Boolean	NavigationView.IsPaneOpen	True
 property	PaneDisplayMode	String	NavigationView.PaneDisplayMode	Auto

@@ -246,3 +246,13 @@ NavigationView.cpp、NavigationViewItem.cpp 与 NavigationViewChromeView/Navigat
 - 项目调用、选择变化、模式变化、返回请求支持 C++ 订阅/退订，方向/Home/End 在当前菜单移动焦点。IsBackButtonVisible 的 Auto 暂按显示模式处理，不等同完整设备自适应契约；返回只发通知，不内置应用历史。图标使用系统 Segoe MDL2 Assets，IconGlyph 是首版字符串接口，完整 Icon 对象待补齐。
 - C++ 对象菜单/Content/SelectedItem 尚无完整集合和对象 XAML；子项 IsSelected 暂只读。缺层级、分隔线/页头、顶部溢出、Header/PaneHeader/PaneFooter/AutoSuggestBox 插槽、完整 PaneClosing/Opening/Closed 事件及取消、过渡动画/选中指示器、完整主题/RTL/UIA。数值先做有限正值校验，完整 coercion、焦点与重入/失败事务尚待完善。
 - Gallery 通过实际菜单项及应用回调切换内容，--preview-navigation 只检查初始模式/选择/对象挂载和窗口启动/关闭。首轮导航条带挂载使用 adopt 失败，已按编译组件实际父级改用 reparent；完整交互验收留到集成末尾，未新增或执行回归、ASan、截图测试。
+
+## TreeView / TreeViewNode 节点族（待统一验证）
+
+正式 TreeView.cpp、TreeViewNode.cpp 直接改写固定提交 porting/TreeView/TreeView.cpp、TreeViewNode.cpp、ViewModel.cpp 与 TreeView.idl 的父节点弱引用、深度、HasChildren、展开状态和可见前序切片。两个编译模板承载实际滚动容器和行；保留 Microsoft MIT 来源。TreeViewNode 是数据节点本身，未作为另一个 UI 运行时或逐控件包装。
+
+- Children 是唯一实际节点集合，Parent 是弱回指；内部隐藏根 Depth=-1，首层可见根为 0。HasChildren 取子集合非空或 HasUnrealizedChildren，Depth/HasChildren 是只读依赖属性。Content 首版为 UTF-8 字符串，IsExpanded/HasUnrealizedChildren 为实际布尔属性。拒绝重复父级/子节点、环和跨线程修改，初始深度上限 512；层级编辑要求 shared_ptr 所有权。
+- setRootNodes/setChildren/appendChild/removeChild 更新原节点。展开/折叠通过同一 IsExpanded 驱动，Expanding 可同步补子节点；模型批次后重建当前展开节点的前序行，折叠保留原数据。行使用 Segoe MDL2 展开图标及实际按钮，ContainerFromNode/NodeFromContainer 返回同一树中的可见容器。
+- 首版 SelectionMode 仅 None/Single，Multiple 明确拒绝；SelectedNode 使用实际节点对象依赖属性，节点离开树时清理失效选择。点击/Enter/Space 调用，方向/Home/End 移动焦点，左右展开/折叠/进入子节点/返回父节点。重建按节点恢复焦点，折叠回退到可见祖先；没有键盘焦点项自动滚入及完整选择跟随焦点契约。
+- 事件支持 token 退订；节点到控件为弱关联，渲染行期间拒绝模型编辑。缺 SelectedNodes 多选、对象 Content/ItemsSource/ItemTemplate、通知集合、正式 TreeViewItem 完整 API、虚拟化/回收、拖拽重排、完整主题/UIA/RTL。异常处理器中的失败事务、父节点析构通知和复杂重入/生命周期仍待完善。
+- Gallery 增加展开的项目树，--preview-tree 仅检查初始父子/深度、选择和可见行，然后启动/关闭窗口；完整展开/折叠/选择/节点编辑统一留到最后，未新增或执行回归、ASan、截图测试。
