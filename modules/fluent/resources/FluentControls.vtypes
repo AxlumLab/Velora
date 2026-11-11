@@ -1,4 +1,13 @@
 velora-xaml-types	1
+type	Velora.Fluent.RatingControl	UserControl
+property	Caption	String	RatingControl.Caption	""
+property	InitialSetValue	Integer	RatingControl.InitialSetValue	1
+property	IsClearEnabled	Boolean	RatingControl.IsClearEnabled	True
+property	IsReadOnly	Boolean	RatingControl.IsReadOnly	False
+property	MaxRating	Integer	RatingControl.MaxRating	5
+property	PlaceholderValue	Double	RatingControl.PlaceholderValue	-1
+property	Value	Double	RatingControl.Value	-1
+end
 type	Velora.Fluent.SplitView	UserControl
 property	IsPaneOpen	Boolean	SplitView.IsPaneOpen	False
 property	OpenPaneLength	Double	SplitView.OpenPaneLength	320

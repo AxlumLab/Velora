@@ -131,7 +131,7 @@ void Framework::pointerMove(float x, float y)
         return;
     }
     ElementId target = hitTest(x, y);
-    while (target && !interactive(m_tree.kind(target)))
+    while (target && !m_tree.uiElement(target)->isFocusable())
         target = m_tree.parent(target);
     if (target == m_hovered)
         return;
@@ -144,6 +144,11 @@ void Framework::pointerMove(float x, float y)
 
 void Framework::pointerDown(float x, float y)
 {
+    const auto alive = m_lifetime;
+    if (m_popup && m_popup->passive)
+        closePopup(false);
+    if (!*alive)
+        return;
     m_dismissedPopupPress = false;
     if (m_popup && !hitTest(x, y))
     {
@@ -336,7 +341,8 @@ bool Framework::moveFocus(bool forward)
             self(self, child);
     };
     for (const ElementId root : m_tree.visualRoots())
-        if (isMounted(root) && (!m_popup || root == m_popup->root))
+        if (isMounted(root) &&
+            (!m_popup || (m_popup->passive ? root != m_popup->root : root == m_popup->root)))
             walk(walk, root);
     if (stops.empty())
         return false;
@@ -358,6 +364,11 @@ bool Framework::moveFocus(bool forward)
 
 void Framework::key(Key key, bool shift, bool ctrl, bool alt)
 {
+    const auto alive = m_lifetime;
+    if (m_popup && m_popup->passive)
+        closePopup(false);
+    if (!*alive)
+        return;
     if (m_popup && key == Key::kEscape)
     {
         closePopup();

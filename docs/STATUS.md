@@ -163,20 +163,28 @@
 - 示例编译通过；`--preview-panes` 启动确认四个内容对象已挂载，TwoPaneView 为 Wide、SplitView 已展开；窗口可见并正常关闭，退出码 0。证据为 `build/dev/pane-layout-final-build.log`、`build/dev/pane-layout-startup.json`。没有新增/执行回归、ASan、截图验收。
 - 完整焦点约束、开闭事件/取消、动画、主题/RTL/UIA、多显示区域/铰链、原 ScrollViewer 模板及全部模式切换仍待补齐或统一验收。TwoPaneView 长度属性暂为单个 GridLength 的字符串语法，不是完整 GridLength 元数据 API。
 
+### 后续推进：RatingControl 与 ToolTip（2026-11-11）
+
+- RatingControl 进入正式 Fluent 类型声明、编译 XAML 与 Gallery。七个实际依赖属性提供类型化 C++ API，接通范围修正、小数评分裁剪、占位评分、标题、只读/清除、指针预览/捕获和方向键/Home/End；用户操作提供可退订 ValueChanged。星形使用系统 Segoe MDL2 Assets。
+- ToolTip 提供共享持有的 C++ attach/detach/show/hide 与实际 Content 字符串属性。复用 Flyout 和窗口弹出层，增加不抢焦点、不拦截命中、不限制 Tab 范围的提示模式；按键、按下和滚轮关闭提示后继续正常输入，锚点卸载解除订阅。已有菜单打开时提示不替换菜单。
+- 当前提示为立即悬停显示，尚无延迟/自动消失计时、键盘焦点触发、ToolTipService 附加 XAML 或完整定位 API。评分采用固定调色板，MaxRating 上限暂为 1000；ItemInfo、动画、RTL、完整主题/高对比度/UIA 和复杂重入生命周期待补齐或统一验收。ToolTip 仅是 C++ 服务，不计作正式 XAML 控件类型。
+- 首次简单启动发现评分代码将颜色字符串直接写入画刷属性，导致绘制读取整数失败；已改为底座需要的 ARGB 整数。接入期只编译和简单原生启动/关闭，不新增或运行回归、ASan、截图验收。
+- 修复后 `velora_fluent_gallery` Windows Debug 构建通过；`--preview-rating` 确认 3.5 分初始值和提示显示后焦点保留，窗口可见、正常关闭、退出码 0。证据为 `build/dev/rating-tooltip-fixed-build.log`、`build/dev/rating-tooltip-startup.json`；输入、主题、生命周期的完整验收仍未执行。
+
 ### 控件接入数量快照（2026-11-11）
 
 以 StageFluentSources.py 的 49 个源码区域为范围，扣除 Collections、Common、CommonStyles、Effects、IconSource、inc、Interactions、LayoutPanel、Lights、Materials、ResourceHelper 这 11 个支撑区域，跟踪 38 个功能组。此口径不是最终 WinUI 2.3 正式公开类型清单；一个功能组可能包含多个控件，experimental 条件仍需审计。额外系统控件及 Button/TextBox 等通用底座不能用此数推算完整总数。
 
 | 接入状态 | 功能组数 | 范围 |
 | --- | --- | --- |
-| Fluent 部分接入 | 9 | DropDownButton、MenuBar、MenuFlyout、NumberBox、PersonPicture、RadioMenuFlyoutItem、SplitButton、SplitView、TwoPaneView |
+| Fluent 部分接入 | 11 | DropDownButton、MenuBar、MenuFlyout、NumberBox、PersonPicture、RadioMenuFlyoutItem、RatingControl、SplitButton、SplitView、ToolTip、TwoPaneView |
 | 通用底座部分实现 | 4 | CheckBox、ProgressBar、ScrollViewer、Slider |
-| 尚未接入运行时 | 25 | 下列清单 |
+| 尚未接入运行时 | 23 | 下列清单 |
 | 完整 WinUI 2.3 兼容验收通过 | 0 | 当前接入期未进行最终统一验收 |
 
-剩余 25 组：AnimatedVisualPlayer、AutoSuggestBox、CalendarDatePicker、CalendarView、ColorPicker、ComboBox、CommandBarFlyout、ContentDialog、DatePicker、FlipView、NavigationView、ParallaxView、Pivot、PullToRefresh、RadioButtons、RatingControl、Repeater、ScrollBar、Scroller、SwipeControl、TabView、TeachingTip、TimePicker、ToolTip、TreeView。此数不包含已接入组内部尚缺的 API、模板、主题、输入与辅助功能。
+剩余 23 组：AnimatedVisualPlayer、AutoSuggestBox、CalendarDatePicker、CalendarView、ColorPicker、ComboBox、CommandBarFlyout、ContentDialog、DatePicker、FlipView、NavigationView、ParallaxView、Pivot、PullToRefresh、RadioButtons、Repeater、ScrollBar、Scroller、SwipeControl、TabView、TeachingTip、TimePicker、TreeView。此数不包含已接入组内部尚缺的 API、模板、主题、输入与辅助功能。
 
-Fluent 正式 XAML 控件类型本轮从 17 增至 19，另有 Flyout/MenuFlyout 等 C++ 服务。完整按类型的历史 Gallery/API 清单仍待固定，不能将“25 个功能组”写成“仅剩 25 个控件”。
+Fluent 正式 XAML 控件类型现为 20，另有 Flyout/MenuFlyout/ToolTip 等 C++ 服务。完整按类型的历史 Gallery/API 清单仍待固定，不能将“23 个功能组”写成“仅剩 23 个控件”。
 
 | 范围 | 当前事实 |
 | --- | --- |

@@ -81,6 +81,11 @@ bool Framework::scrollStep(ElementId viewer, bool vertical, double delta)
 
 void Framework::wheel(float x, float y, float delta)
 {
+    const auto alive = m_lifetime;
+    if (m_popup && m_popup->passive)
+        closePopup(false);
+    if (!*alive)
+        return;
     if (m_popup && !hit(m_popup->root, x, y, 0, 0))
         return;
     // The innermost scroller that can still move takes the wheel; at its end the wheel chains

@@ -1,0 +1,11 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved. MIT License.
+     Adapted presentation of WinUI 2.3 RatingControl.xaml; Windows glyphs use Segoe MDL2 Assets. -->
+<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" x:Class="velora.RatingControlView"
+      ColumnDefinitions="Auto,Auto" ColumnSpacing="12" HorizontalAlignment="Left">
+    <StackPanel x:Name="BackgroundStars" Orientation="Horizontal"/>
+    <Border x:Name="ForegroundClip" HorizontalAlignment="Left">
+        <StackPanel x:Name="ForegroundStars" Orientation="Horizontal"/>
+    </Border>
+    <TextBlock x:Name="CaptionText" Grid.Column="1" VerticalAlignment="Center" FontSize="14"/>
+</Grid>

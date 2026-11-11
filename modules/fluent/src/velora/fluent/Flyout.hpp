@@ -18,7 +18,7 @@ class Flyout : public std::enable_shared_from_this<Flyout>
     Flyout(const Flyout&) = delete;
     Flyout& operator=(const Flyout&) = delete;
     bool showAt(Framework& ui, ElementId anchor, std::function<void(bool)> changed = {},
-                ElementId passThrough = 0);
+                ElementId passThrough = 0, bool passive = false);
     void hide();
     [[nodiscard]] bool isOpen() const noexcept;
     [[nodiscard]] bool isOpenAt(const Framework& ui, ElementId anchor) const noexcept;

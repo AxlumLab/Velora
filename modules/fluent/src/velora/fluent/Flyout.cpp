@@ -43,7 +43,8 @@ void Flyout::hide()
         m_lifetime.reset();
     }
 }
-bool Flyout::showAt(Framework& ui, ElementId anchor, std::function<void(bool)> changed, ElementId passThrough)
+bool Flyout::showAt(Framework& ui, ElementId anchor, std::function<void(bool)> changed, ElementId passThrough,
+                    bool passive)
 {
     if (isOpen() && m_ui == &ui && m_anchor == anchor)
         return true;
@@ -97,7 +98,7 @@ bool Flyout::showAt(Framework& ui, ElementId anchor, std::function<void(bool)> c
                 if (changed)
                     changed(false);
             },
-            passThrough);
+            passThrough, passive);
         if (!opened || m_root != root)
             throw std::runtime_error("Flyout anchor is unavailable or opening was cancelled");
         if (changed)

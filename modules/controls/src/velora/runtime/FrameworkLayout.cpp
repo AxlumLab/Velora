@@ -245,7 +245,7 @@ ElementId Framework::hit(ElementId e, float x, float y, float originX, float ori
 
 ElementId Framework::hitTest(float x, float y) const
 {
-    if (m_popup)
+    if (m_popup && !m_popup->passive)
     {
         if (const auto target = hit(m_popup->root, x, y, 0, 0))
             return target;
@@ -259,8 +259,12 @@ ElementId Framework::hitTest(float x, float y) const
     }
     const auto& roots = m_tree.visualRoots();
     for (auto it = roots.rbegin(); it != roots.rend(); ++it)
+    {
+        if (m_popup && m_popup->passive && *it == m_popup->root)
+            continue;
         if (const ElementId found = hit(*it, x, y, 0, 0))
             return found;
+    }
     return 0;
 }
 } // namespace velora

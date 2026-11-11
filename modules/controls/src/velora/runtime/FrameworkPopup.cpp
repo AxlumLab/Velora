@@ -24,7 +24,7 @@ bool Framework::popupAnchorAvailable(ElementId element) const
     return true;
 }
 bool Framework::openPopup(ElementId anchor, ElementId root, std::function<void()> closed,
-                          ElementId passThrough)
+                          ElementId passThrough, bool passive)
 {
     if (!isOwnerThread() || m_destroying || !popupAnchorAvailable(anchor) || !m_tree.contains(root) ||
         m_tree.parent(root) || root == anchor || isWithin(anchor, root) ||
@@ -35,14 +35,15 @@ bool Framework::openPopup(ElementId anchor, ElementId root, std::function<void()
     if (!*alive || m_popup || !popupAnchorAvailable(anchor) || !m_tree.contains(root))
         return false;
     const auto restore = isWithin(focused(), anchor) ? anchor : focused();
-    m_popup = PopupState{anchor, root, restore, std::move(closed), passThrough};
+    m_popup = PopupState{anchor, root, restore, std::move(closed), passThrough, passive};
     m_tree.onRemoved(root,
                      [this, root]
                      {
                          if (popupRoot() == root)
                              closePopup();
                      });
-    m_tree.releasePointer();
+    if (!passive)
+        m_tree.releasePointer();
     setMounted(root, true);
     set(root, m_visual.zIndex, i64{std::numeric_limits<int>::max()});
     if (!*alive || popupRoot() != root)
@@ -50,6 +51,8 @@ bool Framework::openPopup(ElementId anchor, ElementId root, std::function<void()
     layoutPopup();
     if (!*alive || popupRoot() != root)
         return false;
+    if (passive)
+        return true;
     focus(0);
     if (!*alive || popupRoot() != root)
         return false;
@@ -69,7 +72,7 @@ void Framework::closePopup(bool restoreFocus)
         m_tree.remove(state.root);
     if (!*alive)
         return;
-    if (restoreFocus && heldFocus && !m_popup)
+    if (restoreFocus && !state.passive && heldFocus && !m_popup)
     {
         const auto target = popupAnchorAvailable(state.restore)  ? state.restore
                             : popupAnchorAvailable(state.anchor) ? state.anchor

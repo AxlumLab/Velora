@@ -167,3 +167,13 @@ Windows 示例 `FluentPage.xaml` 从编译 XAML 创建实际 NumberBox；注册�
 - TwoPaneView 采用严格大于阈值、先横排再竖排，默认阈值均 641；接通 PanePriority、左右/上下及反向配置、Auto/固定/星号长度，默认 Auto/*。Mode 为只读依赖属性，实际排列后发布，C++ addModeChanged 可用 removePropertyChanged 退订。长度当前声明为 String，接受单个 GridLength 语法，与上游对象元数据不同；多显示区域/铰链间隙与完整 ScrollViewer 模板/状态未实现。
 - 两种控件及简单属性均由正式编译 XAML 创建。对象属性的 `.vtypes` 与嵌套属性元素语法尚未开放，Pane/Pane1/Pane2 通过 C++ 连接；未知 XAML 继续报诊断，Mode 不伪造可写声明。
 - Gallery 同时展示展开的 CompactInline SplitView 与 1*:2* TwoPaneView，页面支持纵向滚动。`--preview-panes` 仅检查实际挂载、Wide 模式、窗口启动与关闭；交互、多模式自适应、主题/DPI、替换和生命周期留到集成末尾统一验证。
+
+## RatingControl 与 ToolTip 接入（待统一验证）
+
+RatingControl 内化固定提交 `porting/RatingControl/RatingControl.cpp/.idl/.xaml` 中的评分修正、占位评分、指针选择和键盘选择逻辑；正式实现和编译模板位于 Fluent，保留 MIT 来源。ToolTip 的系统模板参考 `porting/ToolTip/ToolTip_themeresources.xaml`；行为由 Velora 实现，不声称上游提供完整系统控件 C++。
+
+- RatingControl 的 Caption、InitialSetValue、IsClearEnabled、IsReadOnly、MaxRating、PlaceholderValue、Value 均使用同一依赖属性存储，正式 XAML 可创建。使用 Segoe MDL2 Assets 星形及前景裁剪呈现小数值。用户评分事件通过 C++ token 注册/退订；程序写入继续通过依赖属性变化通知观察。
+- 数值仅接受有限值，MaxRating 暂限定不超过 1000，低于 1 修正为 1，负评分统一为未评分哨兵 -1。修正沿用当前有效值层，不等于完整 WinUI coercion。ItemInfo/图片评分、缩放动画、RTL/游戏手柄、完整主题/高对比度/UIA 未实现；当前星形采用固定颜色。
+- ToolTip 是共享持有的 C++ 服务，Content 是字符串依赖属性；通过 attach/detach 绑定原锚点，弱订阅悬停和移除。提示沿用现有 Flyout 呈现器及单窗口弹出槽，新增 passive 模式保留焦点、跳过命中、排除 Tab 遍历。按下/键盘/滚轮关闭后继续输入；已有交互弹出层时不显示提示。
+- 当前悬停立即显示，仅接收底座已跟踪的 IsPointerOver；没有延迟/自动消失、键盘焦点触发、ToolTipService 附加 XAML、任意内容或完整 Placement。外观仍沿用 Flyout 的容器间距与资源，多弹出层共存和完整主题待补齐。
+- Gallery 的 --preview-rating 只确认初值、提示保留焦点、窗口启动及关闭。评分交互、绑定、重入、卸载和主题等完整验证留到集成末尾；构建成功不代表完整兼容。

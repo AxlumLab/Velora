@@ -266,7 +266,7 @@ class Framework
     // One light-dismiss popup per window. Success transfers the top-level root's lifetime
     // to this service; close removes it. Content remains in the same tree/compositor.
     bool openPopup(ElementId anchor, ElementId root, std::function<void()> closed = {},
-                   ElementId passThrough = 0);
+                   ElementId passThrough = 0, bool passive = false);
     void closePopup(bool restoreFocus = true);
     [[nodiscard]] ElementId popupRoot() const noexcept;
 
@@ -565,6 +565,7 @@ class Framework
         ElementId anchor = 0, root = 0, restore = 0;
         std::function<void()> closed;
         ElementId passThrough = 0;
+        bool passive = false; // informational overlay: no focus, input interception or Tab scope
     };
     std::optional<PopupState> m_popup;
     bool m_dismissedPopupPress = false;

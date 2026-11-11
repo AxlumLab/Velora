@@ -20,9 +20,11 @@
 #include <velora/fluent/NumberBox.hpp>
 #include <velora/fluent/PersonPicture.hpp>
 #include <velora/fluent/RadioMenuFlyoutItem.hpp>
+#include <velora/fluent/RatingControl.hpp>
 #include <velora/fluent/SplitView.hpp>
 #include <velora/fluent/SymbolIcon.hpp>
 #include <velora/fluent/ToggleSplitButton.hpp>
+#include <velora/fluent/ToolTip.hpp>
 #include <velora/fluent/TwoPaneView.hpp>
 #include <windows.h>
 
@@ -31,7 +33,7 @@ class FluentWindow final : public XamlWindow
 {
   public:
     explicit FluentWindow(XamlApplication& app, bool previewMenu, bool previewMenuBar, bool previewCommands,
-                          bool previewPanes)
+                          bool previewPanes, bool previewRating)
         : XamlWindow(app)
     {
         std::array<wchar_t, 32768> path{};
@@ -59,7 +61,8 @@ class FluentWindow final : public XamlWindow
               RadioMenuFlyoutItem::registerType(ui), FontIcon::registerType(ui), SymbolIcon::registerType(ui),
               MenuBar::registerType(ui), MenuBarItem::registerType(ui), AppBarButton::registerType(ui),
               AppBarToggleButton::registerType(ui), CommandBar::registerType(ui),
-              AppBarSeparator::registerType(ui), SplitView::registerType(ui), TwoPaneView::registerType(ui)})
+              AppBarSeparator::registerType(ui), SplitView::registerType(ui), TwoPaneView::registerType(ui),
+              RatingControl::registerType(ui)})
             if (!error.empty())
                 throw std::runtime_error(error);
         Demo::FluentPage_component::Names names;
@@ -68,6 +71,14 @@ class FluentWindow final : public XamlWindow
             throw std::runtime_error(loaded.error);
         m_controller.setPicture(std::dynamic_pointer_cast<PersonPicture>(names.Avatar));
         m_controller.setStatusElement(names.Status);
+        const auto rating = std::dynamic_pointer_cast<RatingControl>(names.Rating);
+        if (!rating)
+            throw std::runtime_error("RatingControl factory mismatch");
+        rating->addValueChanged([this](f64 value)
+                                { m_controller.record("Rating: " + std::to_string(value)); });
+        m_toolTip = std::make_shared<ToolTip>();
+        m_toolTip->setContent("Use arrows, Home or End. Click the current rating to clear.");
+        m_toolTip->attach(ui, ui.tree().element(*rating));
         const auto sidebar = std::dynamic_pointer_cast<SplitView>(names.Sidebar);
         const auto adaptive = std::dynamic_pointer_cast<TwoPaneView>(names.AdaptivePanes);
         if (!sidebar || !adaptive)
@@ -225,10 +236,17 @@ class FluentWindow final : public XamlWindow
               });
         m_page = ui.tree().element(*loaded.root);
         SetRoot(m_page);
-        if (previewMenu || previewMenuBar || previewCommands || previewPanes)
+        if (previewMenu || previewMenuBar || previewCommands || previewPanes || previewRating)
         {
             ui.update(GetAppWindow()->getWidth(), GetAppWindow()->getHeight());
-            if (previewPanes)
+            if (previewRating)
+            {
+                const auto id = ui.tree().element(*rating);
+                ui.focus(id);
+                if (rating->value() != 3.5 || !m_toolTip->show() || ui.focused() != id)
+                    throw std::runtime_error("RatingControl/passive ToolTip startup failed");
+            }
+            else if (previewPanes)
             {
                 if (adaptive->mode() != TwoPaneViewMode::kWide || !sidebar->isPaneOpen() ||
                     !adaptive->pane1()->isInTree() || !adaptive->pane2()->isInTree() ||
@@ -267,20 +285,22 @@ class FluentWindow final : public XamlWindow
   private:
     Demo::FluentPage m_controller;
     ElementId m_page = 0;
+    std::shared_ptr<ToolTip> m_toolTip;
 };
 
 class FluentApp final : public XamlApplication
 {
   public:
-    explicit FluentApp(bool previewMenu, bool previewMenuBar, bool previewCommands, bool previewPanes)
+    explicit FluentApp(bool previewMenu, bool previewMenuBar, bool previewCommands, bool previewPanes,
+                       bool previewRating)
         : m_previewMenu(previewMenu), m_previewMenuBar(previewMenuBar), m_previewCommands(previewCommands),
-          m_previewPanes(previewPanes)
+          m_previewPanes(previewPanes), m_previewRating(previewRating)
     {
     }
     void OnLaunched() override
     {
         m_window = std::make_unique<FluentWindow>(*this, m_previewMenu, m_previewMenuBar, m_previewCommands,
-                                                  m_previewPanes);
+                                                  m_previewPanes, m_previewRating);
         m_window->Show();
     }
 
@@ -289,6 +309,7 @@ class FluentApp final : public XamlApplication
     bool m_previewMenuBar = false;
     bool m_previewCommands = false;
     bool m_previewPanes = false;
+    bool m_previewRating = false;
     std::unique_ptr<FluentWindow> m_window;
 };
 
@@ -298,7 +319,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR arguments, int)
     const bool previewMenuBar = args.find("--open-menubar") != std::string_view::npos;
     const bool previewCommands = args.find("--open-commandbar") != std::string_view::npos;
     FluentApp app(!previewMenuBar && args.find("--open-menu") != std::string_view::npos, previewMenuBar,
-                  previewCommands, args.find("--preview-panes") != std::string_view::npos);
+                  previewCommands, args.find("--preview-panes") != std::string_view::npos,
+                  args.find("--preview-rating") != std::string_view::npos);
     try
     {
         return app.Run();
