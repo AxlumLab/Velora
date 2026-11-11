@@ -196,3 +196,13 @@ RatingControl 内化固定提交 `porting/RatingControl/RatingControl.cpp/.idl/.
 - RadioButtons 使用底座 RadioButton，独立组名避免不同控件互斥，SelectedIndex 驱动勾选和组内 Tab 停靠。MaxColumns 限为 1..1000；上下按索引、左右按相邻列同行导航，Ctrl 移动焦点而不改选择。列数及余项分配沿用上游规则；尺寸采用当前 Grid 星号列/Auto 行，尚非最大子项统一尺寸的原布局器。
 - 无 ItemsSource/可观察集合、Items 属性元素、任意对象项、ItemTemplate/HeaderTemplate、可写 SelectedItem、可编辑 ComboBox、键入搜索、长列表滚动/虚拟化、完整主题/高对比度/UIA/RTL/游戏手柄。容器外部修改、禁用项完整导航、状态重入及卸载仍待完善和统一验收；集合替换时拒绝当前重入或打开的弹出列表。
 - Gallery 的 --preview-choices 只检查初始选择、下拉打开和窗口启动/关闭。未新增或执行回归、ASan、截图测试；完整移植验收未完成。
+
+## ContentDialog / TeachingTip 弹出面板（待统一验证）
+
+正式 C++ 服务 ContentDialog、TeachingTip 共享 PopupPanel.cpp 和编译模板 PopupPanelView.xaml。TeachingTip 按固定提交 porting/TeachingTip/TeachingTip.cpp/.idl/.xaml 改写动作按钮保持打开、关闭按钮/轻关闭原因及 Closing/Closed 流程；ContentDialog 参考 porting/ContentDialog/ContentDialog_themeresources.xaml，系统控件行为由 Velora 实现。派生文件保留 Microsoft MIT 来源。
+
+- 实际字符串/布尔依赖属性保存标题、正文、按钮配置与 TeachingTip.IsOpen；没有第二份可写状态。TeachingTip.ActionButtonContent/CloseButtonContent 使用原属性名，内部共用呈现逻辑。Target 首版为 UI 线程的 C++ attach，不伪造对象 XAML 支持。ContentDialog 的打开状态由服务维护，公开 isOpen 查询实际弹出层。
+- ContentDialog 采用窗口内居中、外部点击保持、受限 Tab 范围、默认按钮焦点及 None/Primary/Secondary 结果。TeachingTip 使用锚点下方/上方回退定位，动作按钮仅通知、关闭按钮关闭，IsLightDismissEnabled 可更新；非模态命中与 Tab 不封锁宿主控件。
+- 按钮和 Closing 事件参数允许取消，token 订阅支持独立退订。普通 hide、按钮、Escape 和轻关闭走关闭前通知；宿主/锚点销毁及被另一个弹出层替换属于强制关闭，不等待取消。Closed 发布原因与结果并清理呈现器事件。完整 WinUI 事件参数、异步 deferral/ShowAsync、复杂重入与线程销毁仍待完善。
+- 复用现有 Flyout 外框和单弹出槽，尚无尾巴、完整 PreferredPlacement/HeroContent/IconSource、任意对象内容、正式控件 XAML/对象属性、完整样式/主题动画/阴影/模态暗色遮罩、UIA。共享模板首版固定宽度 360；不能将此实现计作完整 ContentDialog 或 TeachingTip。
+- Gallery 增加两个按钮和 --open-dialog / --open-teachingtip 启动入口；只编译及简单启动关闭，完整交互/生命周期验收留到集成末尾。

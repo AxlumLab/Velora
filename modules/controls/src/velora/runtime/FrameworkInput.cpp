@@ -150,10 +150,16 @@ void Framework::pointerDown(float x, float y)
     if (!*alive)
         return;
     m_dismissedPopupPress = false;
-    if (m_popup && !hitTest(x, y))
+    if (m_popup &&
+        (m_popup->options.nonModal ? m_popup->options.lightDismiss && !hit(m_popup->root, x, y, 0, 0)
+                                   : !hitTest(x, y)))
     {
         m_dismissedPopupPress = true;
-        closePopup();
+        const auto root = m_popup->root;
+        const auto options = m_popup->options;
+        if (options.lightDismiss && (!options.dismissRequested || options.dismissRequested()) && *alive &&
+            popupRoot() == root)
+            closePopup();
         return;
     }
     if (scrollBarDown(x, y))
@@ -341,8 +347,8 @@ bool Framework::moveFocus(bool forward)
             self(self, child);
     };
     for (const ElementId root : m_tree.visualRoots())
-        if (isMounted(root) &&
-            (!m_popup || (m_popup->passive ? root != m_popup->root : root == m_popup->root)))
+        if (isMounted(root) && (!m_popup || m_popup->options.nonModal ||
+                                (m_popup->passive ? root != m_popup->root : root == m_popup->root)))
             walk(walk, root);
     if (stops.empty())
         return false;
@@ -371,7 +377,10 @@ void Framework::key(Key key, bool shift, bool ctrl, bool alt)
         return;
     if (m_popup && key == Key::kEscape)
     {
-        closePopup();
+        const auto root = m_popup->root;
+        const auto dismiss = m_popup->options.dismissRequested;
+        if ((!dismiss || dismiss()) && *alive && popupRoot() == root)
+            closePopup();
         return;
     }
     KeyEventArgs args;

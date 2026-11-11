@@ -86,7 +86,7 @@ void Framework::wheel(float x, float y, float delta)
         closePopup(false);
     if (!*alive)
         return;
-    if (m_popup && !hit(m_popup->root, x, y, 0, 0))
+    if (m_popup && !m_popup->options.nonModal && !hit(m_popup->root, x, y, 0, 0))
         return;
     // The innermost scroller that can still move takes the wheel; at its end the wheel chains
     // to the next one out, as in WinUI. A viewer that cannot scroll vertically scrolls sideways.

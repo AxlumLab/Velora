@@ -9,6 +9,13 @@ ElementId Framework::popupRoot() const noexcept
 {
     return m_popup ? m_popup->root : 0;
 }
+bool Framework::setPopupLightDismiss(ElementId root, bool enabled)
+{
+    if (!isOwnerThread() || !m_popup || m_popup->root != root)
+        return false;
+    m_popup->options.lightDismiss = enabled;
+    return true;
+}
 bool Framework::popupAnchorAvailable(ElementId element) const
 {
     if (!m_tree.contains(element))
@@ -24,7 +31,7 @@ bool Framework::popupAnchorAvailable(ElementId element) const
     return true;
 }
 bool Framework::openPopup(ElementId anchor, ElementId root, std::function<void()> closed,
-                          ElementId passThrough, bool passive)
+                          ElementId passThrough, bool passive, PopupOptions options)
 {
     if (!isOwnerThread() || m_destroying || !popupAnchorAvailable(anchor) || !m_tree.contains(root) ||
         m_tree.parent(root) || root == anchor || isWithin(anchor, root) ||
@@ -35,7 +42,7 @@ bool Framework::openPopup(ElementId anchor, ElementId root, std::function<void()
     if (!*alive || m_popup || !popupAnchorAvailable(anchor) || !m_tree.contains(root))
         return false;
     const auto restore = isWithin(focused(), anchor) ? anchor : focused();
-    m_popup = PopupState{anchor, root, restore, std::move(closed), passThrough, passive};
+    m_popup = PopupState{anchor, root, restore, std::move(closed), passThrough, passive, std::move(options)};
     m_tree.onRemoved(root,
                      [this, root]
                      {
@@ -107,11 +114,14 @@ void Framework::layoutPopup()
         return;
     const auto width = std::clamp(size.width, 0.0f, m_width);
     const auto height = std::clamp(size.height, 0.0f, m_height);
-    const auto x = std::clamp(anchor.x, 0.0f, m_width - width);
+    const auto x =
+        state.options.centered ? (m_width - width) / 2 : std::clamp(anchor.x, 0.0f, m_width - width);
     auto y = anchor.y + anchor.height + 4;
     if (y + height > m_height)
         y = anchor.y - height - 4;
     y = std::clamp(y, 0.0f, m_height - height);
+    if (state.options.centered)
+        y = (m_height - height) / 2;
     arrange(state.root, {x, y, width, height});
 }
 } // namespace velora

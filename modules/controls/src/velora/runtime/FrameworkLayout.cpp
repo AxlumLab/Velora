@@ -255,7 +255,8 @@ ElementId Framework::hitTest(float x, float y) const
             const auto origin = parent ? bounds(parent) : Box{};
             return hit(m_popup->passThrough, x, y, origin.x, origin.y);
         }
-        return 0;
+        if (!m_popup->options.nonModal)
+            return 0;
     }
     const auto& roots = m_tree.visualRoots();
     for (auto it = roots.rbegin(); it != roots.rend(); ++it)

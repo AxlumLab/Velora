@@ -15,6 +15,7 @@
 #include <velora/fluent/ComboBox.hpp>
 #include <velora/fluent/CommandBar.hpp>
 #include <velora/fluent/CommandBarFlyout.hpp>
+#include <velora/fluent/ContentDialog.hpp>
 #include <velora/fluent/DropDownButton.hpp>
 #include <velora/fluent/FluentPackage.hpp>
 #include <velora/fluent/MenuBar.hpp>
@@ -26,6 +27,7 @@
 #include <velora/fluent/RatingControl.hpp>
 #include <velora/fluent/SplitView.hpp>
 #include <velora/fluent/SymbolIcon.hpp>
+#include <velora/fluent/TeachingTip.hpp>
 #include <velora/fluent/ToggleSplitButton.hpp>
 #include <velora/fluent/ToolTip.hpp>
 #include <velora/fluent/TwoPaneView.hpp>
@@ -37,7 +39,7 @@ class FluentWindow final : public XamlWindow
   public:
     explicit FluentWindow(XamlApplication& app, bool previewMenu, bool previewMenuBar, bool previewCommands,
                           bool previewPanes, bool previewRating, bool previewCommandFlyout,
-                          bool previewChoices)
+                          bool previewChoices, i32 previewPanels)
         : XamlWindow(app)
     {
         std::array<wchar_t, 32768> path{};
@@ -86,6 +88,35 @@ class FluentWindow final : public XamlWindow
             throw std::runtime_error(loaded.error);
         m_controller.setPicture(std::dynamic_pointer_cast<PersonPicture>(names.Avatar));
         m_controller.setStatusElement(names.Status);
+        m_dialog = std::make_shared<ContentDialog>();
+        m_dialog->setTitle("Save changes?");
+        m_dialog->setContent("Choose Save, Discard, or Cancel.");
+        m_dialog->setPrimaryButtonText("Save");
+        m_dialog->setSecondaryButtonText("Discard");
+        m_dialog->setCloseButtonText("Cancel");
+        m_dialog->setDefaultButton("Primary");
+        m_dialog->addClosed(
+            [this](PanelCloseReason, PanelResult result)
+            { m_controller.record("Dialog result: " + std::to_string(static_cast<i32>(result))); });
+        m_teachingTip = std::make_shared<TeachingTip>();
+        m_teachingTip->setTitle("Try the new controls");
+        m_teachingTip->setSubtitle("Fluent controls are being connected in groups.");
+        m_teachingTip->setContent("Use the action below or close this tip.");
+        m_teachingTip->setActionButtonContent("Got it");
+        m_teachingTip->setCloseButtonContent("Close");
+        m_teachingTip->setIsLightDismissEnabled(true);
+        m_teachingTip->addButtonClick(
+            [this](PanelButtonEventArgs& args)
+            {
+                if (args.button == PanelButton::kPrimary)
+                    m_controller.record("Teaching tip action invoked");
+            });
+        const auto dialogAnchor = ui.tree().element(*names.ShowDialog);
+        m_teachingTip->attach(ui, ui.tree().element(*names.ShowTeachingTip));
+        ui.on(dialogAnchor, ui.events().Click,
+              [this, dialogAnchor] { m_dialog->showAt(GetFramework(), dialogAnchor); });
+        ui.on(ui.tree().element(*names.ShowTeachingTip), ui.events().Click,
+              [this] { m_teachingTip->setIsOpen(true); });
         const auto themeChoice = std::dynamic_pointer_cast<ComboBox>(names.ThemeChoice);
         const auto densityChoice = std::dynamic_pointer_cast<RadioButtons>(names.DensityChoice);
         if (!themeChoice || !densityChoice)
@@ -285,10 +316,24 @@ class FluentWindow final : public XamlWindow
         m_page = ui.tree().element(*loaded.root);
         SetRoot(m_page);
         if (previewMenu || previewMenuBar || previewCommands || previewPanes || previewRating ||
-            previewCommandFlyout || previewChoices)
+            previewCommandFlyout || previewChoices || previewPanels)
         {
             ui.update(GetAppWindow()->getWidth(), GetAppWindow()->getHeight());
-            if (previewChoices)
+            if (previewPanels)
+            {
+                if (previewPanels == 1)
+                {
+                    if (!m_dialog->showAt(ui, dialogAnchor))
+                        throw std::runtime_error("ContentDialog startup: " + m_dialog->lastError());
+                }
+                else
+                {
+                    m_teachingTip->setIsOpen(true);
+                    if (!m_teachingTip->isOpen())
+                        throw std::runtime_error("TeachingTip startup: " + m_teachingTip->lastError());
+                }
+            }
+            else if (previewChoices)
             {
                 themeChoice->setIsDropDownOpen(true);
                 if (!themeChoice->isDropDownOpen() || themeChoice->selectedItem() != "Light" ||
@@ -349,23 +394,26 @@ class FluentWindow final : public XamlWindow
     ElementId m_page = 0;
     std::shared_ptr<ToolTip> m_toolTip;
     std::shared_ptr<CommandBarFlyout> m_commandFlyout;
+    std::shared_ptr<ContentDialog> m_dialog;
+    std::shared_ptr<TeachingTip> m_teachingTip;
 };
 
 class FluentApp final : public XamlApplication
 {
   public:
     explicit FluentApp(bool previewMenu, bool previewMenuBar, bool previewCommands, bool previewPanes,
-                       bool previewRating, bool previewCommandFlyout, bool previewChoices)
+                       bool previewRating, bool previewCommandFlyout, bool previewChoices, i32 previewPanels)
         : m_previewMenu(previewMenu), m_previewMenuBar(previewMenuBar), m_previewCommands(previewCommands),
           m_previewPanes(previewPanes), m_previewRating(previewRating),
-          m_previewCommandFlyout(previewCommandFlyout), m_previewChoices(previewChoices)
+          m_previewCommandFlyout(previewCommandFlyout), m_previewChoices(previewChoices),
+          m_previewPanels(previewPanels)
     {
     }
     void OnLaunched() override
     {
         m_window = std::make_unique<FluentWindow>(*this, m_previewMenu, m_previewMenuBar, m_previewCommands,
                                                   m_previewPanes, m_previewRating, m_previewCommandFlyout,
-                                                  m_previewChoices);
+                                                  m_previewChoices, m_previewPanels);
         m_window->Show();
     }
 
@@ -377,6 +425,7 @@ class FluentApp final : public XamlApplication
     bool m_previewRating = false;
     bool m_previewCommandFlyout = false;
     bool m_previewChoices = false;
+    i32 m_previewPanels = 0;
     std::unique_ptr<FluentWindow> m_window;
 };
 
@@ -389,7 +438,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR arguments, int)
                   previewCommands, args.find("--preview-panes") != std::string_view::npos,
                   args.find("--preview-rating") != std::string_view::npos,
                   args.find("--open-commandflyout") != std::string_view::npos,
-                  args.find("--preview-choices") != std::string_view::npos);
+                  args.find("--preview-choices") != std::string_view::npos,
+                  args.find("--open-dialog") != std::string_view::npos        ? 1
+                  : args.find("--open-teachingtip") != std::string_view::npos ? 2
+                                                                              : 0);
     try
     {
         return app.Run();

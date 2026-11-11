@@ -30,6 +30,15 @@
 namespace velora
 {
 
+struct PopupOptions
+{
+    bool lightDismiss = true;
+    bool centered = false;
+    bool nonModal = false;
+    // Called for Escape or outside-pointer dismissal. False keeps the current popup open.
+    std::function<bool()> dismissRequested;
+};
+
 // Width of a single line of text; the default approximates it without a font backend.
 using TextMeasurer = std::function<float(std::string_view text, float fontSize)>;
 float approximateTextWidth(std::string_view text, float fontSize);
@@ -263,11 +272,12 @@ class Framework
     [[nodiscard]] bool isMounted(ElementId element) const;
     // True when `element` is `ancestor` or below it in the logical tree.
     [[nodiscard]] bool isWithin(ElementId element, ElementId ancestor) const;
-    // One light-dismiss popup per window. Success transfers the top-level root's lifetime
-    // to this service; close removes it. Content remains in the same tree/compositor.
+    // One popup per window, with modal, non-modal or passive input behavior. Success transfers the root's
+    // lifetime to this service; close removes it. Content remains in the same tree/compositor.
     bool openPopup(ElementId anchor, ElementId root, std::function<void()> closed = {},
-                   ElementId passThrough = 0, bool passive = false);
+                   ElementId passThrough = 0, bool passive = false, PopupOptions options = {});
     void closePopup(bool restoreFocus = true);
+    bool setPopupLightDismiss(ElementId root, bool enabled);
     [[nodiscard]] ElementId popupRoot() const noexcept;
 
     // ThemeResource values: applied for the current theme now and again on every theme change.
@@ -566,6 +576,7 @@ class Framework
         std::function<void()> closed;
         ElementId passThrough = 0;
         bool passive = false; // informational overlay: no focus, input interception or Tab scope
+        PopupOptions options;
     };
     std::optional<PopupState> m_popup;
     bool m_dismissedPopupPress = false;

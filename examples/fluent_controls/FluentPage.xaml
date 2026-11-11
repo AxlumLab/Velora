@@ -6,6 +6,10 @@
             <fluent:MenuBar x:Name="ApplicationMenu"/>
             <fluent:CommandBar x:Name="Commands"/>
             <Button x:Name="ContextCommands" Content="Open command flyout" HorizontalAlignment="Left"/>
+            <StackPanel Orientation="Horizontal" Spacing="12">
+                <Button x:Name="ShowDialog" Content="Open dialog"/>
+                <Button x:Name="ShowTeachingTip" Content="Show teaching tip"/>
+            </StackPanel>
             <Grid ColumnDefinitions="*,*" ColumnSpacing="20">
                 <fluent:ComboBox x:Name="ThemeChoice" Header="Theme" PlaceholderText="Choose a theme" SelectedIndex="1"/>
                 <fluent:RadioButtons x:Name="DensityChoice" Grid.Column="1" Header="Density" MaxColumns="2" SelectedIndex="0"/>

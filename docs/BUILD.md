@@ -95,6 +95,8 @@ Fluent 示例支持 `--preview-rating`：启动时加载 RatingControl 的编译
 
 `--preview-choices` 启动时打开 ComboBox，确认下拉状态和两个选择控件的初始项。Items 在示例 C++ 中接入，XAML 创建控件并设置初始 SelectedIndex。当前只做简单启动和关闭，不执行完整选择交互验收。
 
+`--open-dialog` / `--open-teachingtip` 分别在启动时打开 ContentDialog / TeachingTip 的 C++ 服务及编译模板；普通启动通过 Open dialog / Show teaching tip 按钮进入。当前仅检查窗口启动、显示及关闭，取消关闭、结果、轻关闭和键盘交互留待统一验证。
+
 - Android 没有完整平台实现、NDK preset 或 Gradle 宿主。本包不能直接构建出 Android 产品。
 - 当前模块默认 STATIC。插件共享运行时、导出配置和加载器仍是设计。
 - 新环境必须从干净构建目录开始，不复用旧对象布局产生的缓存。具体已跑/未跑结果见 STATUS.md。
