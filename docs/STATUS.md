@@ -234,20 +234,31 @@ Windows Debug Gallery 构建通过；`--preview-tabs` 确认初选 Document 标�
 
 Windows Debug Gallery 构建通过；`--preview-suggestions` 确认三条建议、建议列表打开和编辑器焦点保留，原生窗口可见并正常关闭、退出码 0。证据为 `build/dev/auto-suggest-final-build.log`、`build/dev/auto-suggest-startup.json`。源码布局、工作区、改动文件格式和 diff 检查通过；未新增或执行回归、ASan、截图验收，输入、更新/提交、IME、跨控件弹出与生命周期完整交互仍待统一验证。
 
+### 后续推进：NavigationView 与 NavigationViewItem（2026-11-11）
+
+本批接入 NavigationView 与 NavigationViewItem 两个正式类型，直接内化上游自适应模式、侧栏和项目调用切片。NavigationView 复用 PaneLayout 的实际 Content、挂载、遮罩和内容环检查；菜单集合持有原 NavigationViewItem，SelectedItem 是 C++ 对象依赖属性，DisplayMode 是排列后发布的只读属性。
+
+- 接通 Auto/Left/LeftCompact/LeftMinimal 和基础 Top 布局，沿用 `width >= ExpandedModeThresholdWidth`、`width < CompactModeThresholdWidth` 的模式判断。默认阈值 1008/641、侧栏长度 320/48；模式切换尝试自动开闭，保留用户强制关闭状态。紧凑侧栏隐藏标签保留 MDL2 图标，覆盖模式支持遮罩轻关闭与 Escape。
+- 菜单项使用实际字符串 Content、IconGlyph、SelectsOnInvoked 和只读 IsSelected；C++ setMenuItems 支持替换。项目调用可更新 SelectedItem，再通知应用切换实际 Content；Settings 使用独立实际项，IsSettingsVisible 控制显示。返回按钮只发布请求，应用负责历史。
+- 接通 PaneTitle、开合按钮显示、返回按钮启用/显示、选择/模式变化和可退订 ItemInvoked/BackRequested；方向/Home/End 在菜单内导航。当前 Auto 返回按钮按显示模式处理，是首版策略，尚非完整设备/平台契约。
+- 菜单集合与对象 Content 首版经 C++ 接入，Header 暂无完整对象模板；SelectedItem 尚无对象 XAML，IsSelected 暂只读。层级项目、菜单分隔/页头、顶部溢出、PaneHeader/Footer/AutoSuggestBox 插槽、可取消 PaneClosing、过渡动画、完整主题/RTL/UIA、复杂重入/销毁仍未实现或验收。此批仅是实际可运行切片。
+
+Windows Debug Gallery 构建通过；`--preview-navigation` 确认 Expanded、侧栏打开、Home 选中和内容实际挂载，原生窗口可见并正常关闭、退出码 0。证据为 `build/dev/navigation-fixed-build.log`、`build/dev/navigation-startup.json`。首次启动因编译组件已有父节点、错误使用 adopt 而失败，现改用同树 reparent；保留首次构建日志。未新增或执行回归、ASan、截图验收，自适应模式、顶部布局、菜单/设置/返回及生命周期完整交互仍待统一验证。
+
 ### 控件接入数量快照（2026-11-11）
 
 以 StageFluentSources.py 的 49 个源码区域为范围，扣除 Collections、Common、CommonStyles、Effects、IconSource、inc、Interactions、LayoutPanel、Lights、Materials、ResourceHelper 这 11 个支撑区域，跟踪 38 个功能组。此口径不是最终 WinUI 2.3 正式公开类型清单；一个功能组可能包含多个控件，experimental 条件仍需审计。额外系统控件及 Button/TextBox 等通用底座不能用此数推算完整总数。
 
 | 接入状态 | 功能组数 | 范围 |
 | --- | --- | --- |
-| Fluent 部分接入 | 20 | AutoSuggestBox、ComboBox、CommandBarFlyout、ContentDialog、DropDownButton、FlipView、MenuBar、MenuFlyout、NumberBox、PersonPicture、Pivot、RadioButtons、RadioMenuFlyoutItem、RatingControl、SplitButton、SplitView、TabView、TeachingTip、ToolTip、TwoPaneView |
+| Fluent 部分接入 | 21 | AutoSuggestBox、ComboBox、CommandBarFlyout、ContentDialog、DropDownButton、FlipView、MenuBar、MenuFlyout、NavigationView、NumberBox、PersonPicture、Pivot、RadioButtons、RadioMenuFlyoutItem、RatingControl、SplitButton、SplitView、TabView、TeachingTip、ToolTip、TwoPaneView |
 | 通用底座部分实现 | 4 | CheckBox、ProgressBar、ScrollViewer、Slider |
-| 尚未接入运行时 | 14 | 下列清单 |
+| 尚未接入运行时 | 13 | 下列清单 |
 | 完整 WinUI 2.3 兼容验收通过 | 0 | 当前接入期未进行最终统一验收 |
 
-剩余 14 组：AnimatedVisualPlayer、CalendarDatePicker、CalendarView、ColorPicker、DatePicker、NavigationView、ParallaxView、PullToRefresh、Repeater、ScrollBar、Scroller、SwipeControl、TimePicker、TreeView。此数不包含已接入组内部尚缺的 API、模板、主题、输入与辅助功能。
+剩余 13 组：AnimatedVisualPlayer、CalendarDatePicker、CalendarView、ColorPicker、DatePicker、ParallaxView、PullToRefresh、Repeater、ScrollBar、Scroller、SwipeControl、TimePicker、TreeView。此数不包含已接入组内部尚缺的 API、模板、主题、输入与辅助功能。
 
-Fluent 正式 XAML 控件类型现为 27，另有 Flyout/MenuFlyout/ToolTip/CommandBarFlyout/ContentDialog/TeachingTip 等 C++ 服务。完整按类型的历史 Gallery/API 清单仍待固定，不能将“14 个功能组”写成“仅剩 14 个控件”。
+Fluent 正式 XAML 控件类型现为 29，另有 Flyout/MenuFlyout/ToolTip/CommandBarFlyout/ContentDialog/TeachingTip 等 C++ 服务。完整按类型的历史 Gallery/API 清单仍待固定，不能将“13 个功能组”写成“仅剩 13 个控件”。
 
 | 范围 | 当前事实 |
 | --- | --- |

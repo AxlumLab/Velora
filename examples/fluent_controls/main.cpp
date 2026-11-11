@@ -24,6 +24,7 @@
 #include <velora/fluent/FluentPackage.hpp>
 #include <velora/fluent/MenuBar.hpp>
 #include <velora/fluent/MenuFlyout.hpp>
+#include <velora/fluent/NavigationView.hpp>
 #include <velora/fluent/NumberBox.hpp>
 #include <velora/fluent/PersonPicture.hpp>
 #include <velora/fluent/Pivot.hpp>
@@ -90,7 +91,9 @@ class FluentWindow final : public XamlWindow
                                   FlipView::registerType(ui),
                                   ComboBox::registerType(ui),
                                   RadioButtons::registerType(ui),
-                                  AutoSuggestBox::registerType(ui)})
+                                  AutoSuggestBox::registerType(ui),
+                                  NavigationView::registerType(ui),
+                                  NavigationViewItem::registerType(ui)})
             if (!error.empty())
                 throw std::runtime_error(error);
         Demo::FluentPage_component::Names names;
@@ -215,6 +218,32 @@ class FluentWindow final : public XamlWindow
             return item;
         };
         sidebar->setPane(textPane("Navigation"));
+        const auto navigation = std::dynamic_pointer_cast<NavigationView>(names.Navigation);
+        if (!navigation)
+            throw std::runtime_error("NavigationView factory mismatch");
+        const auto homeItem = createElement<NavigationViewItem>();
+        homeItem->setContent("Home");
+        homeItem->setIconGlyph("\xEE\xA0\x8F");
+        const auto documentsItem = createElement<NavigationViewItem>();
+        documentsItem->setContent("Documents");
+        documentsItem->setIconGlyph("\xEE\xA2\xA5");
+        navigation->setMenuItems({homeItem, documentsItem});
+        navigation->setSelectedItem(homeItem);
+        navigation->setContent(textPane("Home page content"));
+        const std::weak_ptr<NavigationView> weakNavigation = navigation;
+        navigation->addItemInvoked(
+            [this, weakNavigation](const NavigationItemInvokedEventArgs& args)
+            {
+                if (const auto view = weakNavigation.lock())
+                {
+                    const auto page = createElement(ElementKind::kTextBlock);
+                    page->setValue(*GetFramework().props().Text, args.item->content() + " page content");
+                    page->setValue(*GetFramework().props().Margin, Thickness{8, 8, 8, 8});
+                    view->setContent(page);
+                    m_controller.record("Navigation: " + args.item->content());
+                }
+            });
+        navigation->addBackRequested([this] { m_controller.record("Back requested"); });
         const auto pivot = std::dynamic_pointer_cast<Pivot>(names.Pages);
         const auto slides = std::dynamic_pointer_cast<FlipView>(names.Slides);
         if (!pivot || !slides)
@@ -419,7 +448,14 @@ class FluentWindow final : public XamlWindow
             ui.update(GetAppWindow()->getWidth(), GetAppWindow()->getHeight());
             if (previewPanels)
             {
-                if (previewPanels == 5)
+                if (previewPanels == 6)
+                {
+                    if (navigation->displayMode() != "Expanded" || !navigation->isPaneOpen() ||
+                        navigation->selectedItem() != homeItem || !homeItem->isSelected() ||
+                        !homeItem->isInTree() || !navigation->content()->isInTree())
+                        throw std::runtime_error("NavigationView startup failed");
+                }
+                else if (previewPanels == 5)
                 {
                     const auto editor = ui.templateChild(ui.tree().element(*search), "TextBox");
                     ui.focus(editor);
@@ -563,6 +599,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR arguments, int)
                   : args.find("--preview-pages") != std::string_view::npos       ? 3
                   : args.find("--preview-tabs") != std::string_view::npos        ? 4
                   : args.find("--preview-suggestions") != std::string_view::npos ? 5
+                  : args.find("--preview-navigation") != std::string_view::npos  ? 6
                                                                                  : 0);
     try
     {

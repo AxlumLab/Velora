@@ -21,6 +21,8 @@ velora_module(fluent
         velora/fluent/TabView.cpp
         velora/fluent/TabViewItem.cpp
         velora/fluent/AutoSuggestBox.cpp
+        velora/fluent/NavigationView.cpp
+        velora/fluent/NavigationViewItem.cpp
         velora/fluent/PaneLayout.cpp
         velora/fluent/SplitView.cpp
         velora/fluent/TwoPaneView.cpp

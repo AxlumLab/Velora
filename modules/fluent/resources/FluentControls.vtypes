@@ -1,4 +1,21 @@
 velora-xaml-types	1
+type	Velora.Fluent.NavigationView	UserControl
+property	IsPaneOpen	Boolean	NavigationView.IsPaneOpen	True
+property	PaneDisplayMode	String	NavigationView.PaneDisplayMode	Auto
+property	PaneTitle	String	NavigationView.PaneTitle	""
+property	CompactModeThresholdWidth	Double	NavigationView.CompactModeThresholdWidth	641
+property	ExpandedModeThresholdWidth	Double	NavigationView.ExpandedModeThresholdWidth	1008
+property	CompactPaneLength	Double	NavigationView.CompactPaneLength	48
+property	OpenPaneLength	Double	NavigationView.OpenPaneLength	320
+property	IsSettingsVisible	Boolean	NavigationView.IsSettingsVisible	True
+property	IsPaneToggleButtonVisible	Boolean	NavigationView.IsPaneToggleButtonVisible	True
+property	IsBackButtonVisible	String	NavigationView.IsBackButtonVisible	Auto
+property	IsBackEnabled	Boolean	NavigationView.IsBackEnabled	False
+end
+type	Velora.Fluent.NavigationViewItem	UserControl
+property	IconGlyph	String	NavigationViewItem.IconGlyph	""
+property	SelectsOnInvoked	Boolean	NavigationViewItem.SelectsOnInvoked	True
+end
 type	Velora.Fluent.AutoSuggestBox	UserControl
 property	Text	String	AutoSuggestBox.Text	""
 property	Header	String	AutoSuggestBox.Header	""

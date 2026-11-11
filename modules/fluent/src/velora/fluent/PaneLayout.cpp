@@ -22,7 +22,8 @@ PaneLayout::PaneLayout() : UIElement(ElementKind::kUserControl)
             if (p.id == paneProperty(0).id || p.id == paneProperty(1).id)
                 syncPanes();
             if (m_ui && (p.id == paneProperty(0).id || p.id == paneProperty(1).id ||
-                         p.name.starts_with("SplitView.") || p.name.starts_with("TwoPaneView.")))
+                         p.name.starts_with("SplitView.") || p.name.starts_with("TwoPaneView.") ||
+                         p.name.starts_with("NavigationView.")))
                 m_ui->tree().invalidateMeasure(m_element);
         });
 }
@@ -42,7 +43,8 @@ const PropertyDescriptor& PaneLayout::layoutProperty(std::string_view type, std:
     static PropertyRegistry registry;
     static const bool initialized = []
     {
-        for (const auto* type : {"Velora.Fluent.SplitView", "Velora.Fluent.TwoPaneView"})
+        for (const auto* type :
+             {"Velora.Fluent.SplitView", "Velora.Fluent.TwoPaneView", "Velora.Fluent.NavigationView"})
             for (const auto& p : paneDeclaration(type).properties)
             {
                 const SchemaProperty schema{p.name, p.kind, {}, p.defaultValue, kSchemaPaint};

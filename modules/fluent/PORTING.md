@@ -236,3 +236,13 @@ PageSelector.cpp 与编译模板 PageSelectorView.xaml 为正式 Pivot/FlipView 
 - 使用既有 Flyout 和滚动服务，新增 PopupOptions.takeFocus=false 保留编辑焦点，同时允许点击建议；非模态弹出可为编辑锚点保留命中穿透。列表项不参与 Tab 停靠，普通应用控件与编辑器继续共用原焦点、树和属性系统。
 - 视口首版最高 200 DIP，全部实现为实际按钮。尚无通知集合/ItemsSource/对象项、ItemTemplate/TextMemberPath、标准 QueryIcon、异步建议源与取消、虚拟化、键盘预选自动滚入、完整焦点离开策略、原圆角/主题状态/UIA。程序修改与建议事件重入、真实 IME、更新期间销毁和完整提交语义仍待统一验证。
 - Gallery 在 UserInput 回调中同步过滤一组示例字符串，--preview-suggestions 只确认列表打开、建议数与焦点保留，然后检查窗口启动/关闭；未新增或执行回归、ASan、截图验收。
+
+## NavigationView / NavigationViewItem 导航族（待统一验证）
+
+NavigationView.cpp、NavigationViewItem.cpp 与 NavigationViewChromeView/NavigationViewItemView 编译模板直接内化固定提交的 porting/NavigationView/NavigationView.cpp/.idl、NavigationViewItem.cpp/.idl 中自适应、强制关闭记忆、选择/调用与菜单呈现的首个切片。复用 PaneLayout 的实际对象 Content、布局/裁剪和内容环检查；保留 Microsoft MIT 来源。
+
+- 阈值沿用 width >= ExpandedModeThresholdWidth 和 width < CompactModeThresholdWidth；默认 1008/641，OpenPaneLength/CompactPaneLength 为 320/48。支持 Auto/Left/LeftCompact/LeftMinimal 及基础 Top 排列；模式实际排列后写入只读 DisplayMode。保留用户强制关闭标记，紧凑侧栏隐藏标签、保留 MDL2 图标，覆盖模式支持遮罩轻关闭/Escape。
+- NavigationViewItem 是原 UIElement，字符串 Content、IconGlyph、SelectsOnInvoked 属于同一依赖属性存储；只读 IsSelected 由父容器 SelectedItem 投影为呈现状态。父级 SelectedItem 使用实际对象依赖属性，setMenuItems 持有实际项；删除项清除选择，Settings 为独立实际项。内容由应用在 ItemInvoked 中切换，没有第二份导航页面运行时。
+- 项目调用、选择变化、模式变化、返回请求支持 C++ 订阅/退订，方向/Home/End 在当前菜单移动焦点。IsBackButtonVisible 的 Auto 暂按显示模式处理，不等同完整设备自适应契约；返回只发通知，不内置应用历史。图标使用系统 Segoe MDL2 Assets，IconGlyph 是首版字符串接口，完整 Icon 对象待补齐。
+- C++ 对象菜单/Content/SelectedItem 尚无完整集合和对象 XAML；子项 IsSelected 暂只读。缺层级、分隔线/页头、顶部溢出、Header/PaneHeader/PaneFooter/AutoSuggestBox 插槽、完整 PaneClosing/Opening/Closed 事件及取消、过渡动画/选中指示器、完整主题/RTL/UIA。数值先做有限正值校验，完整 coercion、焦点与重入/失败事务尚待完善。
+- Gallery 通过实际菜单项及应用回调切换内容，--preview-navigation 只检查初始模式/选择/对象挂载和窗口启动/关闭。首轮导航条带挂载使用 adopt 失败，已按编译组件实际父级改用 reparent；完整交互验收留到集成末尾，未新增或执行回归、ASan、截图测试。

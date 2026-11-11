@@ -103,6 +103,8 @@ Fluent 示例支持 `--preview-rating`：启动时加载 RatingControl 的编译
 
 `--preview-suggestions` 启动时打开 AutoSuggestBox 建议列表，确认三条建议以及编辑器焦点保留。普通启动在搜索框键入以运行示例的同步筛选；当前只检查窗口启动/关闭，完整输入、提交、列表更新与 IME 留到统一验收。
 
+`--preview-navigation` 启动时确认 NavigationView 为 Expanded、Home 项已选中及内容实际挂载。示例使用较小的自适应阈值便于展示；普通启动通过菜单/设置项调用事件切换内容，返回按钮发布示例通知。当前只做启动/关闭，模式切换和菜单交互留到统一验收。
+
 - Android 没有完整平台实现、NDK preset 或 Gradle 宿主。本包不能直接构建出 Android 产品。
 - 当前模块默认 STATIC。插件共享运行时、导出配置和加载器仍是设计。
 - 新环境必须从干净构建目录开始，不复用旧对象布局产生的缓存。具体已跑/未跑结果见 STATUS.md。
