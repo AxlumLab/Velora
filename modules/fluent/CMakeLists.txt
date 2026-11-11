@@ -15,6 +15,7 @@ velora_module(fluent
         velora/fluent/AppBarButton.cpp
         velora/fluent/CommandBar.cpp
         velora/fluent/CommandBarFlyout.cpp
+        velora/fluent/ChoiceControl.cpp
         velora/fluent/PaneLayout.cpp
         velora/fluent/SplitView.cpp
         velora/fluent/TwoPaneView.cpp

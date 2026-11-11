@@ -6,6 +6,10 @@
             <fluent:MenuBar x:Name="ApplicationMenu"/>
             <fluent:CommandBar x:Name="Commands"/>
             <Button x:Name="ContextCommands" Content="Open command flyout" HorizontalAlignment="Left"/>
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="20">
+                <fluent:ComboBox x:Name="ThemeChoice" Header="Theme" PlaceholderText="Choose a theme" SelectedIndex="1"/>
+                <fluent:RadioButtons x:Name="DensityChoice" Grid.Column="1" Header="Density" MaxColumns="2" SelectedIndex="0"/>
+            </Grid>
             <fluent:RatingControl x:Name="Rating" Value="3.5" PlaceholderValue="2.5" Caption="Rate this item"/>
             <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
                 <fluent:SplitView x:Name="Sidebar" Height="110" DisplayMode="CompactInline"

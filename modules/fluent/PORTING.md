@@ -186,3 +186,13 @@ RatingControl 内化固定提交 `porting/RatingControl/RatingControl.cpp/.idl/.
 - 窗口内 Flyout 负责定位、轻关闭、Escape、Tab 范围和焦点恢复。主命令执行后保持面板，次命令 Click 关闭；附带 Flyout 的按钮不由此 Click 关闭处理器额外关闭。More 控制次区显示，折叠前将次区焦点交还 More。左右/上下/Home/End 导航跳过分隔线、隐藏项与禁用项。
 - 事件订阅弱引用服务，关闭清除订阅和借用宿主，集合保留实际对象供重开。默认 Standard 打开展开全部次命令；尚无 Transient 模式、TextCommandBarFlyout、可观察集合/集合 XAML、程序修改勾选状态时关闭、动态溢出、嵌套/窗口外弹出、RTL、完整主题动画/阴影/UIA。面板使用现有 Flyout 外框资源，宽度受窗口限制。
 - Gallery 增加可点击入口和 --open-commandflyout 启动模式；只编译及简单启动/关闭。键盘切换、命令执行顺序、重复打开、集合修改与销毁重入留待统一验收，不能据此认定完整兼容。
+
+## ComboBox / RadioButtons 选择族（待统一验证）
+
+正式源码为 ChoiceControl.cpp、ComboBox.hpp、RadioButtons.hpp，模板编译为 ComboBoxView/RadioButtonsView。RadioButtons 参考固定提交的 RadioButtons.cpp/.idl/.xaml 和 ColumnMajorUniformToLargestGridLayout.cpp，保留单选、列优先和多余项优先分配前列的规则；系统 ComboBox 参考 porting/ComboBox/ComboBox_themeresources.xaml，行为由 Velora 实现，不声称上游包含其系统 C++。派生文件保留 MIT 来源。
+
+- 两个正式 XAML 类型共用字符串项集合与 SelectedIndex 实际依赖属性。setItems 替换整个集合，保留有效索引，越界清空；SelectedItem 目前仅派生 getter，SelectionChanged 是可退订的依赖属性通知，不是完整上游事件参数。Header 首版仅字符串。ContainerFromIndex 返回实际实现容器，ComboBox 关闭时返回空。
+- ComboBox 的 PlaceholderText 和 IsDropDownOpen 是实际属性。沿用 MenuFlyout 定位、取消、提交关闭与焦点服务；初始焦点落在已选项，关闭状态下方向/Home/End 改变选择。箭头使用系统 Segoe MDL2 Assets。当前列表项使用 MenuFlyoutItem，尚非完整 ComboBoxItem 模板或选择预览/提交模型。
+- RadioButtons 使用底座 RadioButton，独立组名避免不同控件互斥，SelectedIndex 驱动勾选和组内 Tab 停靠。MaxColumns 限为 1..1000；上下按索引、左右按相邻列同行导航，Ctrl 移动焦点而不改选择。列数及余项分配沿用上游规则；尺寸采用当前 Grid 星号列/Auto 行，尚非最大子项统一尺寸的原布局器。
+- 无 ItemsSource/可观察集合、Items 属性元素、任意对象项、ItemTemplate/HeaderTemplate、可写 SelectedItem、可编辑 ComboBox、键入搜索、长列表滚动/虚拟化、完整主题/高对比度/UIA/RTL/游戏手柄。容器外部修改、禁用项完整导航、状态重入及卸载仍待完善和统一验收；集合替换时拒绝当前重入或打开的弹出列表。
+- Gallery 的 --preview-choices 只检查初始选择、下拉打开和窗口启动/关闭。未新增或执行回归、ASan、截图测试；完整移植验收未完成。

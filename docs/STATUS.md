@@ -179,20 +179,30 @@
 
 尚未实现 Transient/选择浮窗模式、TextCommandBarFlyout、可观察集合和集合 XAML、展开动画/阴影、RTL、完整 UIA、窗口外/嵌套弹出及完整键盘/生命周期验收。当前主命令不自动溢出，宽度受窗口约束；次命令关闭接在 Click，尚未覆盖程序设置 Checked/Unchecked 的上游关闭契约。该服务不增加正式 XAML 类型数。
 
+### 后续推进：ComboBox 与 RadioButtons（2026-11-11）
+
+本批新增 ComboBox 和 RadioButtons 两个正式 XAML 类型，共用 ChoiceControl 的字符串项集合、SelectedIndex 实际依赖属性、Header、类型化访问和可退订 SelectionChanged。SelectedItem 当前是从索引派生的只读字符串 getter，不额外保存选择副本；ContainerFromIndex 返回当前已实现的实际容器。
+
+ComboBox 接通 PlaceholderText、IsDropDownOpen，复用 MenuFlyout/Popup；点击或 F4/Alt+Down/Space/Enter 打开，初始焦点定位到已选项，选择后关闭，Escape 取消沿用弹出层。RadioButtons 使用实际 RadioButton 和独立组名，MaxColumns 控制列优先、余项分配；SelectedIndex 更新勾选和组内 Tab 停靠项，上下按项导航、左右按相邻列同行导航，Ctrl 保留选择只移动焦点。
+
+当前只支持 C++ setItems(vector<string>)，集合替换保留有效索引、越界清为 -1。XAML 在集合到达前设置的索引暂保留，设置项后校验。完整 ItemsSource/通知集合、Items 属性元素、ItemTemplate、可写 SelectedItem、可编辑 ComboBox/搜索、长列表滚动/虚拟化、完整主题/UIA/游戏手柄及重入生命周期未完成；RadioButtons 的底座 Grid 尚非上游按最大子项统一尺寸的布局器。
+
+本批 Windows Debug Gallery 构建通过；`--preview-choices` 确认 ComboBox 打开、初始选择 Light，以及 RadioButtons 初始选择 Compact，窗口可见并关闭、退出码 0。证据为 `build/dev/choices-final-build.log`、`build/dev/choices-startup.json`。未新增或运行回归、ASan、截图验收，键盘/指针/绑定及生命周期仍待统一验证。
+
 ### 控件接入数量快照（2026-11-11）
 
 以 StageFluentSources.py 的 49 个源码区域为范围，扣除 Collections、Common、CommonStyles、Effects、IconSource、inc、Interactions、LayoutPanel、Lights、Materials、ResourceHelper 这 11 个支撑区域，跟踪 38 个功能组。此口径不是最终 WinUI 2.3 正式公开类型清单；一个功能组可能包含多个控件，experimental 条件仍需审计。额外系统控件及 Button/TextBox 等通用底座不能用此数推算完整总数。
 
 | 接入状态 | 功能组数 | 范围 |
 | --- | --- | --- |
-| Fluent 部分接入 | 12 | CommandBarFlyout、DropDownButton、MenuBar、MenuFlyout、NumberBox、PersonPicture、RadioMenuFlyoutItem、RatingControl、SplitButton、SplitView、ToolTip、TwoPaneView |
+| Fluent 部分接入 | 14 | ComboBox、CommandBarFlyout、DropDownButton、MenuBar、MenuFlyout、NumberBox、PersonPicture、RadioButtons、RadioMenuFlyoutItem、RatingControl、SplitButton、SplitView、ToolTip、TwoPaneView |
 | 通用底座部分实现 | 4 | CheckBox、ProgressBar、ScrollViewer、Slider |
-| 尚未接入运行时 | 22 | 下列清单 |
+| 尚未接入运行时 | 20 | 下列清单 |
 | 完整 WinUI 2.3 兼容验收通过 | 0 | 当前接入期未进行最终统一验收 |
 
-剩余 22 组：AnimatedVisualPlayer、AutoSuggestBox、CalendarDatePicker、CalendarView、ColorPicker、ComboBox、ContentDialog、DatePicker、FlipView、NavigationView、ParallaxView、Pivot、PullToRefresh、RadioButtons、Repeater、ScrollBar、Scroller、SwipeControl、TabView、TeachingTip、TimePicker、TreeView。此数不包含已接入组内部尚缺的 API、模板、主题、输入与辅助功能。
+剩余 20 组：AnimatedVisualPlayer、AutoSuggestBox、CalendarDatePicker、CalendarView、ColorPicker、ContentDialog、DatePicker、FlipView、NavigationView、ParallaxView、Pivot、PullToRefresh、Repeater、ScrollBar、Scroller、SwipeControl、TabView、TeachingTip、TimePicker、TreeView。此数不包含已接入组内部尚缺的 API、模板、主题、输入与辅助功能。
 
-Fluent 正式 XAML 控件类型现为 20，另有 Flyout/MenuFlyout/ToolTip/CommandBarFlyout 等 C++ 服务。完整按类型的历史 Gallery/API 清单仍待固定，不能将“22 个功能组”写成“仅剩 22 个控件”。
+Fluent 正式 XAML 控件类型现为 22，另有 Flyout/MenuFlyout/ToolTip/CommandBarFlyout 等 C++ 服务。完整按类型的历史 Gallery/API 清单仍待固定，不能将“20 个功能组”写成“仅剩 20 个控件”。
 
 | 范围 | 当前事实 |
 | --- | --- |

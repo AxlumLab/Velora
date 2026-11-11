@@ -93,6 +93,8 @@ Fluent 示例支持 `--preview-rating`：启动时加载 RatingControl 的编译
 
 `--open-commandflyout` 启动时打开主/次命令面板并确认实际命令对象已挂载；普通启动可点击 Open command flyout 按钮。当前只做窗口出现和关闭检查，完整输入验收留到最后。
 
+`--preview-choices` 启动时打开 ComboBox，确认下拉状态和两个选择控件的初始项。Items 在示例 C++ 中接入，XAML 创建控件并设置初始 SelectedIndex。当前只做简单启动和关闭，不执行完整选择交互验收。
+
 - Android 没有完整平台实现、NDK preset 或 Gradle 宿主。本包不能直接构建出 Android 产品。
 - 当前模块默认 STATIC。插件共享运行时、导出配置和加载器仍是设计。
 - 新环境必须从干净构建目录开始，不复用旧对象布局产生的缓存。具体已跑/未跑结果见 STATUS.md。

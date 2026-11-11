@@ -1,4 +1,15 @@
 velora-xaml-types	1
+type	Velora.Fluent.ComboBox	UserControl
+property	SelectedIndex	Integer	ComboBox.SelectedIndex	-1
+property	Header	String	ComboBox.Header	""
+property	PlaceholderText	String	ComboBox.PlaceholderText	""
+property	IsDropDownOpen	Boolean	ComboBox.IsDropDownOpen	False
+end
+type	Velora.Fluent.RadioButtons	UserControl
+property	SelectedIndex	Integer	RadioButtons.SelectedIndex	-1
+property	Header	String	RadioButtons.Header	""
+property	MaxColumns	Integer	RadioButtons.MaxColumns	1
+end
 type	Velora.Fluent.RatingControl	UserControl
 property	Caption	String	RatingControl.Caption	""
 property	InitialSetValue	Integer	RatingControl.InitialSetValue	1
