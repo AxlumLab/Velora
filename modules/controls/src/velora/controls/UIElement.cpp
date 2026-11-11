@@ -1,3 +1,5 @@
+#include <unordered_set>
+#include <utility>
 #include <velora/controls/BuiltinElements.hpp>
 #include <velora/controls/LayoutContext.hpp>
 
@@ -9,6 +11,33 @@ UIElement::UIElement(std::optional<ElementKind> kind) noexcept : m_kind(kind)
 }
 
 UIElement::~UIElement() = default;
+
+std::vector<std::shared_ptr<UIElement>> UIElement::ownedContentObjects() const
+{
+    return {};
+}
+
+bool UIElement::containsOwnedContent(const UIElement& object) const
+{
+    if (this == &object)
+        return true;
+    auto pending = ownedContentObjects();
+    std::unordered_set<const UIElement*> visited{this};
+    while (!pending.empty())
+    {
+        const auto current = std::move(pending.back());
+        pending.pop_back();
+        if (!current)
+            continue;
+        if (current.get() == &object)
+            return true;
+        if (!visited.insert(current.get()).second)
+            continue;
+        const auto children = current->ownedContentObjects();
+        pending.insert(pending.end(), children.begin(), children.end());
+    }
+    return false;
+}
 
 void UIElement::onAttached(Framework&, ElementId)
 {

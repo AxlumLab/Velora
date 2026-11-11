@@ -17,6 +17,7 @@ velora_module(fluent
         velora/fluent/CommandBarFlyout.cpp
         velora/fluent/ChoiceControl.cpp
         velora/fluent/PopupPanel.cpp
+        velora/fluent/PageSelector.cpp
         velora/fluent/PaneLayout.cpp
         velora/fluent/SplitView.cpp
         velora/fluent/TwoPaneView.cpp

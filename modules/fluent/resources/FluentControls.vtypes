@@ -1,4 +1,12 @@
 velora-xaml-types	1
+type	Velora.Fluent.Pivot	UserControl
+property	SelectedIndex	Integer	Pivot.SelectedIndex	-1
+property	Title	String	Pivot.Title	""
+property	IsLocked	Boolean	Pivot.IsLocked	False
+end
+type	Velora.Fluent.FlipView	UserControl
+property	SelectedIndex	Integer	FlipView.SelectedIndex	-1
+end
 type	Velora.Fluent.ComboBox	UserControl
 property	SelectedIndex	Integer	ComboBox.SelectedIndex	-1
 property	Header	String	ComboBox.Header	""

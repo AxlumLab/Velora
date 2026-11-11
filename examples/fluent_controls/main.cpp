@@ -17,11 +17,13 @@
 #include <velora/fluent/CommandBarFlyout.hpp>
 #include <velora/fluent/ContentDialog.hpp>
 #include <velora/fluent/DropDownButton.hpp>
+#include <velora/fluent/FlipView.hpp>
 #include <velora/fluent/FluentPackage.hpp>
 #include <velora/fluent/MenuBar.hpp>
 #include <velora/fluent/MenuFlyout.hpp>
 #include <velora/fluent/NumberBox.hpp>
 #include <velora/fluent/PersonPicture.hpp>
+#include <velora/fluent/Pivot.hpp>
 #include <velora/fluent/RadioButtons.hpp>
 #include <velora/fluent/RadioMenuFlyoutItem.hpp>
 #include <velora/fluent/RatingControl.hpp>
@@ -78,6 +80,8 @@ class FluentWindow final : public XamlWindow
                                   SplitView::registerType(ui),
                                   TwoPaneView::registerType(ui),
                                   RatingControl::registerType(ui),
+                                  Pivot::registerType(ui),
+                                  FlipView::registerType(ui),
                                   ComboBox::registerType(ui),
                                   RadioButtons::registerType(ui)})
             if (!error.empty())
@@ -170,6 +174,20 @@ class FluentWindow final : public XamlWindow
             return item;
         };
         sidebar->setPane(textPane("Navigation"));
+        const auto pivot = std::dynamic_pointer_cast<Pivot>(names.Pages);
+        const auto slides = std::dynamic_pointer_cast<FlipView>(names.Slides);
+        if (!pivot || !slides)
+            throw std::runtime_error("Page selector factory mismatch");
+        const auto notes = createElement(ElementKind::kTextBox);
+        notes->setValue(*ui.props().Text, "This editor keeps its state when switching pages.");
+        pivot->setPages({{"Overview", textPane("Workspace overview")}, {"Notes", notes}});
+        slides->setPages({{"First", textPane("First slide")},
+                          {"Second", textPane("Second slide")},
+                          {"Third", textPane("Third slide")}});
+        pivot->addSelectionChanged([this](i32, i32 index)
+                                   { m_controller.record("Pivot page: " + std::to_string(index)); });
+        slides->addSelectionChanged([this](i32, i32 index)
+                                    { m_controller.record("FlipView page: " + std::to_string(index)); });
         sidebar->setContent(textPane("SplitView content"));
         adaptive->setPane1(textPane("Pane 1"));
         adaptive->setPane2(textPane("Pane 2"));
@@ -321,7 +339,13 @@ class FluentWindow final : public XamlWindow
             ui.update(GetAppWindow()->getWidth(), GetAppWindow()->getHeight());
             if (previewPanels)
             {
-                if (previewPanels == 1)
+                if (previewPanels == 3)
+                {
+                    if (pivot->selectedItem() != notes || !notes->isInTree() ||
+                        slides->selectedIndex() != 0 || !slides->selectedItem()->isInTree())
+                        throw std::runtime_error("Page selector startup failed");
+                }
+                else if (previewPanels == 1)
                 {
                     if (!m_dialog->showAt(ui, dialogAnchor))
                         throw std::runtime_error("ContentDialog startup: " + m_dialog->lastError());
@@ -441,6 +465,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR arguments, int)
                   args.find("--preview-choices") != std::string_view::npos,
                   args.find("--open-dialog") != std::string_view::npos        ? 1
                   : args.find("--open-teachingtip") != std::string_view::npos ? 2
+                  : args.find("--preview-pages") != std::string_view::npos    ? 3
                                                                               : 0);
     try
     {

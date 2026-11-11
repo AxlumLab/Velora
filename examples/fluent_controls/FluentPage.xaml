@@ -15,6 +15,10 @@
                 <fluent:RadioButtons x:Name="DensityChoice" Grid.Column="1" Header="Density" MaxColumns="2" SelectedIndex="0"/>
             </Grid>
             <fluent:RatingControl x:Name="Rating" Value="3.5" PlaceholderValue="2.5" Caption="Rate this item"/>
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="20">
+                <fluent:Pivot x:Name="Pages" Title="Workspace" SelectedIndex="1" Height="150"/>
+                <fluent:FlipView x:Name="Slides" SelectedIndex="0" Height="150"/>
+            </Grid>
             <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
                 <fluent:SplitView x:Name="Sidebar" Height="110" DisplayMode="CompactInline"
                                   IsPaneOpen="True" OpenPaneLength="100" CompactPaneLength="40"/>

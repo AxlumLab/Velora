@@ -70,6 +70,10 @@ class UIElement : public DependencyObject
     // their stable declared class name; it must not change while the object is hosted.
     [[nodiscard]] virtual std::string className() const;
     [[nodiscard]] TypeId typeId() const;
+    // Objects retained by content properties/collections, including unmounted content.
+    // Overrides must return the actual owned objects without mutating state.
+    [[nodiscard]] virtual std::vector<std::shared_ptr<UIElement>> ownedContentObjects() const;
+    [[nodiscard]] bool containsOwnedContent(const UIElement& object) const;
 
     // FrameworkElement.MeasureOverride/ArrangeOverride. The default lays out the first child in the
     // whole content area (Border, Page, UserControl, unknown elements).

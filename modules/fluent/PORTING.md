@@ -206,3 +206,13 @@ RatingControl 内化固定提交 `porting/RatingControl/RatingControl.cpp/.idl/.
 - 按钮和 Closing 事件参数允许取消，token 订阅支持独立退订。普通 hide、按钮、Escape 和轻关闭走关闭前通知；宿主/锚点销毁及被另一个弹出层替换属于强制关闭，不等待取消。Closed 发布原因与结果并清理呈现器事件。完整 WinUI 事件参数、异步 deferral/ShowAsync、复杂重入与线程销毁仍待完善。
 - 复用现有 Flyout 外框和单弹出槽，尚无尾巴、完整 PreferredPlacement/HeroContent/IconSource、任意对象内容、正式控件 XAML/对象属性、完整样式/主题动画/阴影/模态暗色遮罩、UIA。共享模板首版固定宽度 360；不能将此实现计作完整 ContentDialog 或 TeachingTip。
 - Gallery 增加两个按钮和 --open-dialog / --open-teachingtip 启动入口；只编译及简单启动关闭，完整交互/生命周期验收留到集成末尾。
+
+## Pivot / FlipView 分页族（待统一验证）
+
+PageSelector.cpp 与编译模板 PageSelectorView.xaml 为正式 Pivot/FlipView 提供共享页面挂载。固定提交的 porting/Pivot/Pivot_themeresources.xaml、porting/FlipView/FlipView_themeresources.xaml 与 FlipViewItem_themeresources.xaml 是这两个系统控件的主题输入，原目录没有其完整系统 C++ 逻辑；本批逻辑由 Velora 实现。派生文件保留 Microsoft MIT 来源。
+
+- 两个正式 XAML 类型提供实际 SelectedIndex 属性，Pivot 另有字符串 Title/IsLocked。C++ setPages 接受页头和实际 UIElement，SelectedItem 从同一索引派生；SelectionChanged 是可退订的有效值通知。页面对象没有复制或投影，当前全部挂载，独立宿主的 Visibility 控制显示并保留内容状态。
+- Pivot 由实际 Button 呈现页头，点击、左右/Home/End 和 Ctrl+Tab/Shift+Ctrl+Tab 切换；IsLocked 限制用户操作。FlipView 前后按钮使用 Segoe MDL2 Assets，边界禁用；在控件/导航按钮获得焦点时支持方向/Home/End，不抢占页面编辑控件的方向键。
+- 隐藏页清除焦点和捕获；选中页头保留组内 Tab 停靠。内容所有权检查提升为 UIElement.ownedContentObjects/containsOwnedContent，PaneLayout 与 PageSelector 都暴露原内容，接受内容前拒绝跨两族引用环、重复内容、重叠页面所有权和外部已挂载对象。自定义内容容器必须实现该枚举，检查不是另一套元素树。
+- 集合替换会重新挂载页面，首版没有通知集合/ItemsSource、集合 XAML、完整 PivotItem/FlipViewItem 元数据和模板、可写 SelectedItem、虚拟化/回收、滑动/触摸动画、RTL、页头滚动/溢出、完整主题/UIA。失败后的旧页面恢复和复杂回调重入尚未提供完整事务契约。
+- Gallery 的 --preview-pages 仅确认编译 XAML 初始选择和实际内容挂载，然后检查窗口出现/关闭。完整页面切换、编辑状态保持、嵌套所有权、绑定和生命周期统一留到集成末尾验证；不能将本批计作完整兼容。

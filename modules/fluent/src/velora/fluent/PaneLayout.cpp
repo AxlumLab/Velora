@@ -3,7 +3,6 @@
 #include "FluentTypes.hpp"
 #include <algorithm>
 #include <stdexcept>
-#include <unordered_set>
 #include <utility>
 #include <velora/controls/ElementFactory.hpp>
 #include <velora/controls/LayoutContext.hpp>
@@ -79,6 +78,14 @@ std::shared_ptr<UIElement> PaneLayout::paneObject(usize index) const
     const auto& ref = value.asObject();
     return {ref.owner, static_cast<UIElement*>(ref.object)};
 }
+std::vector<std::shared_ptr<UIElement>> PaneLayout::ownedContentObjects() const
+{
+    std::vector<std::shared_ptr<UIElement>> result;
+    for (usize slot = 0; slot < 2; ++slot)
+        if (auto item = paneObject(slot))
+            result.push_back(std::move(item));
+    return result;
+}
 PropertySetResult PaneLayout::setPaneObject(usize index, std::shared_ptr<UIElement> value)
 {
     return setValue(paneProperty(index), ObjectRef::share<UIElement>(std::move(value)));
@@ -103,21 +110,8 @@ bool PaneLayout::validatePropertyValue(const PropertyDescriptor& p, const Proper
         const auto* item = static_cast<UIElement*>(ref.object);
         if (item == this || !item->isOwnerThread() || item == paneObject(1 - index).get())
             return false;
-        std::vector<const UIElement*> pending{item};
-        std::unordered_set<const UIElement*> visited;
-        while (!pending.empty())
-        {
-            const auto* current = pending.back();
-            pending.pop_back();
-            if (current == this)
-                return false;
-            if (!visited.insert(current).second)
-                continue;
-            if (const auto* layout = dynamic_cast<const PaneLayout*>(current))
-                for (usize slot = 0; slot < 2; ++slot)
-                    if (const auto child = layout->paneObject(slot))
-                        pending.push_back(child.get());
-        }
+        if (item->containsOwnedContent(*this))
+            return false;
         if (item->isInTree())
             return m_ui && m_ui->tree().element(*item) == m_items[index];
         return true;

@@ -25,6 +25,7 @@ class PaneLayout : public UIElement
   public:
     void onAttached(Framework&, ElementId) override;
     void onDetached() noexcept override;
+    std::vector<std::shared_ptr<UIElement>> ownedContentObjects() const override;
     Size measureOverride(LayoutContext&, ElementId, const MeasureInput&) override;
     void arrangeOverride(LayoutContext&, ElementId, Box, const std::vector<ElementId>&) override;
 
