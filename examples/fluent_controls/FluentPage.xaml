@@ -5,6 +5,7 @@
         <StackPanel Margin="24" Spacing="20">
             <fluent:MenuBar x:Name="ApplicationMenu"/>
             <fluent:CommandBar x:Name="Commands"/>
+            <Button x:Name="ContextCommands" Content="Open command flyout" HorizontalAlignment="Left"/>
             <fluent:RatingControl x:Name="Rating" Value="3.5" PlaceholderValue="2.5" Caption="Rate this item"/>
             <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
                 <fluent:SplitView x:Name="Sidebar" Height="110" DisplayMode="CompactInline"

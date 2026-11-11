@@ -10,7 +10,7 @@ MenuBar/MenuBarItem、AppBarButton/AppBarToggleButton 和 CommandBar/AppBarSepar
 
 ## WinUI 2.3 完整兼容与控件移植执行原则（2026-11-09）
 
-SplitView/TwoPaneView 已接通内容布局，本批继续接通 RatingControl 与 ToolTip，复用实际属性、编译模板和弹出层，补充评分输入与不抢焦点的提示模式。仅编译和启动；完整主题/事件/动画、提示计时与附加 XAML、多显示区域仍待补齐。进度按 STATUS.md 的 38 个功能组统计：23 组未接入、15 组部分实现；不是正式公开控件类型总数，也不包含已接入组内的兼容缺口。
+SplitView/TwoPaneView、RatingControl 与 ToolTip 已部分接通，本批继续接入 CommandBarFlyout，将实际 AppBar 命令对象组成主/次命令面板，复用弹出层和焦点服务。仅编译和启动；完整主题/事件/动画、可观察集合及附加 XAML、多显示区域仍待补齐。进度按 STATUS.md 的 38 个功能组统计：22 组未接入、16 组部分实现；不是正式公开控件类型总数，也不包含已接入组内的兼容缺口。
 
 用户明确要求完整覆盖 WinUI 2.3，并移植其控件逻辑代码。目标包括控件属性/事件语义、布局、模板、资源、视觉状态、输入、焦点、辅助功能与生命周期；不能仅用 Gallery 截图或同名类验收。沿用普通 C++23 对象模型，不恢复旧对象 ABI；既有 C++/WinRT 源码和二进制直接兼容不属于已承诺能力。
 

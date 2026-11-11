@@ -13,6 +13,7 @@
 #include <velora/controls/ElementFactory.hpp>
 #include <velora/fluent/AppBarButton.hpp>
 #include <velora/fluent/CommandBar.hpp>
+#include <velora/fluent/CommandBarFlyout.hpp>
 #include <velora/fluent/DropDownButton.hpp>
 #include <velora/fluent/FluentPackage.hpp>
 #include <velora/fluent/MenuBar.hpp>
@@ -33,7 +34,7 @@ class FluentWindow final : public XamlWindow
 {
   public:
     explicit FluentWindow(XamlApplication& app, bool previewMenu, bool previewMenuBar, bool previewCommands,
-                          bool previewPanes, bool previewRating)
+                          bool previewPanes, bool previewRating, bool previewCommandFlyout)
         : XamlWindow(app)
     {
         std::array<wchar_t, 32768> path{};
@@ -71,6 +72,29 @@ class FluentWindow final : public XamlWindow
             throw std::runtime_error(loaded.error);
         m_controller.setPicture(std::dynamic_pointer_cast<PersonPicture>(names.Avatar));
         m_controller.setStatusElement(names.Status);
+        m_commandFlyout = std::make_shared<CommandBarFlyout>();
+        const auto copy = createElement<AppBarButton>();
+        copy->setLabel("Copy");
+        copy->setIconGlyph("\xEE\xA3\x88");
+        copy->setCommand([this] { m_controller.record("Copy command invoked"); });
+        m_commandFlyout->appendPrimary(copy);
+        const auto flyoutPin = createElement<AppBarToggleButton>();
+        flyoutPin->setLabel("Pin");
+        flyoutPin->setIconGlyph("\xEE\x9C\x98");
+        m_commandFlyout->appendPrimary(flyoutPin);
+        const auto share = createElement<AppBarButton>();
+        share->setLabel("Share");
+        share->setIconGlyph("\xEE\x9C\xAD");
+        share->setCommand([this] { m_controller.record("Share command invoked"); });
+        m_commandFlyout->appendSecondary(share);
+        m_commandFlyout->appendSecondary(createElement<AppBarSeparator>());
+        const auto favorite = createElement<AppBarToggleButton>();
+        favorite->setLabel("Favorite");
+        favorite->setIconGlyph("\xEE\x9C\xB4");
+        m_commandFlyout->appendSecondary(favorite);
+        const auto commandAnchor = ui.tree().element(*names.ContextCommands);
+        ui.on(commandAnchor, ui.events().Click,
+              [this, commandAnchor] { m_commandFlyout->showAt(GetFramework(), commandAnchor); });
         const auto rating = std::dynamic_pointer_cast<RatingControl>(names.Rating);
         if (!rating)
             throw std::runtime_error("RatingControl factory mismatch");
@@ -236,10 +260,17 @@ class FluentWindow final : public XamlWindow
               });
         m_page = ui.tree().element(*loaded.root);
         SetRoot(m_page);
-        if (previewMenu || previewMenuBar || previewCommands || previewPanes || previewRating)
+        if (previewMenu || previewMenuBar || previewCommands || previewPanes || previewRating ||
+            previewCommandFlyout)
         {
             ui.update(GetAppWindow()->getWidth(), GetAppWindow()->getHeight());
-            if (previewRating)
+            if (previewCommandFlyout)
+            {
+                if (!m_commandFlyout->showAt(ui, commandAnchor) || !copy->isInTree() || !favorite->isInTree())
+                    throw std::runtime_error("CommandBarFlyout startup failed: " +
+                                             m_commandFlyout->lastError());
+            }
+            else if (previewRating)
             {
                 const auto id = ui.tree().element(*rating);
                 ui.focus(id);
@@ -286,21 +317,23 @@ class FluentWindow final : public XamlWindow
     Demo::FluentPage m_controller;
     ElementId m_page = 0;
     std::shared_ptr<ToolTip> m_toolTip;
+    std::shared_ptr<CommandBarFlyout> m_commandFlyout;
 };
 
 class FluentApp final : public XamlApplication
 {
   public:
     explicit FluentApp(bool previewMenu, bool previewMenuBar, bool previewCommands, bool previewPanes,
-                       bool previewRating)
+                       bool previewRating, bool previewCommandFlyout)
         : m_previewMenu(previewMenu), m_previewMenuBar(previewMenuBar), m_previewCommands(previewCommands),
-          m_previewPanes(previewPanes), m_previewRating(previewRating)
+          m_previewPanes(previewPanes), m_previewRating(previewRating),
+          m_previewCommandFlyout(previewCommandFlyout)
     {
     }
     void OnLaunched() override
     {
         m_window = std::make_unique<FluentWindow>(*this, m_previewMenu, m_previewMenuBar, m_previewCommands,
-                                                  m_previewPanes, m_previewRating);
+                                                  m_previewPanes, m_previewRating, m_previewCommandFlyout);
         m_window->Show();
     }
 
@@ -310,6 +343,7 @@ class FluentApp final : public XamlApplication
     bool m_previewCommands = false;
     bool m_previewPanes = false;
     bool m_previewRating = false;
+    bool m_previewCommandFlyout = false;
     std::unique_ptr<FluentWindow> m_window;
 };
 
@@ -320,7 +354,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR arguments, int)
     const bool previewCommands = args.find("--open-commandbar") != std::string_view::npos;
     FluentApp app(!previewMenuBar && args.find("--open-menu") != std::string_view::npos, previewMenuBar,
                   previewCommands, args.find("--preview-panes") != std::string_view::npos,
-                  args.find("--preview-rating") != std::string_view::npos);
+                  args.find("--preview-rating") != std::string_view::npos,
+                  args.find("--open-commandflyout") != std::string_view::npos);
     try
     {
         return app.Run();

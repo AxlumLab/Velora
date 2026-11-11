@@ -30,6 +30,7 @@ class AppBarButton : public FlyoutButton
 
   private:
     friend class CommandBar;
+    friend class CommandBarFlyout;
     void setOverflowMode(bool value);
 };
 class AppBarToggleButton final : public AppBarButton

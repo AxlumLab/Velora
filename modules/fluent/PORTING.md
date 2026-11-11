@@ -177,3 +177,12 @@ RatingControl 内化固定提交 `porting/RatingControl/RatingControl.cpp/.idl/.
 - ToolTip 是共享持有的 C++ 服务，Content 是字符串依赖属性；通过 attach/detach 绑定原锚点，弱订阅悬停和移除。提示沿用现有 Flyout 呈现器及单窗口弹出槽，新增 passive 模式保留焦点、跳过命中、排除 Tab 遍历。按下/键盘/滚轮关闭后继续输入；已有交互弹出层时不显示提示。
 - 当前悬停立即显示，仅接收底座已跟踪的 IsPointerOver；没有延迟/自动消失、键盘焦点触发、ToolTipService 附加 XAML、任意内容或完整 Placement。外观仍沿用 Flyout 的容器间距与资源，多弹出层共存和完整主题待补齐。
 - Gallery 的 --preview-rating 只确认初值、提示保留焦点、窗口启动及关闭。评分交互、绑定、重入、卸载和主题等完整验证留到集成末尾；构建成功不代表完整兼容。
+
+## CommandBarFlyout 标准命令面板（待统一验证）
+
+正式服务 `CommandBarFlyout` 与 `Controls/CommandBarFlyoutView.xaml` 内化固定提交的 `porting/CommandBarFlyout/CommandBarFlyout.cpp`、`CommandBarFlyoutCommandBar.cpp` 和对应模板的主/次命令、Standard 初始展开及次命令关闭逻辑。保留 Microsoft MIT 版权；普通 C++ 对象替代 WinRT 集合和宿主，未引入上游激活层。
+
+- 两个集合保存原 AppBarButton/AppBarToggleButton/AppBarSeparator，通过同一元素树挂载到横向/纵向容器；不复制命令或勾选状态。AppBar 的 IsInOverflow 与模板切换沿用既有内部入口。禁止重复对象、已挂载对象及跨线程访问，集合编辑暂限定关闭后进行。
+- 窗口内 Flyout 负责定位、轻关闭、Escape、Tab 范围和焦点恢复。主命令执行后保持面板，次命令 Click 关闭；附带 Flyout 的按钮不由此 Click 关闭处理器额外关闭。More 控制次区显示，折叠前将次区焦点交还 More。左右/上下/Home/End 导航跳过分隔线、隐藏项与禁用项。
+- 事件订阅弱引用服务，关闭清除订阅和借用宿主，集合保留实际对象供重开。默认 Standard 打开展开全部次命令；尚无 Transient 模式、TextCommandBarFlyout、可观察集合/集合 XAML、程序修改勾选状态时关闭、动态溢出、嵌套/窗口外弹出、RTL、完整主题动画/阴影/UIA。面板使用现有 Flyout 外框资源，宽度受窗口限制。
+- Gallery 增加可点击入口和 --open-commandflyout 启动模式；只编译及简单启动/关闭。键盘切换、命令执行顺序、重复打开、集合修改与销毁重入留待统一验收，不能据此认定完整兼容。
