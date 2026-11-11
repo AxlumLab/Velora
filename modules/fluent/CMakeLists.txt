@@ -18,6 +18,8 @@ velora_module(fluent
         velora/fluent/ChoiceControl.cpp
         velora/fluent/PopupPanel.cpp
         velora/fluent/PageSelector.cpp
+        velora/fluent/TabView.cpp
+        velora/fluent/TabViewItem.cpp
         velora/fluent/PaneLayout.cpp
         velora/fluent/SplitView.cpp
         velora/fluent/TwoPaneView.cpp

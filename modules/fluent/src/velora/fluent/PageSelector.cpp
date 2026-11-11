@@ -104,6 +104,10 @@ std::vector<std::shared_ptr<UIElement>> PageSelector::ownedContentObjects() cons
 }
 void PageSelector::setPages(std::vector<SelectorPage> pages)
 {
+    replacePages(std::move(pages), std::nullopt);
+}
+void PageSelector::replacePages(std::vector<SelectorPage> pages, std::optional<i32> selected)
+{
     if (!isOwnerThread() || m_busy)
         throw std::logic_error("Page collection is busy or belongs to another thread");
     if (pages.size() > static_cast<usize>(std::numeric_limits<i32>::max()))
@@ -112,8 +116,8 @@ void PageSelector::setPages(std::vector<SelectorPage> pages)
     for (const auto& page : pages)
     {
         utf8ToUtf16(page.header);
-        if (!page.content || !page.content->isOwnerThread() || page.content->containsOwnedContent(*this) ||
-            !unique.insert(page.content.get()).second)
+        if (!page.content || !acceptsPage(page) || !page.content->isOwnerThread() ||
+            page.content->containsOwnedContent(*this) || !unique.insert(page.content.get()).second)
             throw std::invalid_argument("Pages require distinct UI-thread content without ownership cycles");
         const auto existing = std::ranges::find_if(m_pages, [&](const SelectorPage& old)
                                                    { return old.content == page.content; });
@@ -139,6 +143,8 @@ void PageSelector::setPages(std::vector<SelectorPage> pages)
         }
         if (m_pages.empty())
             setSelectedIndex(-1);
+        else if (selected)
+            setSelectedIndex(*selected);
         else if (selectedIndex() < 0 || selectedIndex() >= static_cast<i32>(m_pages.size()))
             setSelectedIndex(0);
     }
@@ -161,7 +167,7 @@ bool PageSelector::validatePropertyValue(const PropertyDescriptor& p, const Prop
 {
     if (p.id == selectedIndexProperty().id)
         return value.isInt() && value.asInt() >= -1 && value.asInt() <= std::numeric_limits<i32>::max();
-    if (!m_pivot)
+    if (!hasPivotProperties())
         return true;
     if (p.id == property("IsLocked").id)
         return value.isBool();
@@ -188,7 +194,33 @@ void PageSelector::normalizePropertyValues(const PropertyDescriptor& p)
 }
 bool PageSelector::isLocked() const
 {
-    return m_pivot && getValue(property("IsLocked")).asBool();
+    return hasPivotProperties() && getValue(property("IsLocked")).asBool();
+}
+bool PageSelector::hasPivotProperties() const noexcept
+{
+    return m_pivot;
+}
+Framework* PageSelector::attachedFramework() const noexcept
+{
+    return m_ui;
+}
+bool PageSelector::acceptsPage(const SelectorPage&) const
+{
+    return true;
+}
+std::string PageSelector::pageHeader(usize index) const
+{
+    return m_pages[index].header;
+}
+ElementId PageSelector::createHeader(Framework& ui, ElementId parent, usize)
+{
+    return ui.create(ElementKind::kButton, parent);
+}
+void PageSelector::onRebuildingHeaders()
+{
+}
+void PageSelector::onHeadersRebuilt(Framework&, ElementId)
+{
 }
 void PageSelector::onAttached(Framework& ui, ElementId self)
 {
@@ -224,6 +256,7 @@ void PageSelector::rebuild()
     const auto keepAlive = m_ui->tree().object(m_element);
     {
         Busy busy(m_busy);
+        onRebuildingHeaders();
         m_events.clear();
         m_headers.clear();
         m_hosts.clear();
@@ -251,11 +284,11 @@ void PageSelector::rebuild()
                     return;
                 if (m_pivot)
                 {
-                    const auto header = m_ui->create(ElementKind::kButton, m_headerHost);
+                    const auto header = createHeader(*m_ui, m_headerHost, index);
                     if (!m_ui)
                         return;
                     m_headers.push_back(header);
-                    m_ui->set(header, m_ui->props().Content, m_pages[index].header);
+                    m_ui->set(header, m_ui->props().Content, pageHeader(index));
                     if (!m_ui)
                         return;
                     m_events.push_back(m_ui->subscribeEvent(
@@ -267,6 +300,8 @@ void PageSelector::rebuild()
                         }));
                 }
             }
+            if (m_ui)
+                onHeadersRebuilt(*m_ui, m_headerHost);
             for (const auto previous : {true, false})
             {
                 if (!m_ui)
@@ -290,10 +325,15 @@ void PageSelector::rebuild()
             for (const auto id : hosts)
                 if (m_ui)
                     m_ui->tree().remove(id);
-            const auto headers = std::exchange(m_headers, {});
-            for (const auto id : headers)
-                if (m_ui)
-                    m_ui->tree().remove(id);
+            m_headers.clear();
+            onRebuildingHeaders();
+            if (m_ui)
+            {
+                const auto headers = m_ui->tree().children(m_headerHost);
+                for (const auto id : headers)
+                    if (m_ui)
+                        m_ui->tree().remove(id);
+            }
             throw;
         }
     }
@@ -311,8 +351,8 @@ void PageSelector::updateSelection()
         if (m_ui)
             m_ui->set(id, property, std::move(value));
     };
-    set(m_title, props.Text, m_pivot ? getValue(property("Title")).asString() : "");
-    set(m_title, props.Visibility, m_pivot && !getValue(property("Title")).asString().empty());
+    set(m_title, props.Text, hasPivotProperties() ? getValue(property("Title")).asString() : "");
+    set(m_title, props.Visibility, hasPivotProperties() && !getValue(property("Title")).asString().empty());
     set(m_headerHost, props.Visibility, m_pivot);
     set(m_previous, props.Visibility, !m_pivot);
     set(m_next, props.Visibility, !m_pivot);
@@ -397,7 +437,7 @@ bool PageSelector::isFocusable() const noexcept
 std::string PageSelector::automationName() const
 {
     const auto index = selectedIndex();
-    return index >= 0 && static_cast<usize>(index) < m_pages.size() ? m_pages[index].header : std::string{};
+    return index >= 0 && static_cast<usize>(index) < m_pages.size() ? pageHeader(index) : std::string{};
 }
 Pivot::Pivot() : PageSelector(true)
 {

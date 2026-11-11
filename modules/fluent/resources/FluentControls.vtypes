@@ -1,4 +1,12 @@
 velora-xaml-types	1
+type	Velora.Fluent.TabView	UserControl
+property	SelectedIndex	Integer	TabView.SelectedIndex	-1
+property	IsAddTabButtonVisible	Boolean	TabView.IsAddTabButtonVisible	True
+end
+type	Velora.Fluent.TabViewItem	UserControl
+property	Header	String	TabViewItem.Header	""
+property	IsClosable	Boolean	TabViewItem.IsClosable	True
+end
 type	Velora.Fluent.Pivot	UserControl
 property	SelectedIndex	Integer	Pivot.SelectedIndex	-1
 property	Title	String	Pivot.Title	""

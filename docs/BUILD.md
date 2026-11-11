@@ -99,6 +99,8 @@ Fluent 示例支持 `--preview-rating`：启动时加载 RatingControl 的编译
 
 `--preview-pages` 启动时确认 Pivot 的初选编辑页和 FlipView 的首项已实际挂载。页面集合通过 C++ 接入，控件及初始 SelectedIndex 由编译 XAML 创建；当前只做窗口启动/关闭，完整页面切换和状态保持留待统一验收。
 
+`--preview-tabs` 启动时确认 TabView 初选文档标签及实际编辑器挂载，欢迎标签不可关闭。普通启动通过添加/关闭按钮使用示例应用的集合回调；运行时只发布请求。当前仅做启动/关闭，完整集合编辑、通知顺序和键盘/焦点验收留到最后。
+
 - Android 没有完整平台实现、NDK preset 或 Gradle 宿主。本包不能直接构建出 Android 产品。
 - 当前模块默认 STATIC。插件共享运行时、导出配置和加载器仍是设计。
 - 新环境必须从干净构建目录开始，不复用旧对象布局产生的缓存。具体已跑/未跑结果见 STATUS.md。

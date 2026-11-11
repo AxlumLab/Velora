@@ -2,6 +2,7 @@
 #pragma once
 #include <functional>
 #include <memory>
+#include <optional>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -42,6 +43,14 @@ class PageSelector : public UIElement
                                         SourceControlRegistry::Factory);
     bool validatePropertyValue(const PropertyDescriptor&, const PropertyValue&) const override;
     void normalizePropertyValues(const PropertyDescriptor&) override;
+    void replacePages(std::vector<SelectorPage>, std::optional<i32> selected);
+    virtual bool acceptsPage(const SelectorPage&) const;
+    virtual std::string pageHeader(usize index) const;
+    virtual ElementId createHeader(Framework&, ElementId parent, usize index);
+    virtual void onRebuildingHeaders();
+    virtual void onHeadersRebuilt(Framework&, ElementId parent);
+    virtual bool hasPivotProperties() const noexcept;
+    Framework* attachedFramework() const noexcept;
 
   private:
     void rebuild();

@@ -29,6 +29,7 @@
 #include <velora/fluent/RatingControl.hpp>
 #include <velora/fluent/SplitView.hpp>
 #include <velora/fluent/SymbolIcon.hpp>
+#include <velora/fluent/TabView.hpp>
 #include <velora/fluent/TeachingTip.hpp>
 #include <velora/fluent/ToggleSplitButton.hpp>
 #include <velora/fluent/ToolTip.hpp>
@@ -80,6 +81,8 @@ class FluentWindow final : public XamlWindow
                                   SplitView::registerType(ui),
                                   TwoPaneView::registerType(ui),
                                   RatingControl::registerType(ui),
+                                  TabView::registerType(ui),
+                                  TabViewItem::registerType(ui),
                                   Pivot::registerType(ui),
                                   FlipView::registerType(ui),
                                   ComboBox::registerType(ui),
@@ -179,6 +182,45 @@ class FluentWindow final : public XamlWindow
         if (!pivot || !slides)
             throw std::runtime_error("Page selector factory mismatch");
         const auto notes = createElement(ElementKind::kTextBox);
+        const auto tabs = std::dynamic_pointer_cast<TabView>(names.Documents);
+        if (!tabs)
+            throw std::runtime_error("TabView factory mismatch");
+        const auto welcomeTab = createElement<TabViewItem>();
+        welcomeTab->setHeader("Welcome");
+        welcomeTab->setIsClosable(false);
+        welcomeTab->setContent(textPane("This tab stays open."));
+        const auto documentTab = createElement<TabViewItem>();
+        documentTab->setHeader("Document");
+        const auto documentEditor = createElement(ElementKind::kTextBox);
+        documentEditor->setValue(*ui.props().Text, "Edit this document, switch tabs, then return.");
+        documentTab->setContent(documentEditor);
+        tabs->setTabItems({welcomeTab, documentTab});
+        const std::weak_ptr<TabView> weakTabs = tabs;
+        tabs->addTabCloseRequested(
+            [this, weakTabs](const TabCloseRequestedEventArgs& args)
+            {
+                if (const auto view = weakTabs.lock())
+                {
+                    view->removeTab(args.tab);
+                    m_controller.record("Closed tab: " + args.tab->header());
+                }
+            });
+        tabs->addAddTabButtonClick(
+            [this, weakTabs]
+            {
+                if (const auto view = weakTabs.lock())
+                {
+                    const auto tab = createElement<TabViewItem>();
+                    auto items = view->tabItems();
+                    tab->setHeader("New " + std::to_string(items.size()));
+                    const auto editor = createElement(ElementKind::kTextBox);
+                    editor->setValue(*GetFramework().props().Text, "New document");
+                    tab->setContent(editor);
+                    items.push_back(tab);
+                    view->setTabItems(std::move(items));
+                    view->setSelectedIndex(static_cast<i32>(view->pages().size()) - 1);
+                }
+            });
         notes->setValue(*ui.props().Text, "This editor keeps its state when switching pages.");
         pivot->setPages({{"Overview", textPane("Workspace overview")}, {"Notes", notes}});
         slides->setPages({{"First", textPane("First slide")},
@@ -339,7 +381,13 @@ class FluentWindow final : public XamlWindow
             ui.update(GetAppWindow()->getWidth(), GetAppWindow()->getHeight());
             if (previewPanels)
             {
-                if (previewPanels == 3)
+                if (previewPanels == 4)
+                {
+                    if (tabs->selectedItem() != documentTab || !documentTab->isInTree() ||
+                        !documentEditor->isInTree() || welcomeTab->isClosable())
+                        throw std::runtime_error("TabView startup failed");
+                }
+                else if (previewPanels == 3)
                 {
                     if (pivot->selectedItem() != notes || !notes->isInTree() ||
                         slides->selectedIndex() != 0 || !slides->selectedItem()->isInTree())
@@ -466,6 +514,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR arguments, int)
                   args.find("--open-dialog") != std::string_view::npos        ? 1
                   : args.find("--open-teachingtip") != std::string_view::npos ? 2
                   : args.find("--preview-pages") != std::string_view::npos    ? 3
+                  : args.find("--preview-tabs") != std::string_view::npos     ? 4
                                                                               : 0);
     try
     {

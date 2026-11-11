@@ -216,3 +216,13 @@ PageSelector.cpp 与编译模板 PageSelectorView.xaml 为正式 Pivot/FlipView 
 - 隐藏页清除焦点和捕获；选中页头保留组内 Tab 停靠。内容所有权检查提升为 UIElement.ownedContentObjects/containsOwnedContent，PaneLayout 与 PageSelector 都暴露原内容，接受内容前拒绝跨两族引用环、重复内容、重叠页面所有权和外部已挂载对象。自定义内容容器必须实现该枚举，检查不是另一套元素树。
 - 集合替换会重新挂载页面，首版没有通知集合/ItemsSource、集合 XAML、完整 PivotItem/FlipViewItem 元数据和模板、可写 SelectedItem、虚拟化/回收、滑动/触摸动画、RTL、页头滚动/溢出、完整主题/UIA。失败后的旧页面恢复和复杂回调重入尚未提供完整事务契约。
 - Gallery 的 --preview-pages 仅确认编译 XAML 初始选择和实际内容挂载，然后检查窗口出现/关闭。完整页面切换、编辑状态保持、嵌套所有权、绑定和生命周期统一留到集成末尾验证；不能将本批计作完整兼容。
+
+## TabView / TabViewItem 标签族（待统一验证）
+
+正式 TabView.cpp、TabViewItem.cpp 直接改写固定提交 porting/TabView/TabView.cpp/.idl、TabViewItem.cpp/.idl 的添加请求、关闭通知顺序、IsClosable 和内容/选择保留。继承 PageSelector 的实际页面挂载，编译 TabViewItemView.xaml 作为原内容宿主，页签栏通过同一编译呈现底座生成。派生文件保留 Microsoft MIT 来源。
+
+- TabViewItem 是原 UIElement 对象，Header/IsClosable 是实际依赖属性，Content 保存原 UIElement 或字符串；页签 caption/close 是派生视觉，无第二份可写标签属性。TabView.setTabItems 接受实际项，base pages 中不复制 Header，监听有效 Header/IsClosable 更新并在重建/卸载解除。
+- 添加按钮发布 AddTabButtonClick；关闭先发布 TabView.TabCloseRequested，再对同一项发布 CloseRequested，与上游顺序一致。请求不隐式移除，应用可决定保留未保存页；IsClosable=false 隐藏按钮并阻止请求。支持 token 退订、Ctrl+F4、Ctrl+Tab/Shift+Ctrl+Tab 和页签键盘导航。图标统一为 Segoe MDL2 Assets。
+- 集合替换按原选中对象寻找新索引，删除选中项时选择附近项。尝试恢复原焦点对象的新节点，否则回到当前页签/添加按钮。所有标签仍挂载并折叠未选中项，内容环检查覆盖 TabViewItem 的实际 Content；完整失败恢复、重入/焦点/编辑状态及通知契约仍待统一验证。
+- 首版集合仅 C++ setTabItems/removeTab，Header 暂限字符串。未实现通知集合/TabItemsSource、集合和对象内容 XAML、HeaderTemplate/IconSource、TabWidthMode、拖拽/重排/拖放、中键关闭、滚动溢出、完整主题状态/动画/UIA。不能把当前呈现和请求通路计作完整上游兼容。
+- Gallery 增加不可关闭欢迎项、实际编辑项和应用控制的添加/关闭回调；--preview-tabs 只检查初始选择、实际内容及窗口启动/关闭。未新增或执行回归、ASan、截图验收。
