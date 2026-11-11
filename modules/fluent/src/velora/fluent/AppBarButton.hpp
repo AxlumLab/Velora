@@ -17,12 +17,16 @@ class AppBarButton : public FlyoutButton
     PropertySetResult setIconGlyph(std::string value);
     [[nodiscard]] bool isCompact() const;
     PropertySetResult setIsCompact(bool value);
+    static const PropertyDescriptor& dynamicOverflowOrderProperty();
+    [[nodiscard]] i32 dynamicOverflowOrder() const;
+    PropertySetResult setDynamicOverflowOrder(i32 value);
     [[nodiscard]] bool isInOverflow() const noexcept override;
     static const PropertyDescriptor& isInOverflowProperty();
     void onDetached() noexcept override;
 
   protected:
     explicit AppBarButton(Variant variant);
+    bool validatePropertyValue(const PropertyDescriptor&, const PropertyValue&) const override;
 
   private:
     friend class CommandBar;
@@ -35,6 +39,7 @@ class AppBarToggleButton final : public AppBarButton
     static const XamlTypeDeclaration& declaration();
     static const PropertyDescriptor& labelProperty();
     static const PropertyDescriptor& isCheckedProperty();
+    static const PropertyDescriptor& dynamicOverflowOrderProperty();
     static std::string registerType(Framework& ui);
     [[nodiscard]] bool isChecked() const;
     PropertySetResult setIsChecked(bool value);

@@ -67,14 +67,27 @@ class FluentWindow final : public XamlWindow
         const auto commands = std::dynamic_pointer_cast<CommandBar>(names.Commands);
         if (!commands)
             throw std::runtime_error("CommandBar factory mismatch");
+        commands->addDynamicOverflowItemsChanging(
+            [this](CommandBar&, const DynamicOverflowItemsChangingEventArgs& args)
+            {
+                m_controller.record(
+                    std::string(args.action == CommandBarDynamicOverflowAction::kAddingToOverflow
+                                    ? "Moving to overflow: "
+                                    : "Returning to toolbar: ") +
+                    std::to_string(args.items.size()));
+            });
         const auto saveCommand = createElement<AppBarButton>();
         saveCommand->setLabel("Save");
         saveCommand->setIconGlyph("\xEE\x9D\x8E");
+        saveCommand->setDynamicOverflowOrder(1);
         saveCommand->setCommand([this] { m_controller.record("CommandBar Save"); });
         commands->appendPrimary(saveCommand);
-        commands->appendPrimary(createElement<AppBarSeparator>());
+        const auto primarySeparator = createElement<AppBarSeparator>();
+        primarySeparator->setDynamicOverflowOrder(1);
+        commands->appendPrimary(primarySeparator);
         const auto primaryPin = createElement<AppBarToggleButton>();
         primaryPin->setLabel("Pin");
+        primaryPin->setDynamicOverflowOrder(1);
         primaryPin->setIconGlyph("\xEE\x9C\x98");
         primaryPin->setCommand([this] { m_controller.record("CommandBar Pin toggled"); });
         commands->appendPrimary(primaryPin);
@@ -192,8 +205,9 @@ class FluentWindow final : public XamlWindow
             {
                 const auto lastCommand =
                     std::dynamic_pointer_cast<AppBarButton>(commands->primaryCommands().back());
-                if (!lastCommand || !lastCommand->isInOverflow())
-                    throw std::runtime_error("CommandBar primary commands did not overflow");
+                if (!lastCommand || lastCommand->isInOverflow() || !saveCommand->isInOverflow() ||
+                    !primaryPin->isInOverflow())
+                    throw std::runtime_error("CommandBar priority group did not overflow together");
                 commands->setIsOpen(true);
                 if (!commands->isOpen())
                     throw std::runtime_error("CommandBar overflow did not open");

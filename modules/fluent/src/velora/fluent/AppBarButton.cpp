@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See modules/fluent/LICENSE-WinUI2.3.txt.
 // Internal implementation of the system AppBar button behaviors; templates derive from
 // WinUI 2.3 CommonStyles/AppBarButton and AppBarToggleButton resources.
+#include <limits>
 #include <utility>
 #include <velora/controls/ElementFactory.hpp>
 #include <velora/fluent/AppBarButton.hpp>
@@ -71,6 +72,28 @@ AppBarToggleButton::AppBarToggleButton() : AppBarButton(Variant::kAppBarToggleBu
 VELORA_APPBAR(AppBarButton)
 VELORA_APPBAR(AppBarToggleButton)
 #undef VELORA_APPBAR
+const PropertyDescriptor& AppBarButton::dynamicOverflowOrderProperty()
+{
+    return propertyFor("Velora.Fluent.AppBarButton", "DynamicOverflowOrder");
+}
+const PropertyDescriptor& AppBarToggleButton::dynamicOverflowOrderProperty()
+{
+    return propertyFor("Velora.Fluent.AppBarToggleButton", "DynamicOverflowOrder");
+}
+i32 AppBarButton::dynamicOverflowOrder() const
+{
+    return static_cast<i32>(getValue(propertyFor(className(), "DynamicOverflowOrder")).asInt());
+}
+PropertySetResult AppBarButton::setDynamicOverflowOrder(i32 value)
+{
+    return setValue(propertyFor(className(), "DynamicOverflowOrder"), static_cast<i64>(value));
+}
+bool AppBarButton::validatePropertyValue(const PropertyDescriptor& p, const PropertyValue& v) const
+{
+    if (p.id == propertyFor(className(), "DynamicOverflowOrder").id)
+        return v.isInt() && v.asInt() >= 0 && v.asInt() <= std::numeric_limits<i32>::max();
+    return FlyoutButton::validatePropertyValue(p, v);
+}
 std::string AppBarButton::label() const
 {
     return content();

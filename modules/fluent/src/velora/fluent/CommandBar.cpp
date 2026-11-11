@@ -42,6 +42,12 @@ struct Changing
         flag = false;
     }
 };
+i32 commandOrder(const std::shared_ptr<UIElement>& item)
+{
+    if (const auto button = std::dynamic_pointer_cast<AppBarButton>(item))
+        return button->dynamicOverflowOrder();
+    return std::static_pointer_cast<AppBarSeparator>(item)->dynamicOverflowOrder();
+}
 } // namespace
 AppBarSeparator::AppBarSeparator() : UIElement(ElementKind::kUserControl)
 {
@@ -74,14 +80,31 @@ PropertySetResult AppBarSeparator::setOrientation(std::string value)
 }
 bool AppBarSeparator::validatePropertyValue(const PropertyDescriptor& p, const PropertyValue& v) const
 {
+    if (p.id == dynamicOverflowOrderProperty().id)
+        return v.isInt() && v.asInt() >= 0 && v.asInt() <= std::numeric_limits<i32>::max();
     return p.id != orientationProperty().id ||
            (v.isString() && (v.asString() == "Horizontal" || v.asString() == "Vertical"));
 }
 std::string AppBarSeparator::registerType(Framework& ui)
 {
-    const std::array properties = {&orientationProperty()};
+    const std::array properties = {&orientationProperty(), &dynamicOverflowOrderProperty()};
     return ui.registerSourceControl(
         declaration(), [] { return createElement<AppBarSeparator>(); }, properties);
+}
+const PropertyDescriptor& AppBarSeparator::dynamicOverflowOrderProperty()
+{
+    static PropertyRegistry registry;
+    static const auto& property =
+        registry.define("AppBarSeparator.DynamicOverflowOrder", i64{0}, PropertyFlags::kPaint);
+    return property;
+}
+i32 AppBarSeparator::dynamicOverflowOrder() const
+{
+    return static_cast<i32>(getValue(dynamicOverflowOrderProperty()).asInt());
+}
+PropertySetResult AppBarSeparator::setDynamicOverflowOrder(i32 value)
+{
+    return setValue(dynamicOverflowOrderProperty(), static_cast<i64>(value));
 }
 void AppBarSeparator::onAttached(Framework& ui, ElementId self)
 {
@@ -127,6 +150,85 @@ void AppBarSeparator::updateLine()
     set(p.Margin, horizontal ? PropertyValue(Thickness{4, 8, 4, 8}) : PropertyValue(Thickness{8, 0, 8, 0}));
 }
 
+struct CommandBar::CommandSubscription
+{
+    std::weak_ptr<UIElement> item;
+    u64 token = 0;
+    ~CommandSubscription()
+    {
+        if (const auto owner = item.lock())
+            owner->removePropertyChanged(token);
+    }
+};
+CommandBar::~CommandBar() = default;
+void CommandBar::observeCommand(const std::shared_ptr<UIElement>& command)
+{
+    const auto weak = std::weak_ptr<DependencyObject>(m_ui->tree().object(m_element));
+    auto subscription = std::make_unique<CommandSubscription>();
+    subscription->item = command;
+    const auto id = std::dynamic_pointer_cast<AppBarToggleButton>(command)
+                        ? AppBarToggleButton::dynamicOverflowOrderProperty().id
+                        : (std::dynamic_pointer_cast<AppBarButton>(command)
+                               ? AppBarButton::dynamicOverflowOrderProperty().id
+                               : AppBarSeparator::dynamicOverflowOrderProperty().id);
+    subscription->token = command->addPropertyChanged(
+        [weak, id](DependencyObject&, const PropertyDescriptor& p, const PropertyValue&, const PropertyValue&)
+        {
+            if (p.id != id)
+                return;
+            if (const auto owner = weak.lock())
+            {
+                auto& bar = static_cast<CommandBar&>(*owner);
+                bar.setIsOpen(false);
+                if (bar.m_ui)
+                    bar.m_ui->tree().invalidateMeasure(bar.m_element);
+            }
+        });
+    m_commandSubscriptions.push_back(std::move(subscription));
+}
+u64 CommandBar::addDynamicOverflowItemsChanging(DynamicOverflowHandler handler)
+{
+    if (!isOwnerThread())
+        throw std::logic_error("CommandBar events belong to the UI thread");
+    if (!handler)
+        return 0;
+    if (!m_nextOverflowHandler)
+        throw std::overflow_error("CommandBar event tokens exhausted");
+    const auto token = m_nextOverflowHandler++;
+    m_overflowHandlers.emplace(token, std::move(handler));
+    return token;
+}
+bool CommandBar::removeDynamicOverflowItemsChanging(u64 token)
+{
+    return isOwnerThread() && m_overflowHandlers.erase(token) != 0;
+}
+void CommandBar::notifyOverflowChanges(const std::vector<bool>& next)
+{
+    Changing notifying(m_notifyingOverflow);
+    const auto element = m_element;
+    const auto handlers = m_overflowHandlers;
+    for (const bool adding : {false, true})
+    {
+        if (!m_ui || m_element != element)
+            return;
+        DynamicOverflowItemsChangingEventArgs args{
+            adding ? CommandBarDynamicOverflowAction::kAddingToOverflow
+                   : CommandBarDynamicOverflowAction::kRemovingFromOverflow,
+            {}};
+        for (usize index = 0; index < next.size(); ++index)
+            if (next[index] != m_primaryOverflow[index] && next[index] == adding)
+                args.items.push_back(m_primary[index]);
+        if (args.items.empty())
+            continue;
+        for (const auto& [token, handler] : handlers)
+        {
+            if (!m_ui || m_element != element)
+                return;
+            if (m_overflowHandlers.contains(token))
+                handler(*this, args);
+        }
+    }
+}
 CommandBar::CommandBar() : UIElement(ElementKind::kUserControl)
 {
     addPropertyChanged(
@@ -182,6 +284,8 @@ PropertySetResult CommandBar::setIsOpen(bool value)
 }
 bool CommandBar::validatePropertyValue(const PropertyDescriptor& p, const PropertyValue& v) const
 {
+    if (p.id == isOpenProperty().id && m_notifyingOverflow && v.isBool() && v.asBool())
+        return false;
     return (p.id != isOpenProperty().id && p.id != isDynamicOverflowEnabledProperty().id) || v.isBool();
 }
 Size CommandBar::measureOverride(LayoutContext& context, ElementId self, const MeasureInput& input)
@@ -215,30 +319,54 @@ Size CommandBar::measureOverride(LayoutContext& context, ElementId self, const M
         total += size.width;
     }
     const float moreWidth = static_cast<float>(context.number(m_more, context.props().Width));
-    m_primaryCount = m_primary.size();
+    std::vector<bool> next(m_primary.size(), false);
     if (isDynamicOverflowEnabled() && std::isfinite(input.content.width) &&
         total + (m_secondary.empty() ? 0 : moreWidth) > input.content.width)
     {
         const float room = std::max(0.f, input.content.width - moreWidth);
-        while (m_primaryCount && total > room)
-            total -= widths[--m_primaryCount];
-        // Keep a separator with the commands following it rather than trailing the visible row.
-        while (m_primaryCount && std::dynamic_pointer_cast<AppBarSeparator>(m_primary[m_primaryCount - 1]))
-            --m_primaryCount;
+        std::map<i32, std::vector<usize>> groups;
+        for (usize index = 0; index < m_primary.size(); ++index)
+            groups[commandOrder(m_primary[index])].push_back(index);
+        // Positive priorities overflow in ascending groups. Zero retains the default end-first order.
+        for (const auto& [order, indices] : groups)
+        {
+            if (!order || total <= room)
+                continue;
+            for (const auto index : indices)
+            {
+                next[index] = true;
+                total -= widths[index];
+            }
+        }
+        if (const auto defaults = groups.find(0); defaults != groups.end())
+            for (auto it = defaults->second.rbegin(); it != defaults->second.rend() && total > room; ++it)
+            {
+                next[*it] = true;
+                total -= widths[*it];
+            }
     }
+    notifyOverflowChanges(next);
+    if (!m_ui || m_element != self)
+        return {};
+    m_primaryOverflow = std::move(next);
     updateMore();
+    usize visibleIndex = 0;
     for (usize index = 0; index < m_primary.size(); ++index)
     {
         const auto& item = m_primary[index];
         const auto id = m_ui->tree().element(*item);
-        const bool overflow = index >= m_primaryCount;
+        const bool overflow = m_primaryOverflow[index];
         const auto host = overflow ? m_storage : m_primaryHost;
         const bool hadFocus = m_ui->isWithin(m_ui->focused(), id);
         if (m_ui->tree().parent(id) != host &&
             !m_ui->tree().reparent(host, id, m_ui->tree().children(host).size()))
             throw std::runtime_error("Command could not change its layout container");
-        if (!overflow && m_ui->tree().children(host).at(index) != id)
-            m_ui->tree().reorder(id, index);
+        if (!overflow)
+        {
+            if (m_ui->tree().children(host).at(visibleIndex) != id)
+                m_ui->tree().reorder(id, visibleIndex);
+            ++visibleIndex;
+        }
         if (const auto button = std::dynamic_pointer_cast<AppBarButton>(item))
             button->setOverflowMode(overflow);
         if (overflow && hadFocus)
@@ -284,6 +412,8 @@ void CommandBar::append(std::shared_ptr<UIElement> command, bool secondary)
     const auto keepAlive = m_ui ? m_ui->tree().object(m_element) : nullptr;
     Changing changing(m_mutating);
     auto& list = secondary ? m_secondary : m_primary;
+    const auto subscriptionCount = m_commandSubscriptions.size();
+    const auto layoutCount = m_primaryOverflow.size();
     list.push_back(command);
     try
     {
@@ -292,12 +422,19 @@ void CommandBar::append(std::shared_ptr<UIElement> command, bool secondary)
             prepare(command, false);
             if (!m_ui->insert(command, m_primaryHost))
                 throw std::runtime_error("Command failed to attach");
-            m_primaryCount = m_primary.size();
+            observeCommand(command);
+            m_primaryOverflow.push_back(false);
         }
         updateMore();
     }
     catch (...)
     {
+        m_commandSubscriptions.resize(subscriptionCount);
+        m_primaryOverflow.resize(layoutCount);
+        if (m_ui)
+            if (const auto id = m_ui->tree().element(*command);
+                id && m_ui->tree().parent(id) == m_primaryHost)
+                m_ui->tree().remove(id);
         list.pop_back();
         throw;
     }
@@ -323,14 +460,18 @@ void CommandBar::clear(bool secondary)
             if (const auto id = m_ui->tree().element(*item))
                 m_ui->tree().remove(id);
     if (!secondary)
-        m_primaryCount = 0;
+    {
+        m_primaryOverflow.clear();
+        m_commandSubscriptions.clear();
+    }
     updateMore();
 }
 void CommandBar::updateMore()
 {
     if (m_ui && m_more)
         m_ui->set(m_more, m_ui->props().Visibility,
-                  !m_secondary.empty() || m_primaryCount < m_primary.size());
+                  !m_secondary.empty() ||
+                      std::ranges::any_of(m_primaryOverflow, [](bool value) { return value; }));
 }
 void CommandBar::onAttached(Framework& ui, ElementId self)
 {
@@ -353,8 +494,9 @@ void CommandBar::onAttached(Framework& ui, ElementId self)
         prepare(item, false);
         if (!ui.insert(item, m_primaryHost))
             throw std::runtime_error("Primary command failed to attach");
+        observeCommand(item);
     }
-    m_primaryCount = m_primary.size();
+    m_primaryOverflow.assign(m_primary.size(), false);
     const auto weak = std::weak_ptr<DependencyObject>(ui.tree().object(self));
     m_overflow = std::make_shared<Flyout>(
         [weak](Framework& host)
@@ -400,7 +542,10 @@ ElementId CommandBar::buildOverflow(Framework& ui)
     try
     {
         ui.set(panel, ui.props().MinWidth, 200.0);
-        std::vector<std::shared_ptr<UIElement>> commands(m_primary.begin() + m_primaryCount, m_primary.end());
+        std::vector<std::shared_ptr<UIElement>> commands;
+        for (usize index = 0; index < m_primary.size(); ++index)
+            if (m_primaryOverflow[index])
+                commands.push_back(m_primary[index]);
         commands.insert(commands.end(), m_secondary.begin(), m_secondary.end());
         for (const auto& item : commands)
         {
@@ -467,7 +612,8 @@ void CommandBar::syncOpen()
             overflow->hide();
             m_overflowEvents.clear();
         }
-        else if ((m_secondary.empty() && m_primaryCount == m_primary.size()) ||
+        else if ((m_secondary.empty() &&
+                  std::ranges::none_of(m_primaryOverflow, [](bool value) { return value; })) ||
                  !overflow->showAt(*m_ui, m_more,
                                    [weak](bool open)
                                    {
@@ -486,7 +632,8 @@ void CommandBar::onDetached() noexcept
 {
     m_ui = nullptr;
     m_element = m_primaryHost = m_storage = m_more = 0;
-    m_primaryCount = 0;
+    m_primaryOverflow.clear();
+    m_commandSubscriptions.clear();
     m_lastWidth = -1;
     m_events.clear();
     m_overflowEvents.clear();
@@ -509,15 +656,17 @@ void CommandBar::onKeyDown(InputContext&, KeyEventArgs& args)
         return;
     const auto keepAlive = m_ui->tree().object(m_element);
     std::vector<ElementId> stops;
-    for (usize index = 0; index < m_primaryCount; ++index)
+    for (usize index = 0; index < m_primary.size(); ++index)
     {
+        if (m_primaryOverflow[index])
+            continue;
         const auto& item = m_primary[index];
         const auto id = m_ui->tree().element(*item);
         if (id && item->isFocusable() && m_ui->tree().property(id, *m_ui->props().IsEnabled).asBool() &&
             m_ui->tree().property(id, *m_ui->props().Visibility).asBool())
             stops.push_back(id);
     }
-    if (!m_secondary.empty() || m_primaryCount < m_primary.size())
+    if (!m_secondary.empty() || std::ranges::any_of(m_primaryOverflow, [](bool value) { return value; }))
         stops.push_back(m_more);
     if (stops.empty())
         return;

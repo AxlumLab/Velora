@@ -144,7 +144,16 @@
 - 新增 invalidateMeasure 接口，校验元素存在及所属线程。CommandBar 的有效值通知显式触发布局失效，继续遵守 `.vtypes` 当前 Paint 属性契约；首次启动暴露的属性契约不匹配已据此修正，示例增加异常错误输出。
 - 只读 IsInOverflow 反映 AppBar 按钮是否被收纳；主区键盘导航排除收纳项。收纳聚焦命令时尝试将焦点交给 More，展开时宽度或动态溢出配置改变会先关闭面板再布局。
 - `velora_fluent_gallery` 最终编译通过；`--open-commandbar` 启动确认末尾主命令已经自动溢出，随后成功打开包含主/次命令的面板，窗口可见并正常关闭，退出码 0。证据为 `build/dev/dynamic-overflow-final-build.log`、`build/dev/dynamic-overflow-startup.json`。改动文件格式、CheckStyle、CheckWorkspace 与 diff 检查通过；没有新增/运行回归、ASan 或截图验收。
-- 尚未实现 DynamicOverflowOrder 分组/变化通知、分隔线合并、RTL、展开期间原位重排；完整重挂载、绑定继承、焦点、卸载与视觉状态仍待统一验收。
+- 此批尚未实现 DynamicOverflowOrder 分组/变化通知，后续接入见下一节；分隔线合并、RTL、展开期间原位重排，以及完整重挂载、绑定继承、焦点、卸载与视觉状态仍待统一验收。
+
+### 当前接入：溢出优先级分组与 C++ 通知
+
+- AppBarButton、AppBarToggleButton、AppBarSeparator 新增 DynamicOverflowOrder 的真实依赖属性、类型化 C++ API 及编译 XAML 声明；当前接受非负 32 位整数，其余类型/范围由对象校验拒绝，各写入路径共用同一属性。
+- 正数按升序整组收纳，同一正数优先级的命令一起移入/恢复；0 保留从末尾逐项收纳的默认方式。布局记录改为逐项位置，主区键盘导航和溢出面板按原始集合顺序过滤，不再假定可见项必须是前缀，也不改写两个命令集合。
+- 新增 addDynamicOverflowItemsChanging/removeDynamicOverflowItemsChanging：移动前同步通知加入/退出方向及本批实际命令对象，支持 token 退订及分发中退订。回调用于观察计划；集合修改及回调中打开面板被拒绝，布局属性的回调内反复修改尚未完成语义。不是 XAML 事件连接或完整 WinUI 事件兼容。
+- 命令有效优先级变化时关闭现有面板并请求重新测量；属性监听使用弱引用，随清空/卸载解除。追加失败也会清理新增订阅和已挂载项。
+- Gallery 将前部 Save、分隔线和 Pin 设为同组，展示 C++ 通知，并通过编译 XAML 设置独立 AppBarButton 的优先级。示例目标编译通过；启动确认前部按钮成组溢出且末尾命令仍在主区，随后打开面板，窗口正常关闭，退出码 0。日志为 `build/dev/overflow-priority-build.log`、`build/dev/overflow-priority-startup.json`。未新增/运行回归、ASan 或截图验收。
+- 不把启动覆盖的分组路径视为恢复、动态改优先级、通知重入/解绑与全部生命周期验收；完整 CommandBar 属性、集合 XAML、分隔线整理、主题/RTL/UIA 仍待补齐。
 
 | 范围 | 当前事实 |
 | --- | --- |

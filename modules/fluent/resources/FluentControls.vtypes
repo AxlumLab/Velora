@@ -5,16 +5,19 @@ property	IsDynamicOverflowEnabled	Boolean	CommandBar.IsDynamicOverflowEnabled	Tr
 end
 type	Velora.Fluent.AppBarSeparator	UserControl
 property	Orientation	String	AppBarSeparator.Orientation	Vertical
+property	DynamicOverflowOrder	Integer	AppBarSeparator.DynamicOverflowOrder	0
 end
 type	Velora.Fluent.AppBarButton	UserControl
 property	Label	String	AppBarButton.Label	""
 property	IconGlyph	String	AppBarButton.IconGlyph	""
 property	IsCompact	Boolean	AppBarButton.IsCompact	False
+property	DynamicOverflowOrder	Integer	AppBarButton.DynamicOverflowOrder	0
 end
 type	Velora.Fluent.AppBarToggleButton	UserControl
 property	Label	String	AppBarToggleButton.Label	""
 property	IconGlyph	String	AppBarToggleButton.IconGlyph	""
 property	IsCompact	Boolean	AppBarToggleButton.IsCompact	False
+property	DynamicOverflowOrder	Integer	AppBarToggleButton.DynamicOverflowOrder	0
 property	IsChecked	Boolean	AppBarToggleButton.IsChecked	False
 end
 type	Velora.Fluent.MenuBar	UserControl

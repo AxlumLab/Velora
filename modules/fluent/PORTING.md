@@ -143,4 +143,14 @@ Windows 示例 `FluentPage.xaml` 从编译 XAML 创建实际 NumberBox；注册�
 - IsInOverflow 反映按钮的收纳位置；当前加载的模板单独记录为呈现状态，避免折叠存储中的主命令误按溢出模板尺寸测量。聚焦命令被收纳时尝试将焦点转交 More；面板展开期间宽度变化或关闭动态溢出会先关闭面板，再重新分配。
 - Gallery 增加一组实际 MDL2 命令；`--open-commandbar` 在启动时确认末尾主命令进入溢出，再打开含主/次命令的面板。
 
-当前按原始顺序收纳后缀，不支持 DynamicOverflowOrder 的优先级分组或溢出变化通知；分隔线合并、RTL、展开期间原位重排、完整焦点/卸载/绑定继承行为仍待统一验证。不能据此宣布 CommandBar 或元素树重挂载接口已完成全部兼容验收。
+此批最初按原始顺序收纳后缀；后续优先级分组与通知见下一节。分隔线合并、RTL、展开期间原位重排、完整焦点/卸载/绑定继承行为仍待统一验证。不能据此宣布 CommandBar 或元素树重挂载接口已完成全部兼容验收。
+
+## 溢出优先级分组与通知（待统一验证）
+
+参考系统 [AppBarButton.DynamicOverflowOrder](https://raw.githubusercontent.com/MicrosoftDocs/winrt-api/docs/windows.ui.xaml.controls/appbarbutton_dynamicoverfloworder.md)、[AppBarSeparator.DynamicOverflowOrder](https://raw.githubusercontent.com/MicrosoftDocs/winrt-api/docs/windows.ui.xaml.controls/appbarseparator_dynamicoverfloworder.md) 与 [CommandBar 的变化事件](https://learn.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.commandbar.dynamicoverflowitemschanging)。这是系统契约的 Velora 实现，来源不变；不宣称 WinUI 2.3 仓库包含该系统控件的全部 C++ 算法。
+
+- AppBarButton、AppBarToggleButton、AppBarSeparator 均具有 DynamicOverflowOrder 实际依赖属性及 C++/编译 XAML API。默认 0；Velora 当前校验为非负 32 位整数。正数从小到大整组收纳，同一正数一起移入/恢复；0 保留末尾逐项收纳。主区及溢出区内部均保留原始命令相对顺序，PrimaryCommands/SecondaryCommands 不改写。
+- 用逐项派生布局位置替代前缀计数，允许前部或中部命令先溢出；键盘遍历与面板构建共用该结果。实际按钮仍只有原依赖属性中的 IsInOverflow/IsChecked，布局位置记录不成为第二份可写属性。
+- C++ addDynamicOverflowItemsChanging 返回独立 token，由 removeDynamicOverflowItemsChanging 解除；通知发生在布局移动前，参数包含加入/退出方向与实际对象集合。分发中解除的处理器不再调用，新处理器从下次分发开始；卸载中止剩余通知。回调中拒绝修改命令集合或打开面板；此入口用于观察计划，布局属性的回调内反复写入、取消或强制重布局尚未实现完整契约。
+- 监听主命令的有效优先级变化，以弱引用关联 CommandBar，关闭已展开面板并请求布局；清空或卸载解除监听。追加失败回滚新增监听和元素。事件目前仅 C++ 连接，不增加未知 XAML 的容错或伪造事件元数据。
+- Gallery 将 Save、分隔线、Pin 设为正数同组，末尾普通命令保持默认优先级；启动入口检查非后缀分组并打开混合溢出面板。本批只编译与简单启动/关闭，恢复、动态优先级更新、通知解绑/重入和完整生命周期留到统一验证。

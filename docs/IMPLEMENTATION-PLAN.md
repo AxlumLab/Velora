@@ -6,7 +6,7 @@
 
 当前接入期仅做编译和简单启动检查，完整回归/ASan/截图统一在集成末尾执行；保留已有测试。Windows 图标统一采用系统 Segoe MDL2 Assets。图标和菜单族已接入 FontIcon、首批 SymbolIcon、RadioMenuFlyoutItem 与图标/快捷键提示列，具体未验收范围见 STATUS.md。
 
-MenuBar/MenuBarItem、AppBarButton/AppBarToggleButton 和 CommandBar/AppBarSeparator 已接入，复用同一 Popup、图标和实际 AppBar 命令对象。CommandBar 继续接入按自然宽度收纳/恢复末尾主命令、IsDynamicOverflowEnabled、同一元素树内保留对象和 ID 的 reparent；当前只支持原始顺序后缀，不含 DynamicOverflowOrder 分组或变化通知。后续补完整 CommandBar 属性与复杂集合/导航能力，交互验收仍留到统一验证；不将同名类、模板存在或启动成功视为完整移植。
+MenuBar/MenuBarItem、AppBarButton/AppBarToggleButton 和 CommandBar/AppBarSeparator 已接入，复用同一 Popup、图标和实际 AppBar 命令对象。CommandBar 已接入按自然宽度收纳/恢复、IsDynamicOverflowEnabled、保留对象和 ID 的 reparent；继续增加三个命令类型的 DynamicOverflowOrder、同优先级成组溢出与 C++ 变化通知，布局不再限于原始顺序后缀。后续补完整 CommandBar 属性、分隔线规则与复杂集合/导航能力，交互验收仍留到统一验证；不将同名类、模板存在或启动成功视为完整移植。
 
 ## WinUI 2.3 完整兼容与控件移植执行原则（2026-11-09）
 

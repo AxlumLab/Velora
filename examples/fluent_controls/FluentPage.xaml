@@ -30,7 +30,7 @@
             <fluent:SymbolIcon Symbol="57605"/>
             <fluent:SymbolIcon Symbol="57621"/>
             <fluent:SymbolIcon Symbol="57637"/>
-            <fluent:AppBarButton x:Name="AppBarSave" Label="Save" IconGlyph="&#xE74E;"/>
+            <fluent:AppBarButton x:Name="AppBarSave" Label="Save" IconGlyph="&#xE74E;" DynamicOverflowOrder="2"/>
             <fluent:AppBarToggleButton x:Name="AppBarPin" Label="Pin" IconGlyph="&#xE718;"/>
         </StackPanel>
     </StackPanel>
