@@ -157,6 +157,7 @@ void FlyoutButton::invokePrimary()
     if (!canInvoke())
         return;
     const auto keepAlive = m_ui->tree().object(m_element);
+    const auto command = m_command;
     if (!isFlyoutOpen())
         m_ui->focus(m_element);
     if (!canInvoke())
@@ -173,6 +174,18 @@ void FlyoutButton::invokePrimary()
     }
     if (m_ui && canInvoke())
         m_ui->tree().dispatch(m_element, m_ui->events().Click->id);
+    if (command)
+        command();
+}
+void FlyoutButton::setCommand(std::function<void()> command)
+{
+    if (!isOwnerThread())
+        throw std::logic_error("Command belongs to the control's UI thread");
+    m_command = std::move(command);
+}
+bool FlyoutButton::isInOverflow() const noexcept
+{
+    return false;
 }
 ElementId FlyoutButton::part(std::string_view name) const
 {
@@ -215,7 +228,11 @@ void FlyoutButton::onAttached(Framework& ui, ElementId self)
     ComponentLoadOptions options;
     options.parent = this;
     const auto loaded = loadComponent(
-        ui, *ResourceUri::parse(appBar ? "ms-appx-framework:///Controls/AppBarButtonView.vxbf" : uri),
+        ui,
+        *ResourceUri::parse(appBar ? (isInOverflow()
+                                          ? "ms-appx-framework:///Controls/AppBarOverflowButtonView.vxbf"
+                                          : "ms-appx-framework:///Controls/AppBarButtonView.vxbf")
+                                   : uri),
         options);
     if (!loaded.ok)
         throw std::runtime_error("Fluent button template: " + loaded.error);
@@ -274,10 +291,13 @@ void FlyoutButton::updateParts()
         };
         const auto& p = elementProperties().props;
         set(p.Text, getValue(propertyFor(className(), "IconGlyph")), "IconGlyph");
-        set(p.Visibility, !getValue(propertyFor(className(), "IsCompact")).asBool(), "LabelText");
+        set(p.Visibility, isInOverflow() || !getValue(propertyFor(className(), "IsCompact")).asBool(),
+            "LabelText");
         if (m_ui)
             m_ui->set(part("PrimaryButton"), p.MinHeight,
-                      getValue(propertyFor(className(), "IsCompact")).asBool() ? 48.0 : 68.0);
+                      isInOverflow()
+                          ? 32.0
+                          : (getValue(propertyFor(className(), "IsCompact")).asBool() ? 48.0 : 68.0));
     }
 }
 void FlyoutButton::onKeyDown(InputContext&, KeyEventArgs& args)

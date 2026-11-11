@@ -17,9 +17,16 @@ class AppBarButton : public FlyoutButton
     PropertySetResult setIconGlyph(std::string value);
     [[nodiscard]] bool isCompact() const;
     PropertySetResult setIsCompact(bool value);
+    [[nodiscard]] bool isInOverflow() const noexcept override;
+    static const PropertyDescriptor& isInOverflowProperty();
+    void onDetached() noexcept override;
 
   protected:
     explicit AppBarButton(Variant variant);
+
+  private:
+    friend class CommandBar;
+    void setOverflowMode(bool value);
 };
 class AppBarToggleButton final : public AppBarButton
 {

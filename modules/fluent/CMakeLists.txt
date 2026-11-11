@@ -13,6 +13,7 @@ velora_module(fluent
         velora/fluent/Icons.cpp
         velora/fluent/MenuBar.cpp
         velora/fluent/AppBarButton.cpp
+        velora/fluent/CommandBar.cpp
     PUBLIC velora::controls velora::resources)
 file(READ "${CMAKE_CURRENT_SOURCE_DIR}/resources/FluentControls.vtypes" FLUENT_TYPES)
 configure_file(FluentTypes.hpp.in "${PROJECT_BINARY_DIR}/generated/fluent/FluentTypes.hpp" @ONLY)

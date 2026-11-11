@@ -1,4 +1,10 @@
 velora-xaml-types	1
+type	Velora.Fluent.CommandBar	UserControl
+property	IsOpen	Boolean	CommandBar.IsOpen	False
+end
+type	Velora.Fluent.AppBarSeparator	UserControl
+property	Orientation	String	AppBarSeparator.Orientation	Vertical
+end
 type	Velora.Fluent.AppBarButton	UserControl
 property	Label	String	AppBarButton.Label	""
 property	IconGlyph	String	AppBarButton.IconGlyph	""

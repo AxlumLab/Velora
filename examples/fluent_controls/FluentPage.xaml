@@ -3,6 +3,7 @@
       xmlns:fluent="using:Velora.Fluent" x:Class="Demo.FluentPage">
     <StackPanel Margin="24" Spacing="20">
         <fluent:MenuBar x:Name="ApplicationMenu"/>
+        <fluent:CommandBar x:Name="Commands"/>
         <TextBlock Text="Velora Fluent" FontSize="24"/>
         <StackPanel Orientation="Horizontal" Spacing="24">
             <fluent:PersonPicture x:Name="Avatar" DisplayName="Ada Lovelace" BadgeNumber="7"/>

@@ -27,6 +27,8 @@ class FlyoutButton : public UIElement
     virtual bool openFlyout();
     void closeFlyout();
     void invokePrimary();
+    void setCommand(std::function<void()> command);
+    [[nodiscard]] virtual bool isInOverflow() const noexcept;
     void onAttached(Framework&, ElementId) override;
     void onDetached() noexcept override;
     void onKeyDown(InputContext&, KeyEventArgs&) override;
@@ -64,5 +66,6 @@ class FlyoutButton : public UIElement
     std::unordered_map<std::string, ElementId> m_parts;
     std::vector<EventSubscription> m_subscriptions;
     std::shared_ptr<Flyout> m_flyout; // C++ service attachment; no duplicate Flyout DP is exposed
+    std::function<void()> m_command;
 };
 } // namespace velora

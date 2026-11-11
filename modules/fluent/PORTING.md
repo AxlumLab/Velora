@@ -122,4 +122,15 @@ Windows 示例 `FluentPage.xaml` 从编译 XAML 创建实际 NumberBox；注册�
 - AppBar 按钮使用系统 MDL2 图标和下方标签；IsCompact 隐藏标签并缩小最小高度，Toggle 类型在 Click 前更新 IsChecked，普通类型可关联 Flyout。Click 和可解除的勾选通知复用现有事件/属性系统。
 - 示例 `--open-menubar` 可在启动时创建菜单栏及其内容；普通 `--open-menu` 保留。菜单栏和 AppBar 按钮本身可以由编译 XAML 创建，Items、Menu/Flyout 对象目前通过 C++ 接入。
 
-本批仅编译并启动检查。完整键盘/悬停交互、模板状态叠加、主题/DPI/辅助功能及回归尚未统一验收；F10/Alt 访问键、RTL、滚动/变换中的透传边界、可观察集合、Items 的 XAML 语法、AppBar 完整 LabelPosition/IconSource/ICommand、CommandBar 的溢出容器等仍待实现，不能据此宣布完整 WinUI 2.3 兼容。
+本批仅编译并启动检查。完整键盘/悬停交互、模板状态叠加、主题/DPI/辅助功能及回归尚未统一验收；F10/Alt 访问键、RTL、滚动/变换中的透传边界、可观察集合、Items 的 XAML 语法、AppBar 完整 LabelPosition/IconSource/ICommand 等仍待实现。CommandBar 的后续接入见下一节，不能据此宣布完整 WinUI 2.3 兼容。
+
+## CommandBar 与显式溢出批次（待统一验证）
+
+新增 CommandBar、AppBarSeparator 及主命令/溢出命令编译模板。参考固定 2.3 的 `CommonStyles/CommandBar_themeresources.xaml`、AppBar 按钮与分隔线主题资源；CommandBar 属于系统 XAML 控件，上游主题资源不包含其完整系统 C++ 实现。本批在 Velora 实现对应的基础行为，不宣称已经直接迁移全部系统实现。派生文件保留 MIT 和来源说明。
+
+- PrimaryCommands、SecondaryCommands 持有实际 AppBarButton/AppBarToggleButton/AppBarSeparator 对象，通过 C++ append/clear 设置；拒绝重复对象、已挂载对象、跨线程调用及溢出展开时 append。清空集合会先关闭溢出面板。
+- 次命令展开时挂载原对象，关闭时卸载，勾选值继续保留在原依赖属性；IsInOverflow 为实际只读依赖属性，不创建菜单代理或第二份按钮状态。AppBar 按钮在主区域显示图标和下方标签，在溢出区域显示横排图标与标签。分隔线方向由模板优先级设置，本地 Orientation 保持更高优先级。
+- CommandBar.IsOpen 经既有 Flyout/Popup 同步开闭、点击关闭和卸载；More 按钮使用 Segoe MDL2 Assets。实现主区域左右/Home/End、More 的上下/F4 展开、溢出区域上下/Home/End 路径，Escape/Tab 沿用 Popup。AppBar 按钮新增 C++ setCommand 回调，沿用 Toggle 更新、Click 和既有属性/绑定路径。
+- Gallery 用 `--open-commandbar` 打开包含普通命令、勾选命令及分隔线的实际溢出面板。本批仅编译和一次原生启动/关闭检查，没有新增或执行回归、ASan 或截图验收。
+
+当前是显式次命令面板；宽度驱动的主命令自动迁移、DynamicOverflowOrder/通知、CommandBarFlyout、Content/ClosedDisplayMode、可观察集合与集合 XAML、完整 ICommand/图标属性、嵌套弹出与完整主题/视觉状态/UIA 仍待实现。键盘、焦点、命令执行顺序和销毁期间的完整行为将在集成末尾统一验证，不能将构建/启动成功算作完整兼容。

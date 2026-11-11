@@ -6,7 +6,7 @@
 
 当前接入期仅做编译和简单启动检查，完整回归/ASan/截图统一在集成末尾执行；保留已有测试。Windows 图标统一采用系统 Segoe MDL2 Assets。图标和菜单族已接入 FontIcon、首批 SymbolIcon、RadioMenuFlyoutItem 与图标/快捷键提示列，具体未验收范围见 STATUS.md。
 
-继续按族接入 MenuBar/MenuBarItem 和 AppBarButton/AppBarToggleButton，复用同一 Popup、图标和按钮行为；本批编译/启动通过，交互验收仍留到统一验证。后续补 CommandBar 溢出、复杂集合/导航能力，不将同名类、模板存在或启动成功视为完整移植。
+MenuBar/MenuBarItem、AppBarButton/AppBarToggleButton 已接入。继续接入 CommandBar/AppBarSeparator，复用同一 Popup、图标和实际 AppBar 命令对象；当前主命令、显式次命令溢出、位置模板、只读 IsInOverflow 与 C++ 命令回调已编译/启动通过，交互验收仍留到统一验证。后续补宽度驱动的动态溢出、完整 CommandBar 属性与复杂集合/导航能力，不将同名类、模板存在或启动成功视为完整移植。
 
 ## WinUI 2.3 完整兼容与控件移植执行原则（2026-11-09）
 

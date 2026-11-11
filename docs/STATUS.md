@@ -129,6 +129,14 @@
 - 示例目标编译通过，`--open-menubar` 启动时加载菜单栏及菜单内容，窗口可见，关闭退出码 0。证据为 `build/dev/menubar-appbar-build.log`、`build/dev/menubar-appbar-startup.json`。仅编译和一次启动检查，没有新增/执行回归、ASan 或截图验收。
 - 上述新交互尚待统一验收；F10/Alt 访问键、完整 RTL/主题/模板状态、可观察集合与 Items XAML、AppBar 完整属性/命令、CommandBar 溢出及完整 UIA 仍待实现。详见 Fluent PORTING.md，不把启动成功计为完整控件兼容。
 
+### 当前接入：CommandBar 与显式溢出命令
+
+- 新增 CommandBar、AppBarSeparator 实际控件和编译模板，Gallery 包含主命令、次命令、分隔线与勾选命令。集合通过 C++ append/clear 接入，CommandBar 本体与分隔线进入正式 XAML 类型目录。
+- 溢出面板复用原来的 AppBarButton/AppBarToggleButton 对象，按所在位置选择竖排/横排模板；IsChecked 保留在同一依赖属性中，IsInOverflow 为只读依赖属性。分隔线方向通过模板优先级设置，不覆盖调用方的本地属性值。新增按钮 C++ 命令回调，复用现有 Click 路径。
+- 已接入 IsOpen、More 按钮、主命令左右/Home/End 导航、溢出上下/Home/End 导航及点选关闭路径；开闭和卸载使用既有 Flyout/Popup 生命周期。上述交互仍待集成末尾统一验收。
+- `velora_fluent_gallery` 编译通过；`--open-commandbar` 启动时成功创建并打开次命令面板，窗口可见，正常关闭退出码 0。记录为 `build/dev/commandbar-build.log`、`build/dev/commandbar-startup.json`。本批没有新增或运行回归、ASan、截图检查。
+- 当前只支持显式 SecondaryCommands；窄窗口自动迁移主命令、动态溢出顺序/通知、CommandBarFlyout、Content/ClosedDisplayMode、ICommand/完整图标 API、集合 XAML、完整主题/视觉状态与 UIA 仍待实现。启动成功不代表完整 WinUI 2.3 兼容。
+
 | 范围 | 当前事实 |
 | --- | --- |
 | 控件对象 | UIElement/BuiltinElements、createElement、shared_ptr 元素树和 virtual 布局已有实现；一部分行为仍集中在 Framework |

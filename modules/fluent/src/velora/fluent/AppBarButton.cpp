@@ -7,6 +7,45 @@
 #include <velora/fluent/AppBarButton.hpp>
 namespace velora
 {
+namespace
+{
+const ReadOnlyPropertyKey& overflowKey()
+{
+    static PropertyRegistry registry;
+    static const auto key = []
+    {
+        PropertyDescriptor property;
+        property.name = "AppBarButton.IsInOverflow";
+        property.defaultValue = false;
+        property.flags = PropertyFlags::kPaint;
+        return registry.defineReadOnly(std::move(property));
+    }();
+    return key;
+}
+} // namespace
+const PropertyDescriptor& AppBarButton::isInOverflowProperty()
+{
+    return overflowKey().property();
+}
+bool AppBarButton::isInOverflow() const noexcept
+{
+    return getValue(isInOverflowProperty()).asBool();
+}
+void AppBarButton::setOverflowMode(bool value)
+{
+    setValue(overflowKey(), value);
+}
+void AppBarButton::onDetached() noexcept
+{
+    FlyoutButton::onDetached();
+    try
+    {
+        setOverflowMode(false);
+    }
+    catch (...)
+    {
+    }
+}
 AppBarButton::AppBarButton() : FlyoutButton(Variant::kAppBarButton)
 {
 }
