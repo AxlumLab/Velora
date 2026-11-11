@@ -5,6 +5,7 @@
 #include <filesystem>
 #include <iostream>
 #include <memory>
+#include <optional>
 #include <stdexcept>
 #include <string>
 #include <string_view>
@@ -26,6 +27,7 @@
 #include <velora/fluent/MenuFlyout.hpp>
 #include <velora/fluent/NavigationView.hpp>
 #include <velora/fluent/NumberBox.hpp>
+#include <velora/fluent/ParallaxView.hpp>
 #include <velora/fluent/PersonPicture.hpp>
 #include <velora/fluent/Pivot.hpp>
 #include <velora/fluent/RadioButtons.hpp>
@@ -95,7 +97,8 @@ class FluentWindow final : public XamlWindow
                                   AutoSuggestBox::registerType(ui),
                                   NavigationView::registerType(ui),
                                   NavigationViewItem::registerType(ui),
-                                  TreeView::registerType(ui)})
+                                  TreeView::registerType(ui),
+                                  ParallaxView::registerType(ui)})
             if (!error.empty())
                 throw std::runtime_error(error);
         Demo::FluentPage_component::Names names;
@@ -104,6 +107,16 @@ class FluentWindow final : public XamlWindow
             throw std::runtime_error(loaded.error);
         m_controller.setPicture(std::dynamic_pointer_cast<PersonPicture>(names.Avatar));
         m_controller.setStatusElement(names.Status);
+        const auto motion = std::dynamic_pointer_cast<ParallaxView>(names.Motion);
+        if (!motion)
+            throw std::runtime_error("ParallaxView factory mismatch");
+        const auto movingContent = createElement(ElementKind::kBorder);
+        movingContent->setValue(*ui.props().Content, "Parallax content");
+        movingContent->setValue(*ui.props().Background, i64{0xFFB8D8FF});
+        movingContent->setValue(*ui.props().Width, 300.0);
+        movingContent->setValue(*ui.props().Height, 200.0);
+        motion->setChild(movingContent);
+        motion->setSource(names.MotionSource);
         const auto projectTree = std::dynamic_pointer_cast<TreeView>(names.ProjectTree);
         if (!projectTree)
             throw std::runtime_error("TreeView factory mismatch");
@@ -469,7 +482,17 @@ class FluentWindow final : public XamlWindow
             ui.update(GetAppWindow()->getWidth(), GetAppWindow()->getHeight());
             if (previewPanels)
             {
-                if (previewPanels == 7)
+                if (previewPanels == 8)
+                {
+                    if (!ui.changeView(ui.tree().element(*names.MotionSource), std::nullopt, 90.0))
+                        throw std::runtime_error("Parallax source startup failed");
+                    ui.update(GetAppWindow()->getWidth(), GetAppWindow()->getHeight());
+                    if (!movingContent->isInTree() || motion->child() != movingContent ||
+                        motion->verticalTranslation() >= 0 || documentTab->content() != documentEditor ||
+                        !documentEditor->isInTree())
+                        throw std::runtime_error("ParallaxView startup failed");
+                }
+                else if (previewPanels == 7)
                 {
                     if (projectNode->depth() != 0 || mainNode->depth() != 2 ||
                         mainNode->parent() != sourceNode || projectTree->selectedNode() != mainNode ||
@@ -629,6 +652,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR arguments, int)
                   : args.find("--preview-suggestions") != std::string_view::npos ? 5
                   : args.find("--preview-navigation") != std::string_view::npos  ? 6
                   : args.find("--preview-tree") != std::string_view::npos        ? 7
+                  : args.find("--preview-parallax") != std::string_view::npos    ? 8
                                                                                  : 0);
     try
     {

@@ -107,6 +107,8 @@ Fluent 示例支持 `--preview-rating`：启动时加载 RatingControl 的编译
 
 `--preview-tree` 启动时确认 TreeView 节点父子/深度、main.cpp 初选和对应可见行。节点经 C++ 接入，控件和 SelectionMode 经编译 XAML 创建；当前只做启动/关闭，展开/折叠、选择、集合更新和生命周期的完整交互留到最后。
 
+`--preview-parallax` 启动时对实际 ScrollViewer 设置一次滚动偏移，确认 ParallaxView 子元素已挂载并产生负向平移，同时确认共用内容底座后的 TabViewItem 仍持有原编辑器。当前只做这条简单启动路径和窗口关闭，完整滚动/钳制/对齐/源生命周期验收留到最后。
+
 - Android 没有完整平台实现、NDK preset 或 Gradle 宿主。本包不能直接构建出 Android 产品。
 - 当前模块默认 STATIC。插件共享运行时、导出配置和加载器仍是设计。
 - 新环境必须从干净构建目录开始，不复用旧对象布局产生的缓存。具体已跑/未跑结果见 STATUS.md。

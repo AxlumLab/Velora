@@ -1,4 +1,18 @@
 velora-xaml-types	1
+type	Velora.Fluent.ParallaxView	UserControl
+property	HorizontalShift	Double	ParallaxView.HorizontalShift	0
+property	VerticalShift	Double	ParallaxView.VerticalShift	0
+property	HorizontalSourceStartOffset	Double	ParallaxView.HorizontalSourceStartOffset	0
+property	HorizontalSourceEndOffset	Double	ParallaxView.HorizontalSourceEndOffset	0
+property	VerticalSourceStartOffset	Double	ParallaxView.VerticalSourceStartOffset	0
+property	VerticalSourceEndOffset	Double	ParallaxView.VerticalSourceEndOffset	0
+property	HorizontalSourceOffsetKind	String	ParallaxView.HorizontalSourceOffsetKind	Relative
+property	VerticalSourceOffsetKind	String	ParallaxView.VerticalSourceOffsetKind	Relative
+property	IsHorizontalShiftClamped	Boolean	ParallaxView.IsHorizontalShiftClamped	True
+property	IsVerticalShiftClamped	Boolean	ParallaxView.IsVerticalShiftClamped	True
+property	MaxHorizontalShiftRatio	Double	ParallaxView.MaxHorizontalShiftRatio	1
+property	MaxVerticalShiftRatio	Double	ParallaxView.MaxVerticalShiftRatio	1
+end
 type	Velora.Fluent.TreeView	UserControl
 property	SelectionMode	String	TreeView.SelectionMode	Single
 end

@@ -6,19 +6,12 @@
 #include <exception>
 #include <stdexcept>
 #include <utility>
-#include <velora/controls/XamlComponent.hpp>
 #include <velora/fluent/TabViewItem.hpp>
 #include <velora/text/Encoding.hpp>
 namespace velora
 {
-TabViewItem::TabViewItem() : UIElement(ElementKind::kUserControl)
+TabViewItem::TabViewItem() : ContentElement()
 {
-    addPropertyChanged(
-        [this](DependencyObject&, const PropertyDescriptor& p, const PropertyValue&, const PropertyValue&)
-        {
-            if (p.id == elementProperties().props.Content->id)
-                syncContent();
-        });
 }
 std::string TabViewItem::className() const
 {
@@ -68,28 +61,12 @@ PropertySetResult TabViewItem::setIsClosable(bool value)
 {
     return setValue(isClosableProperty(), value);
 }
-std::shared_ptr<UIElement> TabViewItem::content() const
-{
-    const auto& value = getValue(*elementProperties().props.Content);
-    if (!value.isObject() || !value.asObject())
-        return {};
-    const auto& ref = value.asObject();
-    return {ref.owner, static_cast<UIElement*>(ref.object)};
-}
-PropertySetResult TabViewItem::setContent(std::shared_ptr<UIElement> value)
-{
-    return setValue(*elementProperties().props.Content, ObjectRef::share<UIElement>(std::move(value)));
-}
-std::vector<std::shared_ptr<UIElement>> TabViewItem::ownedContentObjects() const
-{
-    const auto item = content();
-    return item ? std::vector{item} : std::vector<std::shared_ptr<UIElement>>{};
-}
+
 bool TabViewItem::validatePropertyValue(const PropertyDescriptor& p, const PropertyValue& value) const
 {
     if (p.id == isClosableProperty().id)
         return value.isBool();
-    if (p.id == headerProperty().id || (p.id == elementProperties().props.Content->id && value.isString()))
+    if (p.id == headerProperty().id)
     {
         if (!value.isString())
             return false;
@@ -101,87 +78,15 @@ bool TabViewItem::validatePropertyValue(const PropertyDescriptor& p, const Prope
         {
             return false;
         }
-        return p.id != elementProperties().props.Content->id || !m_syncing;
-    }
-    if (p.id != elementProperties().props.Content->id)
         return true;
-    if (m_syncing || !value.isObject())
-        return false;
-    const auto& ref = value.asObject();
-    if (!ref)
-        return true;
-    if (!ref.owner || ref.owner.get() != ref.object || !ref.type || *ref.type != typeid(UIElement))
-        return false;
-    const auto* item = static_cast<UIElement*>(ref.object);
-    return item->isOwnerThread() && !item->containsOwnedContent(*this) &&
-           (!item->isInTree() || (m_ui && m_ui->tree().element(*item) == m_content));
-}
-void TabViewItem::onAttached(Framework& ui, ElementId self)
-{
-    m_ui = &ui;
-    m_element = self;
-    ComponentLoadOptions options;
-    options.parent = this;
-    const auto loaded =
-        loadComponent(ui, *ResourceUri::parse("ms-appx-framework:///Controls/TabViewItemView.vxbf"), options);
-    if (!loaded.ok)
-        throw std::runtime_error("TabViewItem template: " + loaded.error);
-    m_host = ui.tree().element(*loaded.root);
-    ui.applyTemplate(self, m_host, {});
-    syncContent();
-}
-void TabViewItem::onDetached() noexcept
-{
-    m_ui = nullptr;
-    m_element = m_host = m_content = 0;
-}
-void TabViewItem::syncContent()
-{
-    if (!m_ui || !m_host || m_syncing)
-        return;
-    const auto keepAlive = m_ui->tree().object(m_element);
-    m_syncing = true;
-    struct Reset
-    {
-        bool& flag;
-        ~Reset()
-        {
-            flag = false;
-        }
-    } reset{m_syncing};
-    const auto item = content();
-    if (item && m_ui->tree().element(*item) == m_content && m_content)
-        return;
-    const auto old = std::exchange(m_content, 0);
-    if (old)
-        m_ui->tree().remove(old);
-    if (!m_ui)
-        return;
-    if (item)
-    {
-        m_content = m_ui->insert(item, m_host);
-        if (!m_ui)
-        {
-            m_content = 0;
-            return;
-        }
-        if (!m_content)
-            throw std::runtime_error("Tab content failed to attach");
     }
-    else
-    {
-        const auto& value = getValue(*elementProperties().props.Content);
-        if (value.isString() && !value.asString().empty())
-        {
-            const auto text = value.asString();
-            m_content = m_ui->create(ElementKind::kTextBlock, m_host);
-            if (m_ui)
-                m_ui->set(m_content, elementProperties().props.Text, text);
-            if (!m_ui)
-                m_content = 0;
-        }
-    }
+    return ContentElement::validatePropertyValue(p, value);
 }
+std::string_view TabViewItem::contentTemplateUri() const
+{
+    return "ms-appx-framework:///Controls/TabViewItemView.vxbf";
+}
+
 u64 TabViewItem::addCloseRequested(std::function<void(const TabCloseRequestedEventArgs&)> handler)
 {
     if (!isOwnerThread())

@@ -18,6 +18,7 @@ velora_module(controls
         velora/controls/Automation.cpp
         velora/controls/Panels.cpp
         velora/controls/ContentElements.cpp
+        velora/controls/ContentElement.cpp
         velora/controls/TextAndFixedElements.cpp
         velora/controls/ToggleElements.cpp
         velora/controls/RangeElements.cpp

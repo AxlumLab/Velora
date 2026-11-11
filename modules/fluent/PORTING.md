@@ -256,3 +256,13 @@ NavigationView.cpp、NavigationViewItem.cpp 与 NavigationViewChromeView/Navigat
 - 首版 SelectionMode 仅 None/Single，Multiple 明确拒绝；SelectedNode 使用实际节点对象依赖属性，节点离开树时清理失效选择。点击/Enter/Space 调用，方向/Home/End 移动焦点，左右展开/折叠/进入子节点/返回父节点。重建按节点恢复焦点，折叠回退到可见祖先；没有键盘焦点项自动滚入及完整选择跟随焦点契约。
 - 事件支持 token 退订；节点到控件为弱关联，渲染行期间拒绝模型编辑。缺 SelectedNodes 多选、对象 Content/ItemsSource/ItemTemplate、通知集合、正式 TreeViewItem 完整 API、虚拟化/回收、拖拽重排、完整主题/UIA/RTL。异常处理器中的失败事务、父节点析构通知和复杂重入/生命周期仍待完善。
 - Gallery 增加展开的项目树，--preview-tree 仅检查初始父子/深度、选择和可见行，然后启动/关闭窗口；完整展开/折叠/选择/节点编辑统一留到最后，未新增或执行回归、ASan、截图测试。
+
+## ParallaxView 与单内容底座（待统一验证）
+
+正式 ParallaxView.cpp、ParallaxViewView.xaml 内化固定提交 porting/ParallaxView/ParallaxView.cpp/.idl 中子元素扩展、偏移范围、正/负 Shift、最大位移比例和钳制分段公式。原 Composition 表达式改为同一 Framework 布局管线的实际平移；保留 Microsoft MIT 来源。通用 ContentElement 从已有 TabViewItem 内容挂载中提取到 controls，避免每个单内容控件复制一套所有权/生命周期代码。
+
+- ParallaxView 的 Child 是实际对象依赖属性，数字/枚举配置经正式编译 XAML 创建。ContentElement 使用虚拟内容属性和编译模板入口，原内容只保存一份；TabViewItem 沿用 Content，ParallaxView 用 Child。挂载/清空/替换、字符串内容、内容环校验和 UI 线程卸载由同一底座处理，派生类可限制内容类型。
+- C++ Source 通过弱引用关联同一树的 ScrollViewer，监听偏移、范围/视口及 ViewChanged；卸载、重绑和源删除解除监听。弱关联不作为拥有内容，允许滚动祖先控制自身子树中的视差视图；源重新插入暂需重新绑定。RefreshAutomaticHorizontal/VerticalOffsets 请求重新计算。
+- 采用缩放系数 1 和零过滚偏移，保留上游 Relative/Absolute 起止范围及最大比例/钳制公式，实际安排扩展后的子元素并裁剪。源在视图之外可按完整滚动范围驱动，内部源路径计算元素相对位置；嵌套边框/内边距、全部固定尺寸/对齐组合仍未全面验收。
+- 未实现完整 Composition 表达式动画、缩放/惯性过滚、Source 对象依赖属性/XAML/Binding、Child 对象 XAML、异步源关联和完整源生命周期。当前平移查询仅为最近一次排列结果，不宣称独立合成线程性能或完整 WinUI 兼容。
+- Gallery 的 --preview-parallax 只对真实源设置一次偏移，确认负向位移、原子元素及旧 TabViewItem 内容身份，然后正常启动/关闭窗口。未新增或执行回归、ASan、截图验收；完整模式、订阅重入/销毁和跨容器内容统一留到最后验证。

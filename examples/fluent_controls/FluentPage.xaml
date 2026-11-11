@@ -7,6 +7,15 @@
             <fluent:AutoSuggestBox x:Name="Search" Header="Search controls" Text="vi" PlaceholderText="Type to filter suggestions" QueryIconGlyph="&#xE721;" Width="360" HorizontalAlignment="Left"/>
             <fluent:NavigationView x:Name="Navigation" PaneTitle="Workspace" Height="220" CompactModeThresholdWidth="400" ExpandedModeThresholdWidth="600" OpenPaneLength="160" IsBackButtonVisible="Visible" IsBackEnabled="True"/>
             <fluent:TreeView x:Name="ProjectTree" Height="180" SelectionMode="Single"/>
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="16">
+                <ScrollViewer x:Name="MotionSource" Height="140" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                    <StackPanel Spacing="12">
+                        <TextBlock Text="Scroll this panel to move the adjacent content"/>
+                        <Border Height="500" Background="#FFE4EAF5"/>
+                    </StackPanel>
+                </ScrollViewer>
+                <fluent:ParallaxView x:Name="Motion" Grid.Column="1" Height="140" VerticalShift="40"/>
+            </Grid>
             <fluent:CommandBar x:Name="Commands"/>
             <Button x:Name="ContextCommands" Content="Open command flyout" HorizontalAlignment="Left"/>
             <StackPanel Orientation="Horizontal" Spacing="12">
