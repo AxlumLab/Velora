@@ -1,11 +1,28 @@
+# Build output and third-party packages
 /build/
 /.tpkg/
+
+# Local editor/client settings and backups
 /.vs/
 /.vscode/
 /.ccgui/
 /CMakeUserPresets.json
-__pycache__/
-*.pyc
+/backup/
 *.user
 *.suo
-backup
+
+# Accidental in-source CMake output
+/CMakeFiles/
+/CMakeCache.txt
+/Testing/
+/cmake_install.cmake
+/CTestTestfile.cmake
+/install_manifest.txt
+/compile_commands.json
+
+# Python and operating-system caches
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
+Desktop.ini

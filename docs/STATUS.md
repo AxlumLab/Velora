@@ -46,7 +46,7 @@
 
 ### 后续推进：RangeBase 对象 API 与远端仓库
 
-- GitHub 仓库为 `https://github.com/FlybirdLab/Velora`，main 保留本地重新初始化的基线及远端原有 MIT 许可证提交，通过合并接续历史，没有强推。上游 WinUI 许可证仍单独保留。
+- GitHub 仓库现为 `https://github.com/AxlumLab/Velora`（原 FlybirdLab/Velora），main 保留本地重新初始化的基线及远端原有 MIT 许可证提交，通过合并接续历史，没有强推。上游 WinUI 许可证仍单独保留，迁址不改写既有版权归属。
 - `SliderElement`、`ProgressBarElement` 共用 `RangeBaseElement` 的实际依赖属性；提供 Minimum/Maximum/Value 类型化访问及 Slider StepFrequency。Framework 不再单独执行范围校验或修正。
 - 普通 C++、Framework、Binding/表达式和清除属性共用校验；依赖值在通知前一并修正，表达式订阅保留。新增用例覆盖非法数值/类型、遮蔽样式、clearValue、跨线程拒绝、TwoWay 写回和事件中卸载目标；Gallery 用例检查编译 XAML 创建的 Slider 类型化写入经 x:Bind 驱动 ProgressBar。
 - 当前仍是破坏性截断，不保存被截断的原始值，也未实现完整 WinUI RangeBase 事件参数和 coercion 语义。不是新增上游控件移植完成。
