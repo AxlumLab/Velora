@@ -289,20 +289,42 @@ Windows Debug Gallery 编译通过；`--preview-refresh` 实际取得并完成�
 
 Windows Debug Gallery 编译通过；`--preview-datetime` 从编译 XAML 创建两个控件，打开/取消日期、打开/确认/重开时间，原生窗口出现并正常关闭，退出码 0。未新增或运行回归、ASan、截图矩阵。构建与启动证据为 `build/dev/datetime-final-build.log`、`build/dev/datetime-startup.json`；完整范围/步长、输入、重入与生命周期验收留到集成末尾。
 
+### 后续推进：剩余 8 个功能组批量接入（2026-11-11）
+
+本批为此前尚未接入的 8 个功能组建立实际 Windows 运行入口，新增 10 个正式 XAML 类型。仍按原 38 个源码功能组统计，包含原先就计入的 preview Scroller；不把此数扩充成全部历史公开类型/API 清单，也不把“全部组已接入”写成完整 WinUI 2.3 兼容。
+
+| 功能组 | 本批实际实现 | 主要剩余限制 |
+| --- | --- | --- |
+| CalendarView | 公历月份网格、周起始日、月份导航、日期范围、单选/不选、方向键和翻页 | 多选、年/十年视图、非公历、地区文本、全部选择/焦点契约 |
+| CalendarDatePicker | 实际 CalendarView 弹出选择、nullable Date、范围钳制、打开/关闭与 DateChanged | 完整日期格式、模板/日期高亮、对象 Header 与 UIA |
+| ColorPicker | RGB/HSV 换算、实际 ColorSpectrum 色谱输入、RGB/alpha/value 滑块、预览和 Hex 提交 | 环形和全部分量组合、HSV 上下限、全部文本格式、PreviousColor、完整主题 |
+| ScrollBar | 共用 RangeBase 的 Minimum/Maximum/Value，独立 thumb、viewport 比例、轨道翻页、箭头/键盘/拖动输入 | 完整 Scroll 事件参数、自动重复、指针设备状态与系统模板 |
+| Scroller | 真实 ScrollViewer 内容、offset/extent/viewport 查询、ScrollTo/By、滚动模式和 ViewChanged | 原源码为 preview；缺缩放、惯性、snap points、合成滚动控制器与异步完成契约 |
+| SwipeControl | 实际 SwipeItem、四边操作集合、Reveal/Execute、命令/Invoked、Close/RemainOpen、主指针和键盘入口 | 连续拖动位移/动画、物理阈值/惯性、多指、完整 SwipeItems 通知集合 |
+| Repeater | ItemsRepeater 固定高度窗口实现/回收、元素工厂、索引查询、滚动视口关联 | 完整 Layout/VirtualizingLayout、可变尺寸、UniformGrid/Flow、数据模板/通知源及生命周期事件 |
+| AnimatedVisualPlayer | 实际 C++ visual source、Canvas 帧绘制、播放范围/循环、暂停/继续/停止、进度/倍速、Stretch 与 fallback 文本 | WinRT Composition 源、Lottie 文件/动态源、PlayAsync 完成协议、完整 fallback 模板及隐藏/遮挡省电 |
+
+- FluentElement 共用编译模板入口与不可变属性元数据，实际值仍保存在原 DependencyObject 中。日历与上一批 DatePicker 复用 CalendarDate 日期编解码，未创建第二份日期运行时。
+- CalendarView、CalendarDatePicker、ScrollBar 的上游区域只有系统主题，本项目实现相应行为；ColorPicker、SwipeControl、Repeater、Scroller 和 AnimatedVisualPlayer 按固定源码的算法/状态/调用语义改写。保留 Microsoft MIT 和具体来源，未引入上游工程或 WinRT 兼容层。
+- 宿主新增 UI 线程动画时钟注册/移除，沿用 advance/animating 的帧调度；初次回调不把窗口空闲时间算成新动画进度，暂停和卸载移除时钟，重入用播放代次隔离。此处尚未完成所有隐藏祖先/遮挡/后台功耗策略。
+- Gallery 通过正式编译 XAML 创建新类型，并为 Scroller 配置 1000 行 Repeater、关联独立滚动条、设置滑动命令和可绘制的动画源。`--preview-remaining` 仅执行一次初始化调用链，不能替代全部输入和回收验收。
+
+Windows Debug Gallery 最终编译通过，`--preview-remaining` 初始化调用链通过，原生窗口正常出现和关闭、退出码 0；源码规则、工作区、改动 C++ 格式和 diff 检查通过。按要求未新增或运行回归、ASan、截图矩阵。构建与启动证据为 `build/dev/remaining-controls-final-build.log`、`build/dev/remaining-controls-startup.json`。完整模板、API、输入、数据更新、异常重入和生命周期仍需在后续完善并统一验收。
+
 ### 控件接入数量快照（2026-11-11）
 
 以 StageFluentSources.py 的 49 个源码区域为范围，扣除 Collections、Common、CommonStyles、Effects、IconSource、inc、Interactions、LayoutPanel、Lights、Materials、ResourceHelper 这 11 个支撑区域，跟踪 38 个功能组。此口径不是最终 WinUI 2.3 正式公开类型清单；一个功能组可能包含多个控件，experimental 条件仍需审计。额外系统控件及 Button/TextBox 等通用底座不能用此数推算完整总数。
 
 | 接入状态 | 功能组数 | 范围 |
 | --- | --- | --- |
-| Fluent 部分接入 | 26 | AutoSuggestBox、ComboBox、CommandBarFlyout、ContentDialog、DatePicker、DropDownButton、FlipView、MenuBar、MenuFlyout、NavigationView、NumberBox、ParallaxView、PersonPicture、Pivot、PullToRefresh、RadioButtons、RadioMenuFlyoutItem、RatingControl、SplitButton、SplitView、TabView、TeachingTip、TimePicker、ToolTip、TreeView、TwoPaneView |
+| Fluent 部分接入 | 34 | AnimatedVisualPlayer、AutoSuggestBox、CalendarDatePicker、CalendarView、ColorPicker、ComboBox、CommandBarFlyout、ContentDialog、DatePicker、DropDownButton、FlipView、MenuBar、MenuFlyout、NavigationView、NumberBox、ParallaxView、PersonPicture、Pivot、PullToRefresh、RadioButtons、RadioMenuFlyoutItem、RatingControl、Repeater、ScrollBar、Scroller、SplitButton、SplitView、SwipeControl、TabView、TeachingTip、TimePicker、ToolTip、TreeView、TwoPaneView |
 | 通用底座部分实现 | 4 | CheckBox、ProgressBar、ScrollViewer、Slider |
-| 尚未接入运行时 | 8 | 下列清单 |
+| 尚未接入运行时 | 0 | 本轮接入原剩余 8 个功能组 |
 | 完整 WinUI 2.3 兼容验收通过 | 0 | 当前接入期未进行最终统一验收 |
 
-剩余 8 组：AnimatedVisualPlayer、CalendarDatePicker、CalendarView、ColorPicker、Repeater、ScrollBar、Scroller、SwipeControl。此数不包含已接入组内部尚缺的 API、模板、主题、输入与辅助功能。
+原 38 个功能组均已有部分运行实现，尚未接入为 0；38 组均未通过完整兼容验收。各组内部尚缺的 API、公开支持类型、模板、主题、输入与辅助功能仍需逐项推进，不使用 0 推断全部 WinUI 控件迁移已完成。
 
-Fluent 正式 XAML 控件类型现为 35，另有 Flyout/MenuFlyout/ToolTip/CommandBarFlyout/ContentDialog/TeachingTip 等 C++ 服务，以及 C++ TreeViewNode 模型。完整按类型的历史 Gallery/API 清单仍待固定，不能将“8 个功能组”写成“仅剩 8 个控件”。
+Fluent 正式 XAML 控件类型现为 45，新增 CalendarView、CalendarDatePicker、ColorPicker、ColorSpectrum、ScrollBar、Scroller、SwipeControl、SwipeItem、ItemsRepeater、AnimatedVisualPlayer；另有既有 C++ 弹出服务、TreeViewNode，以及当前 SwipeItems 值集合和 AnimatedVisualSource 接口。完整按公开类型的历史 Gallery/API 清单仍待固定，功能组接入数量不等于完整类型兼容数量。
 
 | 范围 | 当前事实 |
 | --- | --- |

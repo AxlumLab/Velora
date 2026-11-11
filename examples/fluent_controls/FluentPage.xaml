@@ -5,6 +5,18 @@
         <StackPanel Margin="24" Spacing="20">
             <fluent:MenuBar x:Name="ApplicationMenu"/>
             <StackPanel Orientation="Horizontal" Spacing="16">
+                <fluent:CalendarView x:Name="Calendar" SelectedDate="2026-11-11" DisplayDate="2026-11-11"/>
+                <fluent:ColorPicker x:Name="ColorEditor" Color="4281558681" IsAlphaEnabled="True"/>
+            </StackPanel>
+            <fluent:CalendarDatePicker x:Name="CalendarPicker" Header="Calendar date" Date="2026-11-11" Width="300" HorizontalAlignment="Left"/>
+            <Grid ColumnDefinitions="*,24" ColumnSpacing="12">
+                <fluent:Scroller x:Name="VirtualScroller" Height="160" HorizontalScrollMode="Disabled"/>
+                <fluent:ScrollBar x:Name="ExternalScroll" Grid.Column="1" Height="160" Minimum="0" Maximum="31840" ViewportSize="160"/>
+            </Grid>
+            <fluent:ItemsRepeater x:Name="RecentItems" ItemExtent="28" Height="84" CacheLength="0"/>
+            <fluent:SwipeControl x:Name="SwipeActions" Height="72"/>
+            <fluent:AnimatedVisualPlayer x:Name="MotionPlayer" Height="72" Width="280" HorizontalAlignment="Left"/>
+            <StackPanel Orientation="Horizontal" Spacing="16">
                 <fluent:DatePicker x:Name="AppointmentDate" Header="Appointment date" SelectedDate="2024-02-29" MinYear="2000" MaxYear="2050" Width="250"/>
                 <fluent:TimePicker x:Name="AppointmentTime" Header="Appointment time" SelectedTime="14:30" ClockIdentifier="12HourClock" MinuteIncrement="15" Width="250"/>
             </StackPanel>

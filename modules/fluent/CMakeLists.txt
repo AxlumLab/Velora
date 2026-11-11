@@ -29,6 +29,15 @@ velora_module(fluent
         velora/fluent/RefreshContainer.cpp
         velora/fluent/RefreshVisualizer.cpp
         velora/fluent/DateTimePicker.cpp
+        velora/fluent/FluentElement.cpp
+        velora/fluent/CalendarDate.cpp
+        velora/fluent/CalendarControls.cpp
+        velora/fluent/ColorPicker.cpp
+        velora/fluent/ScrollBar.cpp
+        velora/fluent/Scroller.cpp
+        velora/fluent/SwipeControl.cpp
+        velora/fluent/ItemsRepeater.cpp
+        velora/fluent/AnimatedVisualPlayer.cpp
         velora/fluent/PaneLayout.cpp
         velora/fluent/SplitView.cpp
         velora/fluent/TwoPaneView.cpp

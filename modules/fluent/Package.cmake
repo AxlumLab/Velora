@@ -23,7 +23,7 @@ if(TARGET velorac)
             VERBATIM)
         list(APPEND _staged "${_stage}/Themes/${_dictionary}.vxbf")
     endforeach()
-    foreach(_control IN ITEMS PersonPicture NumberBox Flyout DropDownButton SplitButton MenuFlyoutItem MenuFlyoutSeparator MenuBar MenuBarItem AppBarButton CommandBar CommandBarFlyout AppBarSeparator AppBarOverflowButton PaneLayout RatingControl ToolTip ComboBox RadioButtons PopupPanel PageSelector TabViewItem AutoSuggestBox AutoSuggestBoxSuggestions NavigationViewItem NavigationViewChrome TreeView TreeViewRow ParallaxView RefreshContainer RefreshVisualizer DateTimePicker DateTimePickerFlyout)
+    foreach(_control IN ITEMS PersonPicture NumberBox Flyout DropDownButton SplitButton MenuFlyoutItem MenuFlyoutSeparator MenuBar MenuBarItem AppBarButton CommandBar CommandBarFlyout AppBarSeparator AppBarOverflowButton PaneLayout RatingControl ToolTip ComboBox RadioButtons PopupPanel PageSelector TabViewItem AutoSuggestBox AutoSuggestBoxSuggestions NavigationViewItem NavigationViewChrome TreeView TreeViewRow ParallaxView RefreshContainer RefreshVisualizer DateTimePicker DateTimePickerFlyout CalendarView ColorPicker Scroller SwipeControl SwipeItem ItemsRepeater AnimatedVisualPlayer)
         add_custom_command(
             OUTPUT "${_stage}/Controls/${_control}View.vxbf"
             COMMAND "${CMAKE_COMMAND}" -E make_directory "${_stage}/Controls"

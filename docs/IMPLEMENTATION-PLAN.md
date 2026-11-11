@@ -10,7 +10,7 @@ MenuBar/MenuBarItem、AppBarButton/AppBarToggleButton 和 CommandBar/AppBarSepar
 
 ## WinUI 2.3 完整兼容与控件移植执行原则（2026-11-09）
 
-刷新族已部分接通，本批接入 DatePicker/TimePicker，共用弹出字段编辑、确认/取消与类型化选中值 API，补公历日期、年份范围和时间步长。仅编译和启动；日历族、完整循环滚轮/触摸、地区格式、主题/UIA、对象和事件 XAML 仍待补齐。进度按 STATUS.md 的 38 个功能组统计：8 组未接入、30 组部分实现；完整兼容验收仍为 0。此数不是正式公开控件类型总数；每轮结束都继续报告这些数量。
+本批一次接入原剩余 8 个功能组：日历两组、颜色、ScrollBar、Scroller、SwipeControl、Repeater、AnimatedVisualPlayer，并接入同一 Gallery。按原 38 个功能组统计：0 组未接入、38 组部分实现；完整兼容验收通过仍为 0，38 组均待最终验收。下一步应完善各组 API、模板/状态、绑定/对象内容、输入/焦点、回收/异步生命周期与 UIA，并固定正式公开类型清单；不能因功能组接入清零而停止剩余实现。接入期仍只编译和简单启动。
 
 用户明确要求完整覆盖 WinUI 2.3，并移植其控件逻辑代码。目标包括控件属性/事件语义、布局、模板、资源、视觉状态、输入、焦点、辅助功能与生命周期；不能仅用 Gallery 截图或同名类验收。沿用普通 C++23 对象模型，不恢复旧对象 ABI；既有 C++/WinRT 源码和二进制直接兼容不属于已承诺能力。
 
@@ -19,6 +19,14 @@ MenuBar/MenuBarItem、AppBarButton/AppBarToggleButton 和 CommandBar/AppBarSepar
 WinUI 2 依赖 UWP XAML。锁定的 2.3 源码中可用的控件逻辑应保留算法和行为、适配至 Velora；其依赖的系统控件和平台能力需要逐项核实来源，以契约、参考程序和回归测试补齐，不能假设整个底层框架都包含在控件源码仓库中。参考：[WinUI 2](https://learn.microsoft.com/en-us/windows/apps/winui/winui2/)、[2.3 发布说明](https://learn.microsoft.com/en-us/windows/uwp/get-started/winui2/release-notes/winui-2.3)。
 
 ### 近期顺序与检查点
+
+本批剩余 8 组的接入清单（仅编译及简单启动，完整兼容验收另行进行）：
+
+- [x] 共享 Fluent 元数据/模板入口，ScrollBar 范围输入与 Scroller 实际滚动内容。
+- [x] CalendarView 月份网格及 CalendarDatePicker 选择弹出层，共用公历日期值。
+- [x] ColorPicker 色值/通道编辑与 SwipeControl 的实际操作项调用。
+- [x] ItemsRepeater 固定尺寸窗口实现/回收及 AnimatedVisualPlayer 时间推进、暂停/继续。
+- [x] 全部注册到编译 XAML/Gallery，统一构建、简单启动、来源说明与剩余数量同步。
 
 - [x] 0A 核心基线：按 BUILD.md 配置、构建并执行 core-check，执行两个源码检查脚本。Windows 25/25 通过，环境和结果见 STATUS.md。
 - [x] 0B Windows 正常路径：恢复锁定依赖，dev-debug 完整构建通过；ANTLR、反射、二进制 XAML、资源包和安装消费测试通过。首轮空闲等待测试失败已修正并连续复测通过，保留首次失败记录。

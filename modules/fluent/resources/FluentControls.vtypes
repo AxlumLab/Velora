@@ -1,4 +1,58 @@
 velora-xaml-types	1
+type	Velora.Fluent.CalendarView	UserControl
+property	SelectedDate	String	CalendarView.SelectedDate	""
+property	DisplayDate	String	CalendarView.DisplayDate	""
+property	MinDate	String	CalendarView.MinDate	1900-01-01
+property	MaxDate	String	CalendarView.MaxDate	2100-12-31
+property	FirstDayOfWeek	Integer	CalendarView.FirstDayOfWeek	0
+property	SelectionMode	String	CalendarView.SelectionMode	Single
+end
+type	Velora.Fluent.CalendarDatePicker	UserControl
+property	Date	String	CalendarDatePicker.Date	""
+property	MinDate	String	CalendarDatePicker.MinDate	1900-01-01
+property	MaxDate	String	CalendarDatePicker.MaxDate	2100-12-31
+property	Header	String	CalendarDatePicker.Header	""
+property	PlaceholderText	String	CalendarDatePicker.PlaceholderText	Select a date
+property	IsCalendarOpen	Boolean	CalendarDatePicker.IsCalendarOpen	False
+end
+type	Velora.Fluent.ColorPicker	UserControl
+property	Color	Integer	ColorPicker.Color	4294967295
+property	IsAlphaEnabled	Boolean	ColorPicker.IsAlphaEnabled	False
+property	IsColorSpectrumVisible	Boolean	ColorPicker.IsColorSpectrumVisible	True
+property	IsColorPreviewVisible	Boolean	ColorPicker.IsColorPreviewVisible	True
+property	IsHexInputVisible	Boolean	ColorPicker.IsHexInputVisible	True
+end
+type	Velora.Fluent.ColorSpectrum	UserControl
+property	Color	Integer	ColorSpectrum.Color	4294967295
+end
+type	Velora.Fluent.ScrollBar	Slider
+property	Orientation	String	ScrollBar.Orientation	Vertical
+property	ViewportSize	Double	ScrollBar.ViewportSize	0
+property	SmallChange	Double	ScrollBar.SmallChange	1
+property	LargeChange	Double	ScrollBar.LargeChange	10
+end
+type	Velora.Fluent.Scroller	UserControl
+property	HorizontalScrollMode	String	Scroller.HorizontalScrollMode	Enabled
+property	VerticalScrollMode	String	Scroller.VerticalScrollMode	Enabled
+end
+type	Velora.Fluent.SwipeControl	UserControl
+end
+type	Velora.Fluent.SwipeItem	UserControl
+property	Text	String	SwipeItem.Text	""
+property	BehaviorOnInvoked	String	SwipeItem.BehaviorOnInvoked	Auto
+end
+type	Velora.Fluent.ItemsRepeater	UserControl
+property	ItemExtent	Double	ItemsRepeater.ItemExtent	32
+property	Spacing	Double	ItemsRepeater.Spacing	0
+property	CacheLength	Double	ItemsRepeater.CacheLength	1
+end
+type	Velora.Fluent.AnimatedVisualPlayer	UserControl
+property	AutoPlay	Boolean	AnimatedVisualPlayer.AutoPlay	True
+property	PlaybackRate	Double	AnimatedVisualPlayer.PlaybackRate	1
+property	Progress	Double	AnimatedVisualPlayer.Progress	0
+property	Stretch	String	AnimatedVisualPlayer.Stretch	Uniform
+property	FallbackText	String	AnimatedVisualPlayer.FallbackText	No animated visual
+end
 type	Velora.Fluent.DatePicker	UserControl
 property	Header	String	DatePicker.Header	""
 property	SelectedDate	String	DatePicker.SelectedDate	""

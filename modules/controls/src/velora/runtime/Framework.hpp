@@ -9,6 +9,7 @@
 #include <string_view>
 #include <thread>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include <velora/controls/EventSubscription.hpp>
 #include <velora/controls/LayoutTypes.hpp>
@@ -324,6 +325,10 @@ class Framework
     // Animation clock in seconds; call before update() each frame. animating() asks for frames.
     void advance(double seconds);
     bool animating() const noexcept;
+    // UI-thread animation clocks share the host frame scheduler. Return false when finished.
+    // The callback receives elapsed seconds (zero for the initial host clock sample).
+    u64 addAnimationClock(ElementId owner, std::function<bool(f64)> callback);
+    bool removeAnimationClock(u64 token);
     // The handler is owned by the element and destroyed with it.
     void on(ElementId element, const EventDescriptor* event, std::function<void()> handler);
     // UIElement.AddHandler/RemoveHandler for routed events; returns a token (0 on failure).
@@ -565,6 +570,15 @@ class Framework
     void refreshContextual(ElementId element);
     void pushAccessorBinding(const std::shared_ptr<AccessorBinding>& binding);
     std::vector<std::shared_ptr<AccessorBinding>> m_accessorBindings;
+    struct SourceAnimation
+    {
+        ElementId owner;
+        std::function<bool(f64)> callback;
+        bool fresh = true;
+    };
+    std::unordered_map<u64, SourceAnimation> m_sourceAnimations;
+    std::unordered_set<ElementId> m_animationClockOwners;
+    u64 m_nextAnimationToken = 1;
     // Declared after everything element cleanups touch, so the tree is destroyed first.
     ElementTree m_tree;
     std::unique_ptr<VisualBridge> m_bridge;

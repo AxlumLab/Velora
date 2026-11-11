@@ -12,6 +12,7 @@
 #include <utility>
 #include <velora/controls/ElementFactory.hpp>
 #include <velora/controls/XamlComponent.hpp>
+#include <velora/fluent/CalendarDate.hpp>
 #include <velora/fluent/DatePicker.hpp>
 #include <velora/fluent/TimePicker.hpp>
 #include <velora/runtime/SchemaValue.hpp>
@@ -108,31 +109,13 @@ std::string DateTimePicker::className() const
 {
     return m_time ? "Velora.Fluent.TimePicker" : "Velora.Fluent.DatePicker";
 }
-std::optional<std::chrono::year_month_day> DateTimePicker::parseDate(std::string_view text)
+std::optional<std::chrono::year_month_day> DateTimePicker::parseDate(std::string_view value)
 {
-    if (text.size() != 10 || text[4] != '-' || text[7] != '-')
-        return {};
-    // ISO date fields contain digits only, not signed from_chars spellings.
-    for (usize i = 0; i < text.size(); ++i)
-        if (i != 4 && i != 7 && (text[i] < '0' || text[i] > '9'))
-            return {};
-    const auto year = number(text.substr(0, 4)), month = number(text.substr(5, 2)),
-               day = number(text.substr(8, 2));
-    if (!year || !month || !day || *year < 1601 || *year > 9999)
-        return {};
-    const std::chrono::year_month_day value{std::chrono::year{*year},
-                                            std::chrono::month{static_cast<unsigned>(*month)},
-                                            std::chrono::day{static_cast<unsigned>(*day)}};
-    return value.ok() ? std::optional{value} : std::nullopt;
+    return parseCalendarDate(value);
 }
 std::string DateTimePicker::formatDate(std::chrono::year_month_day value)
 {
-    if (!value.ok() || static_cast<i32>(value.year()) < 1601 || static_cast<i32>(value.year()) > 9999)
-        throw std::invalid_argument("DatePicker requires a valid Gregorian date in 1601..9999");
-    std::array<char, 16> text{};
-    std::snprintf(text.data(), text.size(), "%04d-%02u-%02u", static_cast<i32>(value.year()),
-                  static_cast<unsigned>(value.month()), static_cast<unsigned>(value.day()));
-    return text.data();
+    return formatCalendarDate(value);
 }
 std::optional<std::chrono::minutes> DateTimePicker::parseTime(std::string_view text)
 {

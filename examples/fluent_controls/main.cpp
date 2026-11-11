@@ -1,5 +1,6 @@
 #include "FluentPage.g.hpp"
 
+#include <algorithm>
 #include <array>
 #include <cctype>
 #include <chrono>
@@ -15,8 +16,11 @@
 #include <velora/application/XamlApplication.hpp>
 #include <velora/application/XamlWindow.hpp>
 #include <velora/controls/ElementFactory.hpp>
+#include <velora/fluent/AnimatedVisualPlayer.hpp>
 #include <velora/fluent/AppBarButton.hpp>
 #include <velora/fluent/AutoSuggestBox.hpp>
+#include <velora/fluent/CalendarDatePicker.hpp>
+#include <velora/fluent/ColorPicker.hpp>
 #include <velora/fluent/ComboBox.hpp>
 #include <velora/fluent/CommandBar.hpp>
 #include <velora/fluent/CommandBarFlyout.hpp>
@@ -25,6 +29,7 @@
 #include <velora/fluent/DropDownButton.hpp>
 #include <velora/fluent/FlipView.hpp>
 #include <velora/fluent/FluentPackage.hpp>
+#include <velora/fluent/ItemsRepeater.hpp>
 #include <velora/fluent/MenuBar.hpp>
 #include <velora/fluent/MenuFlyout.hpp>
 #include <velora/fluent/NavigationView.hpp>
@@ -36,7 +41,10 @@
 #include <velora/fluent/RadioMenuFlyoutItem.hpp>
 #include <velora/fluent/RatingControl.hpp>
 #include <velora/fluent/RefreshContainer.hpp>
+#include <velora/fluent/ScrollBar.hpp>
+#include <velora/fluent/Scroller.hpp>
 #include <velora/fluent/SplitView.hpp>
+#include <velora/fluent/SwipeControl.hpp>
 #include <velora/fluent/SymbolIcon.hpp>
 #include <velora/fluent/TabView.hpp>
 #include <velora/fluent/TeachingTip.hpp>
@@ -48,6 +56,26 @@
 #include <windows.h>
 
 using namespace velora;
+class GalleryAnimatedVisual final : public AnimatedVisualSource
+{
+  public:
+    Size intrinsicSize() const override
+    {
+        return {280, 72};
+    }
+    f64 durationSeconds() const override
+    {
+        return 2;
+    }
+    void render(Canvas& canvas, Rect bounds, f64 progress) const override
+    {
+        canvas.drawRoundedRect(bounds, 8, Paint{Color{.9f, .94f, 1, 1}});
+        const f32 size = std::min(bounds.height, 40.0f);
+        canvas.drawRoundedRect({bounds.x + static_cast<f32>(progress) * (bounds.width - size),
+                                bounds.y + (bounds.height - size) / 2, size, size},
+                               size / 2, Paint{Color{0, .4f, .75f, 1}});
+    }
+};
 class FluentWindow final : public XamlWindow
 {
   public:
@@ -106,7 +134,17 @@ class FluentWindow final : public XamlWindow
                                   RefreshContainer::registerType(ui),
                                   RefreshVisualizer::registerType(ui),
                                   DatePicker::registerType(ui),
-                                  TimePicker::registerType(ui)})
+                                  TimePicker::registerType(ui),
+                                  CalendarView::registerType(ui),
+                                  CalendarDatePicker::registerType(ui),
+                                  ColorPicker::registerType(ui),
+                                  ColorSpectrum::registerType(ui),
+                                  ScrollBar::registerType(ui),
+                                  Scroller::registerType(ui),
+                                  SwipeControl::registerType(ui),
+                                  SwipeItem::registerType(ui),
+                                  ItemsRepeater::registerType(ui),
+                                  AnimatedVisualPlayer::registerType(ui)})
             if (!error.empty())
                 throw std::runtime_error(error);
         Demo::FluentPage_component::Names names;
@@ -115,6 +153,65 @@ class FluentWindow final : public XamlWindow
             throw std::runtime_error(loaded.error);
         m_controller.setPicture(std::dynamic_pointer_cast<PersonPicture>(names.Avatar));
         m_controller.setStatusElement(names.Status);
+        const auto calendar = std::dynamic_pointer_cast<CalendarView>(names.Calendar);
+        const auto calendarPicker = std::dynamic_pointer_cast<CalendarDatePicker>(names.CalendarPicker);
+        const auto colorEditor = std::dynamic_pointer_cast<ColorPicker>(names.ColorEditor);
+        const auto virtualScroller = std::dynamic_pointer_cast<Scroller>(names.VirtualScroller);
+        const auto externalScroll = std::dynamic_pointer_cast<ScrollBar>(names.ExternalScroll);
+        const auto recentItems = std::dynamic_pointer_cast<ItemsRepeater>(names.RecentItems);
+        const auto swipeActions = std::dynamic_pointer_cast<SwipeControl>(names.SwipeActions);
+        const auto motionPlayer = std::dynamic_pointer_cast<AnimatedVisualPlayer>(names.MotionPlayer);
+        if (!calendar || !calendarPicker || !colorEditor || !virtualScroller || !externalScroll ||
+            !recentItems || !swipeActions || !motionPlayer)
+            throw std::runtime_error("Remaining control factory mismatch");
+        const auto virtualItems = createElement<ItemsRepeater>();
+        virtualItems->setItemsSource(
+            1000,
+            [](i32 index, std::shared_ptr<UIElement> recycled)
+            {
+                auto row = recycled ? std::move(recycled) : createElement(ElementKind::kTextBlock);
+                row->setValue(*elementProperties().props.Text, "Virtual row " + std::to_string(index));
+                return row;
+            });
+        virtualScroller->setContent(virtualItems);
+        recentItems->setItems({"Recent: CalendarView", "Recent: ColorPicker", "Recent: ItemsRepeater"});
+        const std::weak_ptr<Scroller> weakScroller = virtualScroller;
+        const std::weak_ptr<ScrollBar> weakScrollBar = externalScroll;
+        externalScroll->addValueChanged(
+            [weakScroller](f64, f64 value)
+            {
+                if (const auto scroller = weakScroller.lock())
+                    scroller->scrollTo(0, value);
+            });
+        virtualScroller->addViewChanged(
+            [weakScrollBar](f64, f64 value)
+            {
+                if (const auto bar = weakScrollBar.lock())
+                    bar->setValue(value);
+            });
+        const auto swipeText = createElement(ElementKind::kTextBlock);
+        swipeText->setValue(*ui.props().Text, "Drag left/right for actions, or Ctrl + arrow keys");
+        swipeActions->setContent(swipeText);
+        const auto archiveItem = createElement<SwipeItem>();
+        archiveItem->setText("Archive");
+        const auto deleteItem = createElement<SwipeItem>();
+        deleteItem->setText("Delete");
+        const auto swipeInvocations = std::make_shared<i32>(0);
+        archiveItem->setCommand(
+            [this, swipeInvocations]
+            {
+                ++*swipeInvocations;
+                m_controller.record("Archived");
+            });
+        deleteItem->setCommand(
+            [this, swipeInvocations]
+            {
+                ++*swipeInvocations;
+                m_controller.record("Deleted");
+            });
+        swipeActions->setItems(SwipeSide::kLeft, SwipeItems{SwipeMode::kReveal, {archiveItem}});
+        swipeActions->setItems(SwipeSide::kRight, SwipeItems{SwipeMode::kExecute, {deleteItem}});
+        motionPlayer->setSource(std::make_shared<GalleryAnimatedVisual>());
         const auto appointmentDate = std::dynamic_pointer_cast<DatePicker>(names.AppointmentDate);
         const auto appointmentTime = std::dynamic_pointer_cast<TimePicker>(names.AppointmentTime);
         if (!appointmentDate || !appointmentTime)
@@ -520,7 +617,32 @@ class FluentWindow final : public XamlWindow
             ui.update(GetAppWindow()->getWidth(), GetAppWindow()->getHeight());
             if (previewPanels)
             {
-                if (previewPanels == 10)
+                if (previewPanels == 11)
+                {
+                    calendar->navigateMonths(1);
+                    calendarPicker->setIsCalendarOpen(true);
+                    if (!calendarPicker->isCalendarOpen() || !ui.popupRoot())
+                        throw std::runtime_error("Calendar startup failed");
+                    calendarPicker->setIsCalendarOpen(false);
+                    if (!colorEditor->setHex("#FF2288AA"))
+                        throw std::runtime_error("Color startup failed");
+                    swipeActions->open(SwipeSide::kRight);
+                    swipeActions->invoke(SwipeSide::kRight, 0);
+                    if (*swipeInvocations != 1 || swipeActions->isOpen())
+                        throw std::runtime_error("Swipe startup failed");
+                    if (!virtualScroller->scrollTo(0, 960))
+                        throw std::runtime_error("Scroller startup failed");
+                    ui.update(GetAppWindow()->getWidth(), GetAppWindow()->getHeight());
+                    externalScroll->setValue(virtualScroller->verticalOffset());
+                    if (virtualItems->realizedCount() == 0 || virtualItems->realizedCount() >= 1000 ||
+                        !virtualItems->tryGetElement(30))
+                        throw std::runtime_error("Repeater startup failed");
+                    motionPlayer->setProgress(.25);
+                    motionPlayer->resume();
+                    if (!motionPlayer->isPlaying())
+                        throw std::runtime_error("Animated visual startup failed");
+                }
+                else if (previewPanels == 10)
                 {
                     if (!appointmentDate->selectedDate() || !appointmentTime->selectedTime() ||
                         !appointmentDate->openPicker())
@@ -722,6 +844,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR arguments, int)
                   : args.find("--preview-parallax") != std::string_view::npos    ? 8
                   : args.find("--preview-refresh") != std::string_view::npos     ? 9
                   : args.find("--preview-datetime") != std::string_view::npos    ? 10
+                  : args.find("--preview-remaining") != std::string_view::npos   ? 11
                                                                                  : 0);
     try
     {

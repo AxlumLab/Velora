@@ -287,3 +287,19 @@ NavigationView.cpp、NavigationViewItem.cpp 与 NavigationViewChromeView/Navigat
 - 官方行为参考：[DatePicker](https://learn.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.datepicker?view=winrt-22621)、[TimePicker.SelectedTime](https://learn.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.timepicker.selectedtime)。这些页面描述系统 API，不是源码许可或本项目已完整兼容的证据。
 - 缺循环滚轮与惯性、非公历/CalendarIdentifier、地区顺序及 Month/Day/YearFormat、Date/Time 非 nullable 别名与全部事件、完整模板/主题/RTL/UIA、对象 Header、完整 XAML Binding/事件。方向键和上下按钮是当前可操作切片，不将其称为完整系统选择器行为移植。
 - Gallery 的 --preview-datetime 仅打开/取消日期、打开/确认/重开时间并启动关闭窗口；未新增或运行回归、ASan、截图验收。完整范围/闰日/步长、键盘/指针、重入/卸载和不同地区统一留待最后验证。
+
+## 原剩余 8 个功能组的运行切片（待统一验证）
+
+本批新增 10 个正式 XAML 控件类型，但只是原 8 个功能组的部分实现。未建立完整公开类型/API 分母，未把集合、布局及动画源的所有支持类型纳入正式注册；不能将“未接入功能组为 0”解释为 WinUI 2.3 完整移植完成。
+
+- **CalendarView / CalendarDatePicker**：来源为固定提交 porting/CalendarView、CalendarDatePicker 的主题资源，系统行为由 Velora 实现。CalendarControls.cpp 和 CalendarViewView.xaml 提供月份/周/日期网格、单选/不选、范围、翻页及实际日历弹出；CalendarDate.cpp 从 DateTimePicker 提取同一公历编解码。首版 SelectedDate/Date/DisplayDate 使用空或 ISO 日期字符串，C++ 使用 optional<chrono::year_month_day>。缺 SelectedDates 多选、显示模式、历法、地区文本及完整日期模板/UIA。
+- **ColorPicker / ColorSpectrum**：ColorPicker.cpp 改写 porting/ColorPicker/ColorPicker.cpp、ColorSpectrum.cpp 的集中颜色更新与通道联动，RGB/HSV 的 chroma/sector 算法来自 porting/Common/ColorConversion.cpp，保留 MIT。ARGB 是唯一色值；HSV 查询/输入均从它换算，不增加第二份公开可写颜色。色谱为 Hue/Saturation Box，用 Canvas 采样网格绘制；有 RGB/alpha/value 滑块、颜色预览及 #RRGGBB/#AARRGGBB 提交。缺 ring/全部分量/范围、PreviousColor、完整通道文本和色彩命名；灰色时的未定义 hue 未保留，采样绘制性能尚未测量。
+- **ScrollBar**：上游只有 ScrollBar_themeresources.xaml，行为由 Velora 实现。ScrollBar 派生实际 RangeBaseElement，过渡期声明以 Slider 为内建 schema 基类，共用原 Minimum/Maximum/Value 及校验/通知路径；自绘 track/thumb/箭头，按 ViewportSize 计算比例。方向、Small/LargeChange、指针和键盘已有路径，缺系统 Scroll 事件协议、长按重复和完整模板/设备状态。没有复制一套范围值或将原滚动条包装成第二对象。
+- **Scroller**：固定源码 Scroller.cpp/.idl 属于 preview。Scroller.cpp 改写 ScrollTo/By 的偏移语义，ContentElement 挂入实际 ScrollViewer，查询直接读取该对象的 offset/extent/viewport。模式与 ViewChanged 沿用真实滚动树，不存影子偏移。缺 InteractionTracker、zoom、snap points、scroll controller、惯性/动画及异步完成；此运行切片不声明 preview API 的完整兼容。
+- **SwipeControl / SwipeItem**：改写固定 SwipeControl.cpp、SwipeItems.cpp、SwipeItem.cpp/.idl 的边缘集合、Reveal/Execute、单项 Execute 限制和 Invoked/Command/Close/RemainOpen。实际操作项直接挂入四边宿主，父回指为弱引用，保留实际内容；SwipeItems 当前是经 setter 提交的值集合，不是完整通知集合。主指针松开后按距离显示/执行，当前呈现用网格分区，缺连续内容位移、物理阈值/惯性/动画、多指、命令参数/IconSource 及完整集合对象 XAML。
+- **ItemsRepeater**：ItemsRepeater.cpp 从 Repeater/StackLayout.cpp 的窗口/extent 公式及 ViewManager.cpp、ElementManager.cpp 的实现/回收流程裁出固定高度、垂直 stack 路径。C++ count+factory 或字符串集合为实际数据源，当前实际元素按可见窗口加 cache 创建，离开窗口后回收到本控件最多 128 项的池；索引查询与强制创建返回实际 UIElement。关联最近的实际 ScrollViewer 偏移和视口变化。缺可变尺寸、横向/网格/flow、完整 Layout/VirtualizingLayout/ElementFactory、模板与集合通知、焦点锚定及 Prepared/Clearing/IndexChanged 事件，不宣称完整 Repeater SDK。
+- **AnimatedVisualPlayer**：改写 AnimatedVisualPlayer.cpp/.idl 的 source 更换、播放区间、停止、暂停/继续及循环语义。普通 C++ AnimatedVisualSource 直接向 Velora Canvas 绘制；Source 只在 C++ 对象属性中保存一次，Progress 使用实际依赖属性，read-only IsPlaying/Loaded 通过 C++ 查询。Framework 动画时钟接入原 advance/animating 调度，回调弱关联，暂停/卸载移除，新时钟首帧不累计旧空闲时长。支持正倍速、反向区间、Stretch 和 fallback 文本；缺 Composition/Lottie/dynamic source、PlayAsync/完成/取消事件、fallback 对象模板与完整隐藏/后台省电。Gallery 提供真实移动图形源，不把没有解码器的文件 Source 暴露为已实现 API。
+
+共享 FluentElement 只抽取元数据/编译模板/订阅入口，仍使用同一 UIElement、DependencyObject、ElementTree 和 RAII。元数据在一次静态初始化后只读，避免窗口线程并发新增描述符；对象操作继续受 UI 线程亲和性约束。新模板、派生 C++ 与本文件保留来源和 MIT。
+
+--preview-remaining 是一次初始化与窗口启动/关闭检查，不是 8 组行为矩阵。完整 API、模板/主题/RTL/UIA、输入、源变更、对象移除、异常/重入和动画/回收性能仍需后续完善并统一验收；本批不新增或执行回归、ASan、截图测试。

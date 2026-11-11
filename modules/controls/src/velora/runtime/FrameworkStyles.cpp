@@ -405,15 +405,48 @@ void Framework::evaluate(RunningTrack& run, double now)
 
 void Framework::advance(double seconds)
 {
+    const auto delta = m_clock > 0 ? std::max(0.0, seconds - m_clock) : 0.0;
     m_clock = seconds;
     for (std::size_t i = 0; i < m_running.size(); ++i)
         if (!m_running[i].done)
             evaluate(m_running[i], m_clock);
+    const auto animations = m_sourceAnimations;
+    for (const auto& [token, animation] : animations)
+    {
+        if (!m_sourceAnimations.contains(token))
+            continue;
+        m_sourceAnimations.at(token).fresh = false;
+        if (!m_tree.contains(animation.owner) || !animation.callback(animation.fresh ? 0.0 : delta))
+            m_sourceAnimations.erase(token);
+    }
 }
 
 bool Framework::animating() const noexcept
 {
-    return std::ranges::any_of(m_running, [](const RunningTrack& r) { return !r.done; });
+    return !m_sourceAnimations.empty() ||
+           std::ranges::any_of(m_running, [](const RunningTrack& r) { return !r.done; });
+}
+
+u64 Framework::addAnimationClock(ElementId owner, std::function<bool(f64)> callback)
+{
+    if (!isOwnerThread() || !m_tree.contains(owner) || !callback || !m_nextAnimationToken)
+        return 0;
+    const auto token = m_nextAnimationToken++;
+    m_sourceAnimations.emplace(token, SourceAnimation{owner, std::move(callback)});
+    if (m_animationClockOwners.insert(owner).second)
+        m_tree.onRemoved(owner,
+                         [this, owner]
+                         {
+                             std::erase_if(m_sourceAnimations, [owner](const auto& entry)
+                                           { return entry.second.owner == owner; });
+                             m_animationClockOwners.erase(owner);
+                         });
+    m_tree.invalidateMeasure(owner);
+    return token;
+}
+bool Framework::removeAnimationClock(u64 token)
+{
+    return isOwnerThread() && m_sourceAnimations.erase(token) != 0;
 }
 
 void Framework::updateCommonState(ElementId element)

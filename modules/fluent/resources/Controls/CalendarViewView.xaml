@@ -1,0 +1,62 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved. MIT License.
+     Internal Velora adaptation of the corresponding WinUI 2.3 presentation. -->
+<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" x:Class="velora.CalendarViewView" Width="294" Height="292" RowDefinitions="40,28,*" Margin="4">
+    <Grid ColumnDefinitions="40,*,40">
+        <Button x:Name="PreviousButton" Content="&#xE76B;" FontFamily="Segoe MDL2 Assets"/>
+        <TextBlock x:Name="HeaderText" Grid.Column="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <Button x:Name="NextButton" Grid.Column="2" Content="&#xE76C;" FontFamily="Segoe MDL2 Assets"/>
+    </Grid>
+    <Grid Grid.Row="1" ColumnDefinitions="*,*,*,*,*,*,*">
+        <TextBlock x:Name="Weekday0" Grid.Column="0" FontSize="12" HorizontalAlignment="Center"/>
+        <TextBlock x:Name="Weekday1" Grid.Column="1" FontSize="12" HorizontalAlignment="Center"/>
+        <TextBlock x:Name="Weekday2" Grid.Column="2" FontSize="12" HorizontalAlignment="Center"/>
+        <TextBlock x:Name="Weekday3" Grid.Column="3" FontSize="12" HorizontalAlignment="Center"/>
+        <TextBlock x:Name="Weekday4" Grid.Column="4" FontSize="12" HorizontalAlignment="Center"/>
+        <TextBlock x:Name="Weekday5" Grid.Column="5" FontSize="12" HorizontalAlignment="Center"/>
+        <TextBlock x:Name="Weekday6" Grid.Column="6" FontSize="12" HorizontalAlignment="Center"/>
+    </Grid>
+    <Grid Grid.Row="2" ColumnDefinitions="*,*,*,*,*,*,*" RowDefinitions="*,*,*,*,*,*" RowSpacing="2" ColumnSpacing="2">
+        <Button x:Name="Day0" Grid.Row="0" Grid.Column="0" Padding="0" FontSize="13"/>
+        <Button x:Name="Day1" Grid.Row="0" Grid.Column="1" Padding="0" FontSize="13"/>
+        <Button x:Name="Day2" Grid.Row="0" Grid.Column="2" Padding="0" FontSize="13"/>
+        <Button x:Name="Day3" Grid.Row="0" Grid.Column="3" Padding="0" FontSize="13"/>
+        <Button x:Name="Day4" Grid.Row="0" Grid.Column="4" Padding="0" FontSize="13"/>
+        <Button x:Name="Day5" Grid.Row="0" Grid.Column="5" Padding="0" FontSize="13"/>
+        <Button x:Name="Day6" Grid.Row="0" Grid.Column="6" Padding="0" FontSize="13"/>
+        <Button x:Name="Day7" Grid.Row="1" Grid.Column="0" Padding="0" FontSize="13"/>
+        <Button x:Name="Day8" Grid.Row="1" Grid.Column="1" Padding="0" FontSize="13"/>
+        <Button x:Name="Day9" Grid.Row="1" Grid.Column="2" Padding="0" FontSize="13"/>
+        <Button x:Name="Day10" Grid.Row="1" Grid.Column="3" Padding="0" FontSize="13"/>
+        <Button x:Name="Day11" Grid.Row="1" Grid.Column="4" Padding="0" FontSize="13"/>
+        <Button x:Name="Day12" Grid.Row="1" Grid.Column="5" Padding="0" FontSize="13"/>
+        <Button x:Name="Day13" Grid.Row="1" Grid.Column="6" Padding="0" FontSize="13"/>
+        <Button x:Name="Day14" Grid.Row="2" Grid.Column="0" Padding="0" FontSize="13"/>
+        <Button x:Name="Day15" Grid.Row="2" Grid.Column="1" Padding="0" FontSize="13"/>
+        <Button x:Name="Day16" Grid.Row="2" Grid.Column="2" Padding="0" FontSize="13"/>
+        <Button x:Name="Day17" Grid.Row="2" Grid.Column="3" Padding="0" FontSize="13"/>
+        <Button x:Name="Day18" Grid.Row="2" Grid.Column="4" Padding="0" FontSize="13"/>
+        <Button x:Name="Day19" Grid.Row="2" Grid.Column="5" Padding="0" FontSize="13"/>
+        <Button x:Name="Day20" Grid.Row="2" Grid.Column="6" Padding="0" FontSize="13"/>
+        <Button x:Name="Day21" Grid.Row="3" Grid.Column="0" Padding="0" FontSize="13"/>
+        <Button x:Name="Day22" Grid.Row="3" Grid.Column="1" Padding="0" FontSize="13"/>
+        <Button x:Name="Day23" Grid.Row="3" Grid.Column="2" Padding="0" FontSize="13"/>
+        <Button x:Name="Day24" Grid.Row="3" Grid.Column="3" Padding="0" FontSize="13"/>
+        <Button x:Name="Day25" Grid.Row="3" Grid.Column="4" Padding="0" FontSize="13"/>
+        <Button x:Name="Day26" Grid.Row="3" Grid.Column="5" Padding="0" FontSize="13"/>
+        <Button x:Name="Day27" Grid.Row="3" Grid.Column="6" Padding="0" FontSize="13"/>
+        <Button x:Name="Day28" Grid.Row="4" Grid.Column="0" Padding="0" FontSize="13"/>
+        <Button x:Name="Day29" Grid.Row="4" Grid.Column="1" Padding="0" FontSize="13"/>
+        <Button x:Name="Day30" Grid.Row="4" Grid.Column="2" Padding="0" FontSize="13"/>
+        <Button x:Name="Day31" Grid.Row="4" Grid.Column="3" Padding="0" FontSize="13"/>
+        <Button x:Name="Day32" Grid.Row="4" Grid.Column="4" Padding="0" FontSize="13"/>
+        <Button x:Name="Day33" Grid.Row="4" Grid.Column="5" Padding="0" FontSize="13"/>
+        <Button x:Name="Day34" Grid.Row="4" Grid.Column="6" Padding="0" FontSize="13"/>
+        <Button x:Name="Day35" Grid.Row="5" Grid.Column="0" Padding="0" FontSize="13"/>
+        <Button x:Name="Day36" Grid.Row="5" Grid.Column="1" Padding="0" FontSize="13"/>
+        <Button x:Name="Day37" Grid.Row="5" Grid.Column="2" Padding="0" FontSize="13"/>
+        <Button x:Name="Day38" Grid.Row="5" Grid.Column="3" Padding="0" FontSize="13"/>
+        <Button x:Name="Day39" Grid.Row="5" Grid.Column="4" Padding="0" FontSize="13"/>
+        <Button x:Name="Day40" Grid.Row="5" Grid.Column="5" Padding="0" FontSize="13"/>
+        <Button x:Name="Day41" Grid.Row="5" Grid.Column="6" Padding="0" FontSize="13"/>
+    </Grid>
+</Grid>
