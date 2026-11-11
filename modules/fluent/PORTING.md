@@ -133,4 +133,14 @@ Windows 示例 `FluentPage.xaml` 从编译 XAML 创建实际 NumberBox；注册�
 - CommandBar.IsOpen 经既有 Flyout/Popup 同步开闭、点击关闭和卸载；More 按钮使用 Segoe MDL2 Assets。实现主区域左右/Home/End、More 的上下/F4 展开、溢出区域上下/Home/End 路径，Escape/Tab 沿用 Popup。AppBar 按钮新增 C++ setCommand 回调，沿用 Toggle 更新、Click 和既有属性/绑定路径。
 - Gallery 用 `--open-commandbar` 打开包含普通命令、勾选命令及分隔线的实际溢出面板。本批仅编译和一次原生启动/关闭检查，没有新增或执行回归、ASan 或截图验收。
 
-当前是显式次命令面板；宽度驱动的主命令自动迁移、DynamicOverflowOrder/通知、CommandBarFlyout、Content/ClosedDisplayMode、可观察集合与集合 XAML、完整 ICommand/图标属性、嵌套弹出与完整主题/视觉状态/UIA 仍待实现。键盘、焦点、命令执行顺序和销毁期间的完整行为将在集成末尾统一验证，不能将构建/启动成功算作完整兼容。
+本批最初仅支持显式次命令，后续宽度驱动的接入见下一节。DynamicOverflowOrder/通知、CommandBarFlyout、Content/ClosedDisplayMode、可观察集合与集合 XAML、完整 ICommand/图标属性、嵌套弹出与完整主题/视觉状态/UIA 仍待实现。键盘、焦点、命令执行顺序和销毁期间的完整行为将在集成末尾统一验证，不能将构建/启动成功算作完整兼容。
+
+## CommandBar 动态溢出（待统一验证）
+
+- 新增默认开启的 IsDynamicOverflowEnabled 实际依赖属性及 C++/编译 XAML API。测量主命令自然宽度，必要时预留 More 按钮空间，从末尾收纳主命令；恢复时沿用 PrimaryCommands 的原始顺序。收纳段先于显式 SecondaryCommands 显示。
+- 当前 `.vtypes` 的源码属性契约仍限定 Paint，未修改该格式或放宽契约检查。新增线程检查的 ElementTree::invalidateMeasure，CommandBar 在相关有效值变化时显式请求重新测量，确保配置改变及弹出关闭后重新分配命令。
+- 关闭状态下，收纳命令保留在同一树内的折叠存储容器，可参与自然尺寸测量；元素树新增 reparent，保留对象、元素 ID 和子树，更新继承父级及布局失效。现有 adopt 继续仅接受独立根。打开面板时，仍用原对象加载溢出模板，关闭后在下一次布局恢复主区域模板；没有创建菜单代理或影子勾选值。
+- IsInOverflow 反映按钮的收纳位置；当前加载的模板单独记录为呈现状态，避免折叠存储中的主命令误按溢出模板尺寸测量。聚焦命令被收纳时尝试将焦点转交 More；面板展开期间宽度变化或关闭动态溢出会先关闭面板，再重新分配。
+- Gallery 增加一组实际 MDL2 命令；`--open-commandbar` 在启动时确认末尾主命令进入溢出，再打开含主/次命令的面板。
+
+当前按原始顺序收纳后缀，不支持 DynamicOverflowOrder 的优先级分组或溢出变化通知；分隔线合并、RTL、展开期间原位重排、完整焦点/卸载/绑定继承行为仍待统一验证。不能据此宣布 CommandBar 或元素树重挂载接口已完成全部兼容验收。

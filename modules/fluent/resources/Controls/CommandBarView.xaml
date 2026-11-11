@@ -11,6 +11,7 @@
         </ResourceDictionary>
     </Grid.Resources>
     <StackPanel x:Name="PrimaryCommands" Orientation="Horizontal" Spacing="0" HorizontalAlignment="Left"/>
+    <StackPanel x:Name="OverflowStorage" Visibility="Collapsed"/>
     <Button x:Name="MoreButton" Grid.Column="1" Content="&#xE712;" FontFamily="Segoe MDL2 Assets"
             FontSize="20" Width="48" MinHeight="48" Padding="8" VerticalAlignment="Center"/>
 </Grid>

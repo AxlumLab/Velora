@@ -4,7 +4,7 @@
 
 ## 1. 核心检查
 
-Fluent 内部控件示例：构建 `dev-debug` 后运行 `build/dev/examples/fluent_controls/Debug/velora_fluent_gallery.exe`。CMake 自动部署匹配的 `Velora.Fluent.vpak` 与 MIT 许可证；示例包含头像、数字、弹出按钮、菜单、图标，以及 MenuBar、AppBar 按钮族、CommandBar 与分隔线。传入 `--open-menu` 预览独立菜单、`--open-menubar` 加载菜单栏菜单，或 `--open-commandbar` 在启动时打开次命令溢出面板。按当前用户要求，开发期只做编译和启动检查，完整交互/回归统一在集成末尾执行。
+Fluent 内部控件示例：构建 `dev-debug` 后运行 `build/dev/examples/fluent_controls/Debug/velora_fluent_gallery.exe`。CMake 自动部署匹配的 `Velora.Fluent.vpak` 与 MIT 许可证；示例包含头像、数字、弹出按钮、菜单、图标，以及 MenuBar、AppBar 按钮族、CommandBar 与分隔线。传入 `--open-menu` 预览独立菜单、`--open-menubar` 加载菜单栏菜单，或 `--open-commandbar` 在启动时确认主命令发生自动溢出，再打开主/次命令溢出面板。按当前用户要求，开发期只做编译和启动检查，完整交互/回归统一在集成末尾执行。
 
 ASan 的 Fluent 模板测试可复用同一编译资源包（不是复用 dev 的原生代码）：先构建 dev，再配置 `cmake --preset asan -DVELORA_FLUENT_TEST_PACKAGE=E:/Projects/velora/build/dev/modules/fluent/Velora.Fluent.vpak`。未提供资源包的核心配置只运行树外逻辑及缺失资源回滚检查，会明确报告模板检查未运行。
 

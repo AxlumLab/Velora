@@ -135,7 +135,16 @@
 - 溢出面板复用原来的 AppBarButton/AppBarToggleButton 对象，按所在位置选择竖排/横排模板；IsChecked 保留在同一依赖属性中，IsInOverflow 为只读依赖属性。分隔线方向通过模板优先级设置，不覆盖调用方的本地属性值。新增按钮 C++ 命令回调，复用现有 Click 路径。
 - 已接入 IsOpen、More 按钮、主命令左右/Home/End 导航、溢出上下/Home/End 导航及点选关闭路径；开闭和卸载使用既有 Flyout/Popup 生命周期。上述交互仍待集成末尾统一验收。
 - `velora_fluent_gallery` 编译通过；`--open-commandbar` 启动时成功创建并打开次命令面板，窗口可见，正常关闭退出码 0。记录为 `build/dev/commandbar-build.log`、`build/dev/commandbar-startup.json`。本批没有新增或运行回归、ASan、截图检查。
-- 当前只支持显式 SecondaryCommands；窄窗口自动迁移主命令、动态溢出顺序/通知、CommandBarFlyout、Content/ClosedDisplayMode、ICommand/完整图标 API、集合 XAML、完整主题/视觉状态与 UIA 仍待实现。启动成功不代表完整 WinUI 2.3 兼容。
+- 此批最初只支持显式 SecondaryCommands，后续宽度驱动接入见下一节。动态溢出顺序/通知、CommandBarFlyout、Content/ClosedDisplayMode、ICommand/完整图标 API、集合 XAML、完整主题/视觉状态与 UIA 仍待实现。启动成功不代表完整 WinUI 2.3 兼容。
+
+### 当前接入：CommandBar 按宽度自动溢出
+
+- 新增 IsDynamicOverflowEnabled 的依赖属性、C++ 与编译 XAML API。主命令按自然宽度测量，空间不足时预留 More 按钮并收纳末尾命令，变宽后按原顺序恢复；溢出的主命令排在显式次命令之前，PrimaryCommands/SecondaryCommands 集合本身不改写。
+- 元素树新增 reparent，在同一树内移动子树并保留对象、ID、订阅及模板，更新继承父级和布局失效；adopt 仍限定独立根。关闭时，收纳项保留在折叠容器，测量使用主区域模板；打开时原对象加载溢出模板，关闭后下一次布局恢复。不创建菜单代理或第二份勾选状态。
+- 新增 invalidateMeasure 接口，校验元素存在及所属线程。CommandBar 的有效值通知显式触发布局失效，继续遵守 `.vtypes` 当前 Paint 属性契约；首次启动暴露的属性契约不匹配已据此修正，示例增加异常错误输出。
+- 只读 IsInOverflow 反映 AppBar 按钮是否被收纳；主区键盘导航排除收纳项。收纳聚焦命令时尝试将焦点交给 More，展开时宽度或动态溢出配置改变会先关闭面板再布局。
+- `velora_fluent_gallery` 最终编译通过；`--open-commandbar` 启动确认末尾主命令已经自动溢出，随后成功打开包含主/次命令的面板，窗口可见并正常关闭，退出码 0。证据为 `build/dev/dynamic-overflow-final-build.log`、`build/dev/dynamic-overflow-startup.json`。改动文件格式、CheckStyle、CheckWorkspace 与 diff 检查通过；没有新增/运行回归、ASan 或截图验收。
+- 尚未实现 DynamicOverflowOrder 分组/变化通知、分隔线合并、RTL、展开期间原位重排；完整重挂载、绑定继承、焦点、卸载与视觉状态仍待统一验收。
 
 | 范围 | 当前事实 |
 | --- | --- |

@@ -1,6 +1,7 @@
 velora-xaml-types	1
 type	Velora.Fluent.CommandBar	UserControl
 property	IsOpen	Boolean	CommandBar.IsOpen	False
+property	IsDynamicOverflowEnabled	Boolean	CommandBar.IsDynamicOverflowEnabled	True
 end
 type	Velora.Fluent.AppBarSeparator	UserControl
 property	Orientation	String	AppBarSeparator.Orientation	Vertical

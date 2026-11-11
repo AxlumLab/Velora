@@ -38,8 +38,12 @@ class CommandBar final : public UIElement
     static const XamlTypeDeclaration& declaration();
     static std::string registerType(Framework& ui);
     static const PropertyDescriptor& isOpenProperty();
+    static const PropertyDescriptor& isDynamicOverflowEnabledProperty();
     [[nodiscard]] bool isOpen() const;
     PropertySetResult setIsOpen(bool value);
+    [[nodiscard]] bool isDynamicOverflowEnabled() const;
+    PropertySetResult setIsDynamicOverflowEnabled(bool value);
+    Size measureOverride(LayoutContext&, ElementId, const MeasureInput&) override;
     void appendPrimary(std::shared_ptr<UIElement> command);
     void appendSecondary(std::shared_ptr<UIElement> command);
     void clearPrimary();
@@ -62,7 +66,10 @@ class CommandBar final : public UIElement
     void syncOpen();
     void updateMore();
     Framework* m_ui = nullptr;
-    ElementId m_element = 0, m_primaryHost = 0, m_more = 0;
+    ElementId m_element = 0, m_primaryHost = 0, m_storage = 0, m_more = 0;
+    usize m_primaryCount = 0;
+    float m_lastWidth = -1;
+    bool m_layoutDynamicOverflowEnabled = true;
     std::vector<std::shared_ptr<UIElement>> m_primary, m_secondary;
     std::vector<EventSubscription> m_events, m_overflowEvents;
     std::shared_ptr<Flyout> m_overflow;

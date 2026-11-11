@@ -227,9 +227,10 @@ void FlyoutButton::onAttached(Framework& ui, ElementId self)
                                                : "ms-appx-framework:///Controls/SplitButtonView.vxbf");
     ComponentLoadOptions options;
     options.parent = this;
+    m_overflowPresentation = appBar && isInOverflow();
     const auto loaded = loadComponent(
         ui,
-        *ResourceUri::parse(appBar ? (isInOverflow()
+        *ResourceUri::parse(appBar ? (m_overflowPresentation
                                           ? "ms-appx-framework:///Controls/AppBarOverflowButtonView.vxbf"
                                           : "ms-appx-framework:///Controls/AppBarButtonView.vxbf")
                                    : uri),
@@ -291,11 +292,11 @@ void FlyoutButton::updateParts()
         };
         const auto& p = elementProperties().props;
         set(p.Text, getValue(propertyFor(className(), "IconGlyph")), "IconGlyph");
-        set(p.Visibility, isInOverflow() || !getValue(propertyFor(className(), "IsCompact")).asBool(),
+        set(p.Visibility, m_overflowPresentation || !getValue(propertyFor(className(), "IsCompact")).asBool(),
             "LabelText");
         if (m_ui)
             m_ui->set(part("PrimaryButton"), p.MinHeight,
-                      isInOverflow()
+                      m_overflowPresentation
                           ? 32.0
                           : (getValue(propertyFor(className(), "IsCompact")).asBool() ? 48.0 : 68.0));
     }

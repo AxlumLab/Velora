@@ -2,10 +2,12 @@
 
 #include <array>
 #include <filesystem>
+#include <iostream>
 #include <memory>
 #include <stdexcept>
 #include <string>
 #include <string_view>
+#include <utility>
 #include <velora/application/XamlApplication.hpp>
 #include <velora/application/XamlWindow.hpp>
 #include <velora/fluent/AppBarButton.hpp>
@@ -76,6 +78,20 @@ class FluentWindow final : public XamlWindow
         primaryPin->setIconGlyph("\xEE\x9C\x98");
         primaryPin->setCommand([this] { m_controller.record("CommandBar Pin toggled"); });
         commands->appendPrimary(primaryPin);
+        for (const auto& [label, glyph] : {std::pair{"New", "\xEE\x9C\x90"},
+                                           {"Open", "\xEE\xA2\xA5"},
+                                           {"Undo", "\xEE\x9E\xA7"},
+                                           {"Redo", "\xEE\x9E\xA6"},
+                                           {"Cut", "\xEE\xA3\x86"},
+                                           {"Copy", "\xEE\xA3\x88"},
+                                           {"Paste", "\xEE\x9D\xBF"}})
+        {
+            const auto item = createElement<AppBarButton>();
+            item->setLabel(label);
+            item->setIconGlyph(glyph);
+            item->setCommand([this, label] { m_controller.record(std::string("CommandBar: ") + label); });
+            commands->appendPrimary(item);
+        }
         for (const auto* label : {"Settings", "Delete"})
         {
             const auto item = createElement<AppBarButton>();
@@ -174,6 +190,10 @@ class FluentWindow final : public XamlWindow
             ui.update(GetAppWindow()->getWidth(), GetAppWindow()->getHeight());
             if (previewCommands)
             {
+                const auto lastCommand =
+                    std::dynamic_pointer_cast<AppBarButton>(commands->primaryCommands().back());
+                if (!lastCommand || !lastCommand->isInOverflow())
+                    throw std::runtime_error("CommandBar primary commands did not overflow");
                 commands->setIsOpen(true);
                 if (!commands->isOpen())
                     throw std::runtime_error("CommandBar overflow did not open");
@@ -228,5 +248,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR arguments, int)
     const bool previewCommands = args.find("--open-commandbar") != std::string_view::npos;
     FluentApp app(!previewMenuBar && args.find("--open-menu") != std::string_view::npos, previewMenuBar,
                   previewCommands);
-    return app.Run();
+    try
+    {
+        return app.Run();
+    }
+    catch (const std::exception& error)
+    {
+        std::cerr << "Fluent Gallery: " << error.what() << '\n';
+        return 1;
+    }
 }

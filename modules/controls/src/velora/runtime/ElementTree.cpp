@@ -151,20 +151,44 @@ bool ElementTree::reorder(ElementId id, std::size_t index)
 
 bool ElementTree::adopt(ElementId parentId, ElementId childId, usize index)
 {
+    const auto* child = find(childId);
+    return child && !child->parent && reparent(parentId, childId, index);
+}
+bool ElementTree::invalidateMeasure(ElementId id)
+{
+    const auto* node = find(id);
+    if (!node || !node->object->isOwnerThread())
+        return false;
+    mark(id, PropertyFlags::kMeasure | PropertyFlags::kArrange | PropertyFlags::kPaint);
+    return true;
+}
+bool ElementTree::reparent(ElementId parentId, ElementId childId, usize index)
+{
     auto* owner = find(parentId);
     auto* child = find(childId);
-    if (!owner || !child || child->parent || index > owner->children.size())
+    if (!owner || !child || index > owner->children.size())
         return false;
     for (auto current = parentId; current; current = parent(current))
         if (current == childId)
             return false;
+    if (child->parent == parentId)
+        return reorder(childId, std::min(index, owner->children.size() - 1));
+    const auto previous = child->parent;
+    // Reserve before unlinking, so an allocation failure leaves the original tree intact.
+    owner->children.reserve(owner->children.size() + 1);
+    if (previous)
+        std::erase(find(previous)->children, childId);
     owner->children.insert(owner->children.begin() + static_cast<isize>(index), childId);
     child->parent = parentId;
-    child->object->setInheritanceParent(owner->object.get());
     std::erase(m_roots, childId);
     m_visualParents.erase(childId);
     ++m_structureVersion;
+    if (previous)
+        mark(previous, PropertyFlags::kMeasure | PropertyFlags::kArrange | PropertyFlags::kPaint);
     mark(parentId, PropertyFlags::kMeasure | PropertyFlags::kArrange | PropertyFlags::kPaint);
+    const auto object = child->object;
+    const auto parentObject = owner->object;
+    object->setInheritanceParent(parentObject.get());
     return true;
 }
 void ElementTree::setVisualParent(ElementId child, ElementId parentId)

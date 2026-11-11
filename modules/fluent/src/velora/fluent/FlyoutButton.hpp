@@ -67,5 +67,6 @@ class FlyoutButton : public UIElement
     std::vector<EventSubscription> m_subscriptions;
     std::shared_ptr<Flyout> m_flyout; // C++ service attachment; no duplicate Flyout DP is exposed
     std::function<void()> m_command;
+    bool m_overflowPresentation = false; // records the currently loaded template, not placement
 };
 } // namespace velora

@@ -87,6 +87,8 @@ class ElementTree final : private IPropertyInvalidation
     std::string_view type(ElementId id) const;
     bool reorder(ElementId id, std::size_t index);
     bool adopt(ElementId parent, ElementId child, usize index);
+    // Moves an attached subtree without recreating objects or invoking detach/attach.
+    bool reparent(ElementId parent, ElementId child, usize index);
     void setVisualParent(ElementId child, ElementId parent);
     ElementId visualParent(ElementId child) const;
     std::vector<ElementId> visualChildren(ElementId parent) const;
@@ -143,6 +145,7 @@ class ElementTree final : private IPropertyInvalidation
     bool measureDirty(ElementId id) const;
     bool arrangeDirty(ElementId id) const;
     bool paintDirty(ElementId id) const;
+    bool invalidateMeasure(ElementId id);
     void clearDirty(ElementId id);
 
     // Keeps `object` alive as long as the element: it is released after the element (and its
