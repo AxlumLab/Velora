@@ -23,6 +23,10 @@ const PropertyDescriptor& ContentElement::hostedContentProperty() const
 {
     return *elementProperties().props.Content;
 }
+std::string_view ContentElement::contentHostName() const
+{
+    return {};
+}
 std::shared_ptr<UIElement> ContentElement::content() const
 {
     const auto& value = getValue(hostedContentProperty());
@@ -89,6 +93,8 @@ void ContentElement::onAttached(Framework& ui, ElementId self)
         throw std::runtime_error("Content template: " + loaded.error);
     m_host = ui.tree().element(*loaded.root);
     ui.applyTemplate(self, m_host, {});
+    if (!contentHostName().empty())
+        m_host = ui.tree().element(*loaded.names.at(std::string(contentHostName())));
     syncContent();
 }
 void ContentElement::onDetached() noexcept

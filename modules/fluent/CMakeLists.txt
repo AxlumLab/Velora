@@ -26,6 +26,8 @@ velora_module(fluent
         velora/fluent/TreeView.cpp
         velora/fluent/TreeViewNode.cpp
         velora/fluent/ParallaxView.cpp
+        velora/fluent/RefreshContainer.cpp
+        velora/fluent/RefreshVisualizer.cpp
         velora/fluent/PaneLayout.cpp
         velora/fluent/SplitView.cpp
         velora/fluent/TwoPaneView.cpp

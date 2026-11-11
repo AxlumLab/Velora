@@ -1,4 +1,9 @@
 velora-xaml-types	1
+type	Velora.Fluent.RefreshContainer	UserControl
+property	PullDirection	String	RefreshContainer.PullDirection	TopToBottom
+end
+type	Velora.Fluent.RefreshVisualizer	UserControl
+end
 type	Velora.Fluent.ParallaxView	UserControl
 property	HorizontalShift	Double	ParallaxView.HorizontalShift	0
 property	VerticalShift	Double	ParallaxView.VerticalShift	0

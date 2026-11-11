@@ -266,20 +266,31 @@ Windows Debug Gallery 构建通过；`--preview-tree` 确认首层深度 0、mai
 
 Windows Debug Gallery 构建通过；`--preview-parallax` 对真实源滚动一次，确认子元素挂载、负向平移，以及 TabViewItem 仍持有并挂载原编辑器，原生窗口正常出现/关闭、退出码 0。证据为 `build/dev/parallax-final-build.log`、`build/dev/parallax-startup.json`。未新增或执行回归、ASan、截图验收，完整钳制/对齐、滚动源重绑、跨容器内容和生命周期仍待统一验证。
 
+### 后续推进：RefreshContainer / RefreshVisualizer 刷新族（2026-11-11）
+
+本批将 PullToRefresh 功能组的请求、状态和延迟完成逻辑内化到 Fluent，新增正式 RefreshContainer、RefreshVisualizer 类型及两份编译模板。容器转发实际指示器的同一次 RefreshRequested，不另存一份刷新状态。ContentElement 增加命名内容宿主入口，使内容和指示器挂入同一模板的不同区域。
+
+- C++ RequestRefresh、RefreshRequested、RefreshStateChanged 与 UI 线程专属的可移动 RAII RefreshDeferral 已接通。分发本身持有延迟，避免一个订阅者提前完成导致其他订阅者无法取得延迟；最后一个延迟完成后回到 Idle，无延迟则同步完成，刷新期间重复请求合并。卸载取消当前请求，晚到完成不再访问已卸载控件。
+- Idle/Peeking/Interacting/Pending/Refreshing 状态沿用上游交互比率及 0.8 执行阈值；显式适配入口、指示器单主指针拖动和 Enter/Space 请求均接入。四个 PullDirection 使用同一依赖属性，决定指示器边缘位置及拉动方向。当前拖动距离按 100 DIP 归一化，只从指示器开始，不接管滚动内容手势。
+- Visualizer 是实际对象依赖属性，可通过 C++ 替换，默认指示器使用 Segoe MDL2 Assets E72C。内容与指示器均参与所有权环检查，替换解除旧转发；State 目前只有只读 C++ 查询/事件，未伪造为可写 XAML 属性。
+- 尚缺 ScrollViewer 触摸/惯性过滚适配、合成位移/旋转/缩放动画、Orientation、完整默认模板/主题/RTL/UIA，以及对象属性和事件的完整 XAML。状态目前用默认图标颜色区分，不代表 WinUI 刷新动画已完成。
+
+Windows Debug Gallery 编译通过；`--preview-refresh` 实际取得并完成一次刷新延迟，确认 Refreshing→Idle 和原内容已挂载，原生窗口出现、关闭，退出码 0。证据为 `build/dev/refresh-final-build.log`、`build/dev/refresh-startup.json`。未新增或执行回归、ASan、截图验收；完整手势、异常重入、替换/卸载和延迟生命周期留待统一验收。
+
 ### 控件接入数量快照（2026-11-11）
 
 以 StageFluentSources.py 的 49 个源码区域为范围，扣除 Collections、Common、CommonStyles、Effects、IconSource、inc、Interactions、LayoutPanel、Lights、Materials、ResourceHelper 这 11 个支撑区域，跟踪 38 个功能组。此口径不是最终 WinUI 2.3 正式公开类型清单；一个功能组可能包含多个控件，experimental 条件仍需审计。额外系统控件及 Button/TextBox 等通用底座不能用此数推算完整总数。
 
 | 接入状态 | 功能组数 | 范围 |
 | --- | --- | --- |
-| Fluent 部分接入 | 23 | AutoSuggestBox、ComboBox、CommandBarFlyout、ContentDialog、DropDownButton、FlipView、MenuBar、MenuFlyout、NavigationView、NumberBox、ParallaxView、PersonPicture、Pivot、RadioButtons、RadioMenuFlyoutItem、RatingControl、SplitButton、SplitView、TabView、TeachingTip、ToolTip、TreeView、TwoPaneView |
+| Fluent 部分接入 | 24 | AutoSuggestBox、ComboBox、CommandBarFlyout、ContentDialog、DropDownButton、FlipView、MenuBar、MenuFlyout、NavigationView、NumberBox、ParallaxView、PersonPicture、Pivot、PullToRefresh、RadioButtons、RadioMenuFlyoutItem、RatingControl、SplitButton、SplitView、TabView、TeachingTip、ToolTip、TreeView、TwoPaneView |
 | 通用底座部分实现 | 4 | CheckBox、ProgressBar、ScrollViewer、Slider |
-| 尚未接入运行时 | 11 | 下列清单 |
+| 尚未接入运行时 | 10 | 下列清单 |
 | 完整 WinUI 2.3 兼容验收通过 | 0 | 当前接入期未进行最终统一验收 |
 
-剩余 11 组：AnimatedVisualPlayer、CalendarDatePicker、CalendarView、ColorPicker、DatePicker、PullToRefresh、Repeater、ScrollBar、Scroller、SwipeControl、TimePicker。此数不包含已接入组内部尚缺的 API、模板、主题、输入与辅助功能。
+剩余 10 组：AnimatedVisualPlayer、CalendarDatePicker、CalendarView、ColorPicker、DatePicker、Repeater、ScrollBar、Scroller、SwipeControl、TimePicker。此数不包含已接入组内部尚缺的 API、模板、主题、输入与辅助功能。
 
-Fluent 正式 XAML 控件类型现为 31，另有 Flyout/MenuFlyout/ToolTip/CommandBarFlyout/ContentDialog/TeachingTip 等 C++ 服务，以及 C++ TreeViewNode 模型。完整按类型的历史 Gallery/API 清单仍待固定，不能将“11 个功能组”写成“仅剩 11 个控件”。
+Fluent 正式 XAML 控件类型现为 33，另有 Flyout/MenuFlyout/ToolTip/CommandBarFlyout/ContentDialog/TeachingTip 等 C++ 服务，以及 C++ TreeViewNode 模型。完整按类型的历史 Gallery/API 清单仍待固定，不能将“10 个功能组”写成“仅剩 10 个控件”。
 
 | 范围 | 当前事实 |
 | --- | --- |

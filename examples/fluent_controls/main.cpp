@@ -33,6 +33,7 @@
 #include <velora/fluent/RadioButtons.hpp>
 #include <velora/fluent/RadioMenuFlyoutItem.hpp>
 #include <velora/fluent/RatingControl.hpp>
+#include <velora/fluent/RefreshContainer.hpp>
 #include <velora/fluent/SplitView.hpp>
 #include <velora/fluent/SymbolIcon.hpp>
 #include <velora/fluent/TabView.hpp>
@@ -98,7 +99,9 @@ class FluentWindow final : public XamlWindow
                                   NavigationView::registerType(ui),
                                   NavigationViewItem::registerType(ui),
                                   TreeView::registerType(ui),
-                                  ParallaxView::registerType(ui)})
+                                  ParallaxView::registerType(ui),
+                                  RefreshContainer::registerType(ui),
+                                  RefreshVisualizer::registerType(ui)})
             if (!error.empty())
                 throw std::runtime_error(error);
         Demo::FluentPage_component::Names names;
@@ -107,6 +110,26 @@ class FluentWindow final : public XamlWindow
             throw std::runtime_error(loaded.error);
         m_controller.setPicture(std::dynamic_pointer_cast<PersonPicture>(names.Avatar));
         m_controller.setStatusElement(names.Status);
+        const auto refresh = std::dynamic_pointer_cast<RefreshContainer>(names.Refresh);
+        if (!refresh)
+            throw std::runtime_error("RefreshContainer factory mismatch");
+        const auto refreshedText = createElement(ElementKind::kTextBlock);
+        refreshedText->setValue(*ui.props().Text, "Pull the indicator down or press Refresh content");
+        refresh->setContent(refreshedText);
+        const std::weak_ptr<UIElement> weakRefreshedText = refreshedText;
+        refresh->addRefreshRequested(
+            [weakRefreshedText, count = std::make_shared<i32>(0)](const RefreshRequestedEventArgs&) mutable
+            {
+                if (const auto text = weakRefreshedText.lock())
+                    text->setValue(*elementProperties().props.Text, "Refreshed " + std::to_string(++*count));
+            });
+        const std::weak_ptr<RefreshContainer> weakRefresh = refresh;
+        ui.on(ui.tree().element(*names.RequestRefresh), ui.events().Click,
+              [weakRefresh]()
+              {
+                  if (const auto item = weakRefresh.lock())
+                      item->requestRefresh();
+              });
         const auto motion = std::dynamic_pointer_cast<ParallaxView>(names.Motion);
         if (!motion)
             throw std::runtime_error("ParallaxView factory mismatch");
@@ -482,7 +505,21 @@ class FluentWindow final : public XamlWindow
             ui.update(GetAppWindow()->getWidth(), GetAppWindow()->getHeight());
             if (previewPanels)
             {
-                if (previewPanels == 8)
+                if (previewPanels == 9)
+                {
+                    RefreshDeferral pending;
+                    const auto token = refresh->addRefreshRequested(
+                        [&pending](const RefreshRequestedEventArgs& args) { pending = args.getDeferral(); });
+                    refresh->requestRefresh();
+                    if (refresh->visualizer()->state() != RefreshVisualizerState::kRefreshing)
+                        throw std::runtime_error("Refresh deferral startup failed");
+                    pending.complete();
+                    refresh->removeRefreshRequested(token);
+                    if (refresh->visualizer()->state() != RefreshVisualizerState::kIdle ||
+                        !refreshedText->isInTree())
+                        throw std::runtime_error("Refresh completion startup failed");
+                }
+                else if (previewPanels == 8)
                 {
                     if (!ui.changeView(ui.tree().element(*names.MotionSource), std::nullopt, 90.0))
                         throw std::runtime_error("Parallax source startup failed");
@@ -653,6 +690,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR arguments, int)
                   : args.find("--preview-navigation") != std::string_view::npos  ? 6
                   : args.find("--preview-tree") != std::string_view::npos        ? 7
                   : args.find("--preview-parallax") != std::string_view::npos    ? 8
+                  : args.find("--preview-refresh") != std::string_view::npos     ? 9
                                                                                  : 0);
     try
     {

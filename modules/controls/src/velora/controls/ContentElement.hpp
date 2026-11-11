@@ -19,6 +19,7 @@ class ContentElement : public UIElement
 
   protected:
     virtual std::string_view contentTemplateUri() const = 0;
+    virtual std::string_view contentHostName() const;
     virtual const PropertyDescriptor& hostedContentProperty() const;
     bool validatePropertyValue(const PropertyDescriptor&, const PropertyValue&) const override;
     Framework* attachedFramework() const noexcept;

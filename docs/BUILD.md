@@ -112,3 +112,5 @@ Fluent 示例支持 `--preview-rating`：启动时加载 RatingControl 的编译
 - Android 没有完整平台实现、NDK preset 或 Gradle 宿主。本包不能直接构建出 Android 产品。
 - 当前模块默认 STATIC。插件共享运行时、导出配置和加载器仍是设计。
 - 新环境必须从干净构建目录开始，不复用旧对象布局产生的缓存。具体已跑/未跑结果见 STATUS.md。
+
+刷新族简单启动：构建 velora_fluent_gallery 后使用 `--preview-refresh`。该入口仅触发一次程序刷新，取得/完成延迟，检查 Refreshing→Idle 和原内容已挂载，然后按普通窗口启动/关闭；不运行回归或手势矩阵。默认 Gallery 可点击 Refresh content，也可从刷新指示器沿配置方向拖动超过 80 DIP，或聚焦指示器按 Enter/Space。

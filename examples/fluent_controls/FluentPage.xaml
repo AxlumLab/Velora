@@ -4,6 +4,8 @@
     <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="24" Spacing="20">
             <fluent:MenuBar x:Name="ApplicationMenu"/>
+            <fluent:RefreshContainer x:Name="Refresh" Height="100"/>
+            <Button x:Name="RequestRefresh" Content="Refresh content" HorizontalAlignment="Left"/>
             <fluent:AutoSuggestBox x:Name="Search" Header="Search controls" Text="vi" PlaceholderText="Type to filter suggestions" QueryIconGlyph="&#xE721;" Width="360" HorizontalAlignment="Left"/>
             <fluent:NavigationView x:Name="Navigation" PaneTitle="Workspace" Height="220" CompactModeThresholdWidth="400" ExpandedModeThresholdWidth="600" OpenPaneLength="160" IsBackButtonVisible="Visible" IsBackEnabled="True"/>
             <fluent:TreeView x:Name="ProjectTree" Height="180" SelectionMode="Single"/>

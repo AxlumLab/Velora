@@ -266,3 +266,13 @@ NavigationView.cpp、NavigationViewItem.cpp 与 NavigationViewChromeView/Navigat
 - 采用缩放系数 1 和零过滚偏移，保留上游 Relative/Absolute 起止范围及最大比例/钳制公式，实际安排扩展后的子元素并裁剪。源在视图之外可按完整滚动范围驱动，内部源路径计算元素相对位置；嵌套边框/内边距、全部固定尺寸/对齐组合仍未全面验收。
 - 未实现完整 Composition 表达式动画、缩放/惯性过滚、Source 对象依赖属性/XAML/Binding、Child 对象 XAML、异步源关联和完整源生命周期。当前平移查询仅为最近一次排列结果，不宣称独立合成线程性能或完整 WinUI 兼容。
 - Gallery 的 --preview-parallax 只对真实源设置一次偏移，确认负向位移、原子元素及旧 TabViewItem 内容身份，然后正常启动/关闭窗口。未新增或执行回归、ASan、截图验收；完整模式、订阅重入/销毁和跨容器内容统一留到最后验证。
+
+## RefreshContainer / RefreshVisualizer 刷新族（待统一验证）
+
+正式 RefreshContainer.cpp、RefreshVisualizer.cpp 与两份 View.xaml 改写固定提交 porting/PullToRefresh/RefreshContainer/RefreshContainer.cpp/.idl、RefreshVisualizer/RefreshVisualizer.cpp/.idl 的请求转发、五态状态机、执行阈值和延迟完成契约。上游 MIT 版权保留；没有编译 WinRT 类型或引入原工程。
+
+- 容器保留实际 Content 和 Visualizer 对象属性，仅转发实际指示器的一次请求；原对象挂入命名内容宿主及相邻指示器区域。四方向依赖属性决定区域和拖动方向。Visualizer 对象、Content 和事件订阅目前通过 C++ 配置，State 只读 C++ 查询/事件；正式 XAML 创建类型并设置 PullDirection。
+- RefreshRequestedEventArgs.getDeferral 返回 UI 线程专属、可移动 RAII RefreshDeferral，显式 complete 或析构释放本次工作。分发保护延迟直到所有订阅者有机会取得延迟；最后一个完成回到 Idle。重复刷新不创建平行任务；卸载取消旧请求，弱关联回调和请求身份防止晚到完成操作新对象。后台任务需先切回 UI 线程再完成，不支持跨线程完成/销毁句柄。
+- 上游 interactionRatio/executionRatio 的五态与 0.8 阈值改为普通 C++，保留 Peeking 的非刷新交互分支。当前指示器单主指针拖动按 100 DIP 归一化，松开 Pending 触发刷新；Enter/Space 和程序调用走同一路径。ScrollViewer 内容区域尚无触摸、惯性或过滚适配，不能将此入口描述为完整下拉刷新手势。
+- 默认内容使用 Segoe MDL2 Assets E72C，活动状态改变颜色；缺连续旋转、方向旋转 Orientation、合成位移/缩放及完整主题/RTL/UIA。未暴露无行为的 Orientation 壳属性，未知 XAML 仍需诊断。复杂重入/异常回滚、失去捕获、所有订阅顺序及卸载/替换生命周期统一留待最后验证。
+- Gallery 新增程序刷新按钮和 --preview-refresh 简单入口，只检查一次延迟刷新和窗口启动/关闭，未新增或运行回归、ASan、截图验收。
