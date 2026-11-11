@@ -311,6 +311,13 @@ Windows Debug Gallery 编译通过；`--preview-datetime` 从编译 XAML 创建�
 
 Windows Debug Gallery 最终编译通过，`--preview-remaining` 初始化调用链通过，原生窗口正常出现和关闭、退出码 0；源码规则、工作区、改动 C++ 格式和 diff 检查通过。按要求未新增或运行回归、ASan、截图矩阵。构建与启动证据为 `build/dev/remaining-controls-final-build.log`、`build/dev/remaining-controls-startup.json`。完整模板、API、输入、数据更新、异常重入和生命周期仍需在后续完善并统一验收。
 
+### 仓库维护与双语入口（2026-11-11）
+
+- `origin` 的 fetch/push 地址切换到 `https://github.com/AxlumLab/Velora.git`，已确认远端 main 可读取；本轮不推送、不改写历史，也不改写原有 MIT 版权。
+- 原有 m08 示例页的未提交内容是反射声明排版改动，保留原内容并单独提交。仓库受管文件未发现构建产物、依赖缓存或临时压缩包；更新根目录 CMake 生成物、系统缓存和本地备份的忽略规则，不清除依赖/构建/备份中的有效本地数据。
+- 重写中文 README.md，新增完整 README.en.md，更新 START-HERE.md 和可移植构建路径。入口文档说明当前 45 个正式 XAML 类型及 38 个部分实现功能组，不将接入清零描述为完整兼容。
+- 本轮是仓库与文档维护，控件接入数量不变。验证范围为源码规则、工作区、文档链接/路径、presets 与 diff 检查；未新增或执行回归、ASan、截图，也未将既有启动证据算作本轮重新构建或运行。
+
 ### 控件接入数量快照（2026-11-11）
 
 以 StageFluentSources.py 的 49 个源码区域为范围，扣除 Collections、Common、CommonStyles、Effects、IconSource、inc、Interactions、LayoutPanel、Lights、Materials、ResourceHelper 这 11 个支撑区域，跟踪 38 个功能组。此口径不是最终 WinUI 2.3 正式公开类型清单；一个功能组可能包含多个控件，experimental 条件仍需审计。额外系统控件及 Button/TextBox 等通用底座不能用此数推算完整总数。
