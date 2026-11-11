@@ -12,11 +12,11 @@ rkclass MainViewModel
 {
 public:
     rkproperty(UserName, std::string, get = userName, set = setUserName)
-        rkproperty(Greeting, std::string, get = greeting) rkproperty(Status, std::string, get = status)
-            rkproperty(SaveCount, int, get = saveCount)
+    rkproperty(Greeting, std::string, get = greeting)
+    rkproperty(Status, std::string, get = status)
+    rkproperty(SaveCount, int, get = saveCount)
 
-                const std::string&
-                userName() const
+    const std::string& userName() const
     {
         return m_userName;
     }
@@ -52,10 +52,10 @@ private:
 rkclass MainPage
 {
 public:
-    rkproperty(ViewModel, MainViewModel&, get = viewModel) rkproperty(Title, std::string_view, get = title)
+    rkproperty(ViewModel, MainViewModel&, get = viewModel)
+    rkproperty(Title, std::string_view, get = title)
 
-        const MainViewModel&
-        viewModel() const
+    const MainViewModel& viewModel() const
     {
         return m_viewModel;
     }
