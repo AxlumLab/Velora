@@ -1,4 +1,20 @@
 velora-xaml-types	1
+type	Velora.Fluent.SplitView	UserControl
+property	IsPaneOpen	Boolean	SplitView.IsPaneOpen	False
+property	OpenPaneLength	Double	SplitView.OpenPaneLength	320
+property	CompactPaneLength	Double	SplitView.CompactPaneLength	48
+property	DisplayMode	String	SplitView.DisplayMode	Overlay
+property	PanePlacement	String	SplitView.PanePlacement	Left
+end
+type	Velora.Fluent.TwoPaneView	UserControl
+property	PanePriority	String	TwoPaneView.PanePriority	Pane1
+property	WideModeConfiguration	String	TwoPaneView.WideModeConfiguration	LeftRight
+property	TallModeConfiguration	String	TwoPaneView.TallModeConfiguration	TopBottom
+property	MinWideModeWidth	Double	TwoPaneView.MinWideModeWidth	641
+property	MinTallModeHeight	Double	TwoPaneView.MinTallModeHeight	641
+property	Pane1Length	String	TwoPaneView.Pane1Length	Auto
+property	Pane2Length	String	TwoPaneView.Pane2Length	*
+end
 type	Velora.Fluent.CommandBar	UserControl
 property	IsOpen	Boolean	CommandBar.IsOpen	False
 property	IsDynamicOverflowEnabled	Boolean	CommandBar.IsDynamicOverflowEnabled	True

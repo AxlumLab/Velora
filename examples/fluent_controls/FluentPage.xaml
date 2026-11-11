@@ -1,37 +1,45 @@
 <Page xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:fluent="using:Velora.Fluent" x:Class="Demo.FluentPage">
-    <StackPanel Margin="24" Spacing="20">
-        <fluent:MenuBar x:Name="ApplicationMenu"/>
-        <fluent:CommandBar x:Name="Commands"/>
-        <TextBlock Text="Velora Fluent" FontSize="24"/>
-        <StackPanel Orientation="Horizontal" Spacing="24">
-            <fluent:PersonPicture x:Name="Avatar" DisplayName="Ada Lovelace" BadgeNumber="7"/>
-            <fluent:PersonPicture DisplayName="Grace Hopper"/>
-            <fluent:PersonPicture DisplayName="张三" BadgeGlyph="&#xE70D;"/>
-            <fluent:PersonPicture IsGroup="True" BadgeNumber="120"/>
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="24" Spacing="20">
+            <fluent:MenuBar x:Name="ApplicationMenu"/>
+            <fluent:CommandBar x:Name="Commands"/>
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                <fluent:SplitView x:Name="Sidebar" Height="110" DisplayMode="CompactInline"
+                                  IsPaneOpen="True" OpenPaneLength="100" CompactPaneLength="40"/>
+                <fluent:TwoPaneView x:Name="AdaptivePanes" Grid.Column="1" Height="110"
+                                    MinWideModeWidth="200" Pane1Length="*" Pane2Length="2*"/>
+            </Grid>
+            <TextBlock Text="Velora Fluent" FontSize="24"/>
+            <StackPanel Orientation="Horizontal" Spacing="24">
+                <fluent:PersonPicture x:Name="Avatar" DisplayName="Ada Lovelace" BadgeNumber="7"/>
+                <fluent:PersonPicture DisplayName="Grace Hopper"/>
+                <fluent:PersonPicture DisplayName="张三" BadgeGlyph="&#xE70D;"/>
+                <fluent:PersonPicture IsGroup="True" BadgeNumber="120"/>
+            </StackPanel>
+            <fluent:NumberBox x:Name="Quantity" Header="Quantity — expressions enabled" Value="5"
+                              Minimum="0" Maximum="100" AcceptsExpression="True"
+                              SpinButtonPlacementMode="Inline" Width="300" HorizontalAlignment="Left"/>
+            <StackPanel Orientation="Horizontal" Spacing="12">
+                <Button Content="Toggle group" Click="toggleGroup"/>
+                <Button Content="Increment badge" Click="incrementBadge"/>
+            </StackPanel>
+            <TextBlock Text="Flyout button family" FontSize="20"/>
+            <StackPanel Orientation="Horizontal" Spacing="12">
+                <fluent:DropDownButton x:Name="Actions" Content="Actions"/>
+                <fluent:SplitButton x:Name="Save" Content="Save"/>
+                <fluent:ToggleSplitButton x:Name="Bold" Content="Bold"/>
+            </StackPanel>
+            <TextBlock x:Name="Status" Text="Ready — use arrows, F4, Alt+Down or Escape"/>
+            <StackPanel Orientation="Horizontal" Spacing="20">
+                <fluent:FontIcon Glyph="&#xE710;"/>
+                <fluent:SymbolIcon Symbol="57605"/>
+                <fluent:SymbolIcon Symbol="57621"/>
+                <fluent:SymbolIcon Symbol="57637"/>
+                <fluent:AppBarButton x:Name="AppBarSave" Label="Save" IconGlyph="&#xE74E;" DynamicOverflowOrder="2"/>
+                <fluent:AppBarToggleButton x:Name="AppBarPin" Label="Pin" IconGlyph="&#xE718;"/>
+            </StackPanel>
         </StackPanel>
-        <fluent:NumberBox x:Name="Quantity" Header="Quantity — expressions enabled" Value="5"
-                          Minimum="0" Maximum="100" AcceptsExpression="True"
-                          SpinButtonPlacementMode="Inline" Width="300" HorizontalAlignment="Left"/>
-        <StackPanel Orientation="Horizontal" Spacing="12">
-            <Button Content="Toggle group" Click="toggleGroup"/>
-            <Button Content="Increment badge" Click="incrementBadge"/>
-        </StackPanel>
-        <TextBlock Text="Flyout button family" FontSize="20"/>
-        <StackPanel Orientation="Horizontal" Spacing="12">
-            <fluent:DropDownButton x:Name="Actions" Content="Actions"/>
-            <fluent:SplitButton x:Name="Save" Content="Save"/>
-            <fluent:ToggleSplitButton x:Name="Bold" Content="Bold"/>
-        </StackPanel>
-        <TextBlock x:Name="Status" Text="Ready — use arrows, F4, Alt+Down or Escape"/>
-        <StackPanel Orientation="Horizontal" Spacing="20">
-            <fluent:FontIcon Glyph="&#xE710;"/>
-            <fluent:SymbolIcon Symbol="57605"/>
-            <fluent:SymbolIcon Symbol="57621"/>
-            <fluent:SymbolIcon Symbol="57637"/>
-            <fluent:AppBarButton x:Name="AppBarSave" Label="Save" IconGlyph="&#xE74E;" DynamicOverflowOrder="2"/>
-            <fluent:AppBarToggleButton x:Name="AppBarPin" Label="Pin" IconGlyph="&#xE718;"/>
-        </StackPanel>
-    </StackPanel>
+    </ScrollViewer>
 </Page>

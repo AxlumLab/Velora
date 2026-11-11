@@ -10,6 +10,7 @@
 #include <utility>
 #include <velora/application/XamlApplication.hpp>
 #include <velora/application/XamlWindow.hpp>
+#include <velora/controls/ElementFactory.hpp>
 #include <velora/fluent/AppBarButton.hpp>
 #include <velora/fluent/CommandBar.hpp>
 #include <velora/fluent/DropDownButton.hpp>
@@ -19,15 +20,18 @@
 #include <velora/fluent/NumberBox.hpp>
 #include <velora/fluent/PersonPicture.hpp>
 #include <velora/fluent/RadioMenuFlyoutItem.hpp>
+#include <velora/fluent/SplitView.hpp>
 #include <velora/fluent/SymbolIcon.hpp>
 #include <velora/fluent/ToggleSplitButton.hpp>
+#include <velora/fluent/TwoPaneView.hpp>
 #include <windows.h>
 
 using namespace velora;
 class FluentWindow final : public XamlWindow
 {
   public:
-    explicit FluentWindow(XamlApplication& app, bool previewMenu, bool previewMenuBar, bool previewCommands)
+    explicit FluentWindow(XamlApplication& app, bool previewMenu, bool previewMenuBar, bool previewCommands,
+                          bool previewPanes)
         : XamlWindow(app)
     {
         std::array<wchar_t, 32768> path{};
@@ -55,7 +59,7 @@ class FluentWindow final : public XamlWindow
               RadioMenuFlyoutItem::registerType(ui), FontIcon::registerType(ui), SymbolIcon::registerType(ui),
               MenuBar::registerType(ui), MenuBarItem::registerType(ui), AppBarButton::registerType(ui),
               AppBarToggleButton::registerType(ui), CommandBar::registerType(ui),
-              AppBarSeparator::registerType(ui)})
+              AppBarSeparator::registerType(ui), SplitView::registerType(ui), TwoPaneView::registerType(ui)})
             if (!error.empty())
                 throw std::runtime_error(error);
         Demo::FluentPage_component::Names names;
@@ -64,6 +68,29 @@ class FluentWindow final : public XamlWindow
             throw std::runtime_error(loaded.error);
         m_controller.setPicture(std::dynamic_pointer_cast<PersonPicture>(names.Avatar));
         m_controller.setStatusElement(names.Status);
+        const auto sidebar = std::dynamic_pointer_cast<SplitView>(names.Sidebar);
+        const auto adaptive = std::dynamic_pointer_cast<TwoPaneView>(names.AdaptivePanes);
+        if (!sidebar || !adaptive)
+            throw std::runtime_error("Pane control factory mismatch");
+        const auto textPane = [&ui](const char* text)
+        {
+            const auto item = createElement(ElementKind::kTextBlock);
+            item->setValue(*ui.props().Text, text);
+            item->setValue(*ui.props().Margin, Thickness{8, 8, 8, 8});
+            return item;
+        };
+        sidebar->setPane(textPane("Navigation"));
+        sidebar->setContent(textPane("SplitView content"));
+        adaptive->setPane1(textPane("Pane 1"));
+        adaptive->setPane2(textPane("Pane 2"));
+        adaptive->addModeChanged(
+            [this](TwoPaneViewMode mode)
+            {
+                m_controller.record(
+                    mode == TwoPaneViewMode::kWide
+                        ? "TwoPaneView Wide"
+                        : (mode == TwoPaneViewMode::kTall ? "TwoPaneView Tall" : "TwoPaneView SinglePane"));
+            });
         const auto commands = std::dynamic_pointer_cast<CommandBar>(names.Commands);
         if (!commands)
             throw std::runtime_error("CommandBar factory mismatch");
@@ -198,10 +225,17 @@ class FluentWindow final : public XamlWindow
               });
         m_page = ui.tree().element(*loaded.root);
         SetRoot(m_page);
-        if (previewMenu || previewMenuBar || previewCommands)
+        if (previewMenu || previewMenuBar || previewCommands || previewPanes)
         {
             ui.update(GetAppWindow()->getWidth(), GetAppWindow()->getHeight());
-            if (previewCommands)
+            if (previewPanes)
+            {
+                if (adaptive->mode() != TwoPaneViewMode::kWide || !sidebar->isPaneOpen() ||
+                    !adaptive->pane1()->isInTree() || !adaptive->pane2()->isInTree() ||
+                    !sidebar->pane()->isInTree() || !sidebar->content()->isInTree())
+                    throw std::runtime_error("Adaptive pane startup failed");
+            }
+            else if (previewCommands)
             {
                 const auto lastCommand =
                     std::dynamic_pointer_cast<AppBarButton>(commands->primaryCommands().back());
@@ -238,13 +272,15 @@ class FluentWindow final : public XamlWindow
 class FluentApp final : public XamlApplication
 {
   public:
-    explicit FluentApp(bool previewMenu, bool previewMenuBar, bool previewCommands)
-        : m_previewMenu(previewMenu), m_previewMenuBar(previewMenuBar), m_previewCommands(previewCommands)
+    explicit FluentApp(bool previewMenu, bool previewMenuBar, bool previewCommands, bool previewPanes)
+        : m_previewMenu(previewMenu), m_previewMenuBar(previewMenuBar), m_previewCommands(previewCommands),
+          m_previewPanes(previewPanes)
     {
     }
     void OnLaunched() override
     {
-        m_window = std::make_unique<FluentWindow>(*this, m_previewMenu, m_previewMenuBar, m_previewCommands);
+        m_window = std::make_unique<FluentWindow>(*this, m_previewMenu, m_previewMenuBar, m_previewCommands,
+                                                  m_previewPanes);
         m_window->Show();
     }
 
@@ -252,6 +288,7 @@ class FluentApp final : public XamlApplication
     bool m_previewMenu = false;
     bool m_previewMenuBar = false;
     bool m_previewCommands = false;
+    bool m_previewPanes = false;
     std::unique_ptr<FluentWindow> m_window;
 };
 
@@ -261,7 +298,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR arguments, int)
     const bool previewMenuBar = args.find("--open-menubar") != std::string_view::npos;
     const bool previewCommands = args.find("--open-commandbar") != std::string_view::npos;
     FluentApp app(!previewMenuBar && args.find("--open-menu") != std::string_view::npos, previewMenuBar,
-                  previewCommands);
+                  previewCommands, args.find("--preview-panes") != std::string_view::npos);
     try
     {
         return app.Run();

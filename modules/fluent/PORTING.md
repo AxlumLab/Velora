@@ -1,5 +1,7 @@
 # Fluent 内部控件
 
+接入数量及未接入功能组统一见 [STATUS.md](../../docs/STATUS.md) 的数量快照；导入目录数不等于已完成控件数。
+
 WinUI 2.3 的逻辑、模板和资源直接改写为本模块的普通 C++ 控件及编译 XAML。`controls` 提供树、属性、布局、输入、模板和渲染底座；本模块拥有控件行为。不会构建微软上游运行时或保留 WinRT 投影。
 
 来源固定为 microsoft/microsoft-ui-xaml 的 `v2.3.191129002`、提交 `2237b09d9ba6052414ddccf3d61316de20564303`。原文件哈希见 [WinUI23.provenance.json](WinUI23.provenance.json)，完整 MIT 文本见 [LICENSE-WinUI2.3.txt](LICENSE-WinUI2.3.txt)。许可证同时安装到 SDK 并包含在 Fluent 资源包中。
@@ -154,3 +156,14 @@ Windows 示例 `FluentPage.xaml` 从编译 XAML 创建实际 NumberBox；注册�
 - C++ addDynamicOverflowItemsChanging 返回独立 token，由 removeDynamicOverflowItemsChanging 解除；通知发生在布局移动前，参数包含加入/退出方向与实际对象集合。分发中解除的处理器不再调用，新处理器从下次分发开始；卸载中止剩余通知。回调中拒绝修改命令集合或打开面板；此入口用于观察计划，布局属性的回调内反复写入、取消或强制重布局尚未实现完整契约。
 - 监听主命令的有效优先级变化，以弱引用关联 CommandBar，关闭已展开面板并请求布局；清空或卸载解除监听。追加失败回滚新增监听和元素。事件目前仅 C++ 连接，不增加未知 XAML 的容错或伪造事件元数据。
 - Gallery 将 Save、分隔线、Pin 设为正数同组，末尾普通命令保持默认优先级；启动入口检查非后缀分组并打开混合溢出面板。本批只编译与简单启动/关闭，恢复、动态优先级更新、通知解绑/重入和完整生命周期留到统一验证。
+
+## SplitView 与 TwoPaneView 内容布局批次（待统一验证）
+
+正式源码为 `PaneLayout`、`SplitView`、`TwoPaneView`，共用编译模板 `Controls/PaneLayoutView.xaml`。TwoPaneView 内化固定提交的 `TwoPaneView.cpp/.h/.idl/.xaml` 中单显示区域模式判断和长度分配；SplitView 参考 `porting/SplitView/SplitView_themeresources.xaml`，系统控件行为在 Velora 实现。派生文件保留 MIT，不宣称主题输入包含完整系统 C++。
+
+- 内容均为原 UIElement 对象。SplitView.Content 复用既有 Content 依赖属性，另有实际 Pane 属性；TwoPaneView 有实际 Pane1/Pane2 属性。C++ setter 将共享 UIElement 类型的 ObjectRef 写入同一存储，模板仅保存节点 ID；字符串 Content 显示为实际 TextBlock。
+- 可树外赋内容，挂载后替换/清空；拒绝自引用、同一对象占两槽、已挂载外部对象、跨线程和 PaneLayout 之间的内容环。挂载中拒绝重入内容写入，卸载清除借用宿主和节点 ID，属性中的内容引用保留。隐藏槽清除其子树焦点/捕获。复杂回调、失败后的属性恢复、绑定继承与完整销毁继续待验收。
+- SplitView 支持 IsPaneOpen、OpenPaneLength（320）、CompactPaneLength（48）、DisplayMode（默认 Overlay）、PanePlacement（默认 Left）。实现 Overlay/Inline/CompactOverlay/CompactInline、左右侧栏及内容挤占/覆盖、遮罩轻关闭和 Escape；完整开闭事件、可取消关闭、焦点陷阱/恢复、动画、RTL、PaneBackground 与完整样式 API 尚未提供。
+- TwoPaneView 采用严格大于阈值、先横排再竖排，默认阈值均 641；接通 PanePriority、左右/上下及反向配置、Auto/固定/星号长度，默认 Auto/*。Mode 为只读依赖属性，实际排列后发布，C++ addModeChanged 可用 removePropertyChanged 退订。长度当前声明为 String，接受单个 GridLength 语法，与上游对象元数据不同；多显示区域/铰链间隙与完整 ScrollViewer 模板/状态未实现。
+- 两种控件及简单属性均由正式编译 XAML 创建。对象属性的 `.vtypes` 与嵌套属性元素语法尚未开放，Pane/Pane1/Pane2 通过 C++ 连接；未知 XAML 继续报诊断，Mode 不伪造可写声明。
+- Gallery 同时展示展开的 CompactInline SplitView 与 1*:2* TwoPaneView，页面支持纵向滚动。`--preview-panes` 仅检查实际挂载、Wide 模式、窗口启动与关闭；交互、多模式自适应、主题/DPI、替换和生命周期留到集成末尾统一验证。

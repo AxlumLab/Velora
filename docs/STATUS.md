@@ -155,6 +155,29 @@
 - Gallery 将前部 Save、分隔线和 Pin 设为同组，展示 C++ 通知，并通过编译 XAML 设置独立 AppBarButton 的优先级。示例目标编译通过；启动确认前部按钮成组溢出且末尾命令仍在主区，随后打开面板，窗口正常关闭，退出码 0。日志为 `build/dev/overflow-priority-build.log`、`build/dev/overflow-priority-startup.json`。未新增/运行回归、ASan 或截图验收。
 - 不把启动覆盖的分组路径视为恢复、动态改优先级、通知重入/解绑与全部生命周期验收；完整 CommandBar 属性、集合 XAML、分隔线整理、主题/RTL/UIA 仍待补齐。
 
+### 当前接入：SplitView 与 TwoPaneView
+
+- 新增两个实际 Fluent 控件、正式类型声明和编译模板。PaneLayout 共用内容挂载、卸载、测量、排列和裁剪；SplitView.Content 沿用底座 Content 属性，Pane/Pane1/Pane2 使用持有原 UIElement 的对象依赖属性，无第二份内容字段。对象内容通过 C++ 接入，嵌套对象 XAML 尚不支持。
+- SplitView 接通 IsPaneOpen、OpenPaneLength、CompactPaneLength、DisplayMode、PanePlacement；实现四种显示模式、左右侧栏、内容挤占/覆盖、实际遮罩、轻关闭与 Escape 路径。TwoPaneView 保留上游单显示区域的严格阈值及先横排后竖排规则，接通优先级、正向/反向排列、Auto/像素/星号长度、只读 Mode 和 C++ ModeChanged。Mode 在实际排列后发布，避免测量阶段发出临时模式通知。
+- 内容拒绝跨线程、重复挂载、外部已挂载对象和 PaneLayout 间的强引用环；挂载时拒绝重入内容写入。隐藏槽清除其焦点/指针捕获，卸载保留属性中的内容对象以便重新挂载。复杂回调中 clearValue、失败后属性恢复和完整 UI 线程销毁仍待统一验证。
+- 示例编译通过；`--preview-panes` 启动确认四个内容对象已挂载，TwoPaneView 为 Wide、SplitView 已展开；窗口可见并正常关闭，退出码 0。证据为 `build/dev/pane-layout-final-build.log`、`build/dev/pane-layout-startup.json`。没有新增/执行回归、ASan、截图验收。
+- 完整焦点约束、开闭事件/取消、动画、主题/RTL/UIA、多显示区域/铰链、原 ScrollViewer 模板及全部模式切换仍待补齐或统一验收。TwoPaneView 长度属性暂为单个 GridLength 的字符串语法，不是完整 GridLength 元数据 API。
+
+### 控件接入数量快照（2026-11-11）
+
+以 StageFluentSources.py 的 49 个源码区域为范围，扣除 Collections、Common、CommonStyles、Effects、IconSource、inc、Interactions、LayoutPanel、Lights、Materials、ResourceHelper 这 11 个支撑区域，跟踪 38 个功能组。此口径不是最终 WinUI 2.3 正式公开类型清单；一个功能组可能包含多个控件，experimental 条件仍需审计。额外系统控件及 Button/TextBox 等通用底座不能用此数推算完整总数。
+
+| 接入状态 | 功能组数 | 范围 |
+| --- | --- | --- |
+| Fluent 部分接入 | 9 | DropDownButton、MenuBar、MenuFlyout、NumberBox、PersonPicture、RadioMenuFlyoutItem、SplitButton、SplitView、TwoPaneView |
+| 通用底座部分实现 | 4 | CheckBox、ProgressBar、ScrollViewer、Slider |
+| 尚未接入运行时 | 25 | 下列清单 |
+| 完整 WinUI 2.3 兼容验收通过 | 0 | 当前接入期未进行最终统一验收 |
+
+剩余 25 组：AnimatedVisualPlayer、AutoSuggestBox、CalendarDatePicker、CalendarView、ColorPicker、ComboBox、CommandBarFlyout、ContentDialog、DatePicker、FlipView、NavigationView、ParallaxView、Pivot、PullToRefresh、RadioButtons、RatingControl、Repeater、ScrollBar、Scroller、SwipeControl、TabView、TeachingTip、TimePicker、ToolTip、TreeView。此数不包含已接入组内部尚缺的 API、模板、主题、输入与辅助功能。
+
+Fluent 正式 XAML 控件类型本轮从 17 增至 19，另有 Flyout/MenuFlyout 等 C++ 服务。完整按类型的历史 Gallery/API 清单仍待固定，不能将“25 个功能组”写成“仅剩 25 个控件”。
+
 | 范围 | 当前事实 |
 | --- | --- |
 | 控件对象 | UIElement/BuiltinElements、createElement、shared_ptr 元素树和 virtual 布局已有实现；一部分行为仍集中在 Framework |
