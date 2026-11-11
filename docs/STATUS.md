@@ -277,20 +277,32 @@ Windows Debug Gallery 构建通过；`--preview-parallax` 对真实源滚动一�
 
 Windows Debug Gallery 编译通过；`--preview-refresh` 实际取得并完成一次刷新延迟，确认 Refreshing→Idle 和原内容已挂载，原生窗口出现、关闭，退出码 0。证据为 `build/dev/refresh-final-build.log`、`build/dev/refresh-startup.json`。未新增或执行回归、ASan、截图验收；完整手势、异常重入、替换/卸载和延迟生命周期留待统一验收。
 
+### 后续推进：DatePicker / TimePicker 选择器族（2026-11-11）
+
+新增正式 DatePicker、TimePicker 类型、共享 DateTimePicker 实现及两份编译模板。锁定的 WinUI 2.3 DatePicker/TimePicker 区域只有主题资源，未提供系统控件行为源码；本批改写 HeaderContentPresenter、FlyoutButton、字段与 Accept/Dismiss 模板结构，由 Velora 实现选择行为，不称为移植了不存在的上游逻辑源码。
+
+- 两者的选中值均在实际依赖属性中保存一次，支持未选择/清空。C++ 分别使用 optional<chrono::year_month_day>、optional<chrono::minutes>；当前底层和编译 XAML 使用 ISO 日期 `YYYY-MM-DD`、时间 `H:M`/`HH:MM` 字符串，空字符串表示未选择，时间规范化为 HH:MM。这不是 WinRT DateTime/TimeSpan ABI 或完整时间值系统。
+- 日期验证公历、闰年、月末与 1601..9999 范围；MinYear/MaxYear 使用整数年份，默认 1900..2100，不是系统控件的动态当前年份 ±100。端点越过另一端时移动另一端，选中日期随范围钳制，闰日修正至有效月末；Year/Month/DayVisible 控制展示字段。
+- 时间支持 12HourClock/24HourClock、AM/PM、MinuteIncrement 1..59。未选择时用本地当前日期/时间初始化弹出草稿；分钟草稿向下对齐步长，程序选中值保留分钟精度。默认 24 小时制，尚未根据地区选择默认格式。
+- 共用真实 Flyout、字段上下按钮、方向键、F4/Alt+Down、确认/取消及轻消失。草稿只在弹出编辑期间使用，确认写回原依赖属性；取消不写回。程序属性/范围变化丢弃旧草稿，卸载关闭弹出层并解除订阅。SelectedDateChanged/SelectedTimeChanged 基于有效值通知，订阅 token 使用 removePropertyChanged 退订。
+- 缺完整循环滚轮/触摸惯性、CalendarIdentifier/非公历、区域日期顺序/语言/格式、非 nullable Date/Time 别名及事件、完整主题/视觉状态/RTL/UIA、对象 Header 和完整 XAML 事件/绑定契约。隐藏字段暂保留所在列的空间，不代表模板与布局完整兼容。
+
+Windows Debug Gallery 编译通过；`--preview-datetime` 从编译 XAML 创建两个控件，打开/取消日期、打开/确认/重开时间，原生窗口出现并正常关闭，退出码 0。未新增或运行回归、ASan、截图矩阵。构建与启动证据为 `build/dev/datetime-final-build.log`、`build/dev/datetime-startup.json`；完整范围/步长、输入、重入与生命周期验收留到集成末尾。
+
 ### 控件接入数量快照（2026-11-11）
 
 以 StageFluentSources.py 的 49 个源码区域为范围，扣除 Collections、Common、CommonStyles、Effects、IconSource、inc、Interactions、LayoutPanel、Lights、Materials、ResourceHelper 这 11 个支撑区域，跟踪 38 个功能组。此口径不是最终 WinUI 2.3 正式公开类型清单；一个功能组可能包含多个控件，experimental 条件仍需审计。额外系统控件及 Button/TextBox 等通用底座不能用此数推算完整总数。
 
 | 接入状态 | 功能组数 | 范围 |
 | --- | --- | --- |
-| Fluent 部分接入 | 24 | AutoSuggestBox、ComboBox、CommandBarFlyout、ContentDialog、DropDownButton、FlipView、MenuBar、MenuFlyout、NavigationView、NumberBox、ParallaxView、PersonPicture、Pivot、PullToRefresh、RadioButtons、RadioMenuFlyoutItem、RatingControl、SplitButton、SplitView、TabView、TeachingTip、ToolTip、TreeView、TwoPaneView |
+| Fluent 部分接入 | 26 | AutoSuggestBox、ComboBox、CommandBarFlyout、ContentDialog、DatePicker、DropDownButton、FlipView、MenuBar、MenuFlyout、NavigationView、NumberBox、ParallaxView、PersonPicture、Pivot、PullToRefresh、RadioButtons、RadioMenuFlyoutItem、RatingControl、SplitButton、SplitView、TabView、TeachingTip、TimePicker、ToolTip、TreeView、TwoPaneView |
 | 通用底座部分实现 | 4 | CheckBox、ProgressBar、ScrollViewer、Slider |
-| 尚未接入运行时 | 10 | 下列清单 |
+| 尚未接入运行时 | 8 | 下列清单 |
 | 完整 WinUI 2.3 兼容验收通过 | 0 | 当前接入期未进行最终统一验收 |
 
-剩余 10 组：AnimatedVisualPlayer、CalendarDatePicker、CalendarView、ColorPicker、DatePicker、Repeater、ScrollBar、Scroller、SwipeControl、TimePicker。此数不包含已接入组内部尚缺的 API、模板、主题、输入与辅助功能。
+剩余 8 组：AnimatedVisualPlayer、CalendarDatePicker、CalendarView、ColorPicker、Repeater、ScrollBar、Scroller、SwipeControl。此数不包含已接入组内部尚缺的 API、模板、主题、输入与辅助功能。
 
-Fluent 正式 XAML 控件类型现为 33，另有 Flyout/MenuFlyout/ToolTip/CommandBarFlyout/ContentDialog/TeachingTip 等 C++ 服务，以及 C++ TreeViewNode 模型。完整按类型的历史 Gallery/API 清单仍待固定，不能将“10 个功能组”写成“仅剩 10 个控件”。
+Fluent 正式 XAML 控件类型现为 35，另有 Flyout/MenuFlyout/ToolTip/CommandBarFlyout/ContentDialog/TeachingTip 等 C++ 服务，以及 C++ TreeViewNode 模型。完整按类型的历史 Gallery/API 清单仍待固定，不能将“8 个功能组”写成“仅剩 8 个控件”。
 
 | 范围 | 当前事实 |
 | --- | --- |

@@ -2,6 +2,7 @@
 
 #include <array>
 #include <cctype>
+#include <chrono>
 #include <filesystem>
 #include <iostream>
 #include <memory>
@@ -20,6 +21,7 @@
 #include <velora/fluent/CommandBar.hpp>
 #include <velora/fluent/CommandBarFlyout.hpp>
 #include <velora/fluent/ContentDialog.hpp>
+#include <velora/fluent/DatePicker.hpp>
 #include <velora/fluent/DropDownButton.hpp>
 #include <velora/fluent/FlipView.hpp>
 #include <velora/fluent/FluentPackage.hpp>
@@ -38,6 +40,7 @@
 #include <velora/fluent/SymbolIcon.hpp>
 #include <velora/fluent/TabView.hpp>
 #include <velora/fluent/TeachingTip.hpp>
+#include <velora/fluent/TimePicker.hpp>
 #include <velora/fluent/ToggleSplitButton.hpp>
 #include <velora/fluent/ToolTip.hpp>
 #include <velora/fluent/TreeView.hpp>
@@ -101,7 +104,9 @@ class FluentWindow final : public XamlWindow
                                   TreeView::registerType(ui),
                                   ParallaxView::registerType(ui),
                                   RefreshContainer::registerType(ui),
-                                  RefreshVisualizer::registerType(ui)})
+                                  RefreshVisualizer::registerType(ui),
+                                  DatePicker::registerType(ui),
+                                  TimePicker::registerType(ui)})
             if (!error.empty())
                 throw std::runtime_error(error);
         Demo::FluentPage_component::Names names;
@@ -110,6 +115,16 @@ class FluentWindow final : public XamlWindow
             throw std::runtime_error(loaded.error);
         m_controller.setPicture(std::dynamic_pointer_cast<PersonPicture>(names.Avatar));
         m_controller.setStatusElement(names.Status);
+        const auto appointmentDate = std::dynamic_pointer_cast<DatePicker>(names.AppointmentDate);
+        const auto appointmentTime = std::dynamic_pointer_cast<TimePicker>(names.AppointmentTime);
+        if (!appointmentDate || !appointmentTime)
+            throw std::runtime_error("Date/time picker factory mismatch");
+        appointmentDate->addSelectedDateChanged(
+            [this](auto, auto date)
+            { m_controller.record(date ? "Appointment date changed" : "Appointment date cleared"); });
+        appointmentTime->addSelectedTimeChanged(
+            [this](auto, auto time)
+            { m_controller.record(time ? "Appointment time changed" : "Appointment time cleared"); });
         const auto refresh = std::dynamic_pointer_cast<RefreshContainer>(names.Refresh);
         if (!refresh)
             throw std::runtime_error("RefreshContainer factory mismatch");
@@ -505,7 +520,22 @@ class FluentWindow final : public XamlWindow
             ui.update(GetAppWindow()->getWidth(), GetAppWindow()->getHeight());
             if (previewPanels)
             {
-                if (previewPanels == 9)
+                if (previewPanels == 10)
+                {
+                    if (!appointmentDate->selectedDate() || !appointmentTime->selectedTime() ||
+                        !appointmentDate->openPicker())
+                        throw std::runtime_error("Date picker startup failed");
+                    appointmentDate->cancelPicker();
+                    if (!appointmentTime->openPicker())
+                        throw std::runtime_error("Time picker startup failed: " +
+                                                 appointmentTime->lastError());
+                    appointmentTime->acceptPicker();
+                    if (appointmentTime->selectedTime() != std::chrono::minutes{14 * 60 + 30})
+                        throw std::runtime_error("Time picker commit startup failed");
+                    if (!appointmentTime->openPicker())
+                        throw std::runtime_error("Time picker reopen failed");
+                }
+                else if (previewPanels == 9)
                 {
                     RefreshDeferral pending;
                     const auto token = refresh->addRefreshRequested(
@@ -691,6 +721,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR arguments, int)
                   : args.find("--preview-tree") != std::string_view::npos        ? 7
                   : args.find("--preview-parallax") != std::string_view::npos    ? 8
                   : args.find("--preview-refresh") != std::string_view::npos     ? 9
+                  : args.find("--preview-datetime") != std::string_view::npos    ? 10
                                                                                  : 0);
     try
     {

@@ -28,6 +28,7 @@ velora_module(fluent
         velora/fluent/ParallaxView.cpp
         velora/fluent/RefreshContainer.cpp
         velora/fluent/RefreshVisualizer.cpp
+        velora/fluent/DateTimePicker.cpp
         velora/fluent/PaneLayout.cpp
         velora/fluent/SplitView.cpp
         velora/fluent/TwoPaneView.cpp

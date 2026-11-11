@@ -114,3 +114,5 @@ Fluent 示例支持 `--preview-rating`：启动时加载 RatingControl 的编译
 - 新环境必须从干净构建目录开始，不复用旧对象布局产生的缓存。具体已跑/未跑结果见 STATUS.md。
 
 刷新族简单启动：构建 velora_fluent_gallery 后使用 `--preview-refresh`。该入口仅触发一次程序刷新，取得/完成延迟，检查 Refreshing→Idle 和原内容已挂载，然后按普通窗口启动/关闭；不运行回归或手势矩阵。默认 Gallery 可点击 Refresh content，也可从刷新指示器沿配置方向拖动超过 80 DIP，或聚焦指示器按 Enter/Space。
+
+日期/时间族简单启动：同一 Gallery 使用 `--preview-datetime`，从编译 XAML 创建两个实际控件，打开并取消日期选择，打开并确认时间，再打开时间弹出层供窗口启动/关闭检查。默认 Gallery 顶部提供日期与时间按钮，字段用上下按钮或聚焦后按方向键编辑，勾号确认、叉号/Escape/轻消失取消；当前没有循环滚轮与触摸惯性。

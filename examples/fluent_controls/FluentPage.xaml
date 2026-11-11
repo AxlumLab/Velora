@@ -4,6 +4,10 @@
     <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="24" Spacing="20">
             <fluent:MenuBar x:Name="ApplicationMenu"/>
+            <StackPanel Orientation="Horizontal" Spacing="16">
+                <fluent:DatePicker x:Name="AppointmentDate" Header="Appointment date" SelectedDate="2024-02-29" MinYear="2000" MaxYear="2050" Width="250"/>
+                <fluent:TimePicker x:Name="AppointmentTime" Header="Appointment time" SelectedTime="14:30" ClockIdentifier="12HourClock" MinuteIncrement="15" Width="250"/>
+            </StackPanel>
             <fluent:RefreshContainer x:Name="Refresh" Height="100"/>
             <Button x:Name="RequestRefresh" Content="Refresh content" HorizontalAlignment="Left"/>
             <fluent:AutoSuggestBox x:Name="Search" Header="Search controls" Text="vi" PlaceholderText="Type to filter suggestions" QueryIconGlyph="&#xE721;" Width="360" HorizontalAlignment="Left"/>

@@ -276,3 +276,14 @@ NavigationView.cpp、NavigationViewItem.cpp 与 NavigationViewChromeView/Navigat
 - 上游 interactionRatio/executionRatio 的五态与 0.8 阈值改为普通 C++，保留 Peeking 的非刷新交互分支。当前指示器单主指针拖动按 100 DIP 归一化，松开 Pending 触发刷新；Enter/Space 和程序调用走同一路径。ScrollViewer 内容区域尚无触摸、惯性或过滚适配，不能将此入口描述为完整下拉刷新手势。
 - 默认内容使用 Segoe MDL2 Assets E72C，活动状态改变颜色；缺连续旋转、方向旋转 Orientation、合成位移/缩放及完整主题/RTL/UIA。未暴露无行为的 Orientation 壳属性，未知 XAML 仍需诊断。复杂重入/异常回滚、失去捕获、所有订阅顺序及卸载/替换生命周期统一留待最后验证。
 - Gallery 新增程序刷新按钮和 --preview-refresh 简单入口，只检查一次延迟刷新和窗口启动/关闭，未新增或运行回归、ASan、截图验收。
+
+## DatePicker / TimePicker 选择器族（待统一验证）
+
+固定提交的 porting/DatePicker/DatePicker_themeresources.xaml、DateTimePickerFlyout_themeresources.xaml、porting/TimePicker/TimePicker_themeresources.xaml 仅包含系统控件主题。正式 DateTimePickerView.xaml 与 DateTimePickerFlyoutView.xaml 改写 HeaderContentPresenter、FlyoutButton、字段和 Accept/Dismiss 主体；对应普通 C++ 行为由 Velora 实现，并非上游不存在的系统逻辑源码。派生模板与源码保留 MIT 来源。
+
+- DatePicker/TimePicker 作为两个实际源码控件注册，共用 DateTimePicker 行为与编译弹出层，复用已有 Flyout/Popup；没有第二份可写选择状态。只在弹出期间保留未提交字段草稿，确认经 setValue 写回原依赖属性，取消保留原选中值。外部有效值变化使旧草稿失效；弱订阅、RAII 退订和卸载关闭沿用原树。
+- SelectedDate 使用空/ISO 日期字符串作为当前属性格式，C++ optional<chrono::year_month_day>；SelectedTime 使用空/时间字符串，C++ optional<chrono::minutes>，规范化到 HH:MM。公历闰年/月末、年份端点和选中日期钳制已实现；初始范围 1900..2100、整数年份 API 是当前明确差异。日期仅支持 1601..9999；此表示不提供时区或 WinRT DateTime。
+- 时间支持 12/24 小时、AM/PM、1..59 分钟步长与 nullable 选择。未选择时本地当前时间初始化草稿，草稿分钟向下对齐步长；程序设置的选中值不随步长截断。初始 24HourClock，尚未接地区默认值。日期字段可隐藏，第一版保留固定列空间。
+- 官方行为参考：[DatePicker](https://learn.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.datepicker?view=winrt-22621)、[TimePicker.SelectedTime](https://learn.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.timepicker.selectedtime)。这些页面描述系统 API，不是源码许可或本项目已完整兼容的证据。
+- 缺循环滚轮与惯性、非公历/CalendarIdentifier、地区顺序及 Month/Day/YearFormat、Date/Time 非 nullable 别名与全部事件、完整模板/主题/RTL/UIA、对象 Header、完整 XAML Binding/事件。方向键和上下按钮是当前可操作切片，不将其称为完整系统选择器行为移植。
+- Gallery 的 --preview-datetime 仅打开/取消日期、打开/确认/重开时间并启动关闭窗口；未新增或运行回归、ASan、截图验收。完整范围/闰日/步长、键盘/指针、重入/卸载和不同地区统一留待最后验证。

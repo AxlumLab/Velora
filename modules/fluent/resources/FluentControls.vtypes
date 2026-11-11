@@ -1,4 +1,19 @@
 velora-xaml-types	1
+type	Velora.Fluent.DatePicker	UserControl
+property	Header	String	DatePicker.Header	""
+property	SelectedDate	String	DatePicker.SelectedDate	""
+property	MinYear	Integer	DatePicker.MinYear	1900
+property	MaxYear	Integer	DatePicker.MaxYear	2100
+property	YearVisible	Boolean	DatePicker.YearVisible	True
+property	MonthVisible	Boolean	DatePicker.MonthVisible	True
+property	DayVisible	Boolean	DatePicker.DayVisible	True
+end
+type	Velora.Fluent.TimePicker	UserControl
+property	Header	String	TimePicker.Header	""
+property	SelectedTime	String	TimePicker.SelectedTime	""
+property	MinuteIncrement	Integer	TimePicker.MinuteIncrement	1
+property	ClockIdentifier	String	TimePicker.ClockIdentifier	24HourClock
+end
 type	Velora.Fluent.RefreshContainer	UserControl
 property	PullDirection	String	RefreshContainer.PullDirection	TopToBottom
 end
