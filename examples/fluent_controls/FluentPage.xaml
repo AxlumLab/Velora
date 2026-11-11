@@ -4,6 +4,7 @@
     <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="24" Spacing="20">
             <fluent:MenuBar x:Name="ApplicationMenu"/>
+            <fluent:AutoSuggestBox x:Name="Search" Header="Search controls" Text="vi" PlaceholderText="Type to filter suggestions" QueryIconGlyph="&#xE721;" Width="360" HorizontalAlignment="Left"/>
             <fluent:CommandBar x:Name="Commands"/>
             <Button x:Name="ContextCommands" Content="Open command flyout" HorizontalAlignment="Left"/>
             <StackPanel Orientation="Horizontal" Spacing="12">

@@ -150,9 +150,11 @@ void Framework::pointerDown(float x, float y)
     if (!*alive)
         return;
     m_dismissedPopupPress = false;
-    if (m_popup &&
-        (m_popup->options.nonModal ? m_popup->options.lightDismiss && !hit(m_popup->root, x, y, 0, 0)
-                                   : !hitTest(x, y)))
+    const bool popupPassThrough = m_popup && m_popup->options.nonModal && m_popup->passThrough &&
+                                  isWithin(hitTest(x, y), m_popup->passThrough);
+    if (m_popup && (m_popup->options.nonModal ? m_popup->options.lightDismiss && !popupPassThrough &&
+                                                    !hit(m_popup->root, x, y, 0, 0)
+                                              : !hitTest(x, y)))
     {
         m_dismissedPopupPress = true;
         const auto root = m_popup->root;

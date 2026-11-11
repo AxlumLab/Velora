@@ -1,4 +1,12 @@
 velora-xaml-types	1
+type	Velora.Fluent.AutoSuggestBox	UserControl
+property	Text	String	AutoSuggestBox.Text	""
+property	Header	String	AutoSuggestBox.Header	""
+property	PlaceholderText	String	AutoSuggestBox.PlaceholderText	""
+property	QueryIconGlyph	String	AutoSuggestBox.QueryIconGlyph	""
+property	IsSuggestionListOpen	Boolean	AutoSuggestBox.IsSuggestionListOpen	False
+property	UpdateTextOnSelect	Boolean	AutoSuggestBox.UpdateTextOnSelect	True
+end
 type	Velora.Fluent.TabView	UserControl
 property	SelectedIndex	Integer	TabView.SelectedIndex	-1
 property	IsAddTabButtonVisible	Boolean	TabView.IsAddTabButtonVisible	True

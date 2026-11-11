@@ -1,6 +1,7 @@
 #include "FluentPage.g.hpp"
 
 #include <array>
+#include <cctype>
 #include <filesystem>
 #include <iostream>
 #include <memory>
@@ -8,10 +9,12 @@
 #include <string>
 #include <string_view>
 #include <utility>
+#include <vector>
 #include <velora/application/XamlApplication.hpp>
 #include <velora/application/XamlWindow.hpp>
 #include <velora/controls/ElementFactory.hpp>
 #include <velora/fluent/AppBarButton.hpp>
+#include <velora/fluent/AutoSuggestBox.hpp>
 #include <velora/fluent/ComboBox.hpp>
 #include <velora/fluent/CommandBar.hpp>
 #include <velora/fluent/CommandBarFlyout.hpp>
@@ -86,7 +89,8 @@ class FluentWindow final : public XamlWindow
                                   Pivot::registerType(ui),
                                   FlipView::registerType(ui),
                                   ComboBox::registerType(ui),
-                                  RadioButtons::registerType(ui)})
+                                  RadioButtons::registerType(ui),
+                                  AutoSuggestBox::registerType(ui)})
             if (!error.empty())
                 throw std::runtime_error(error);
         Demo::FluentPage_component::Names names;
@@ -95,6 +99,40 @@ class FluentWindow final : public XamlWindow
             throw std::runtime_error(loaded.error);
         m_controller.setPicture(std::dynamic_pointer_cast<PersonPicture>(names.Avatar));
         m_controller.setStatusElement(names.Status);
+        const auto search = std::dynamic_pointer_cast<AutoSuggestBox>(names.Search);
+        if (!search)
+            throw std::runtime_error("AutoSuggestBox factory mismatch");
+        search->setSuggestions({"Views", "Visual states", "Virtualization"});
+        const std::weak_ptr<AutoSuggestBox> weakSearch = search;
+        search->addTextChanged(
+            [weakSearch](const AutoSuggestTextChangedEventArgs& args)
+            {
+                if (args.reason != AutoSuggestTextChangeReason::kUserInput)
+                    return;
+                if (const auto box = weakSearch.lock())
+                {
+                    auto query = args.text;
+                    for (auto& c : query)
+                        c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
+                    std::vector<std::string> matches;
+                    for (const auto* label :
+                         {"Views", "Visual states", "Virtualization", "Values", "Windows", "Widgets"})
+                    {
+                        std::string word(label);
+                        for (auto& c : word)
+                            c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
+                        if (!query.empty() && word.find(query) != std::string::npos)
+                            matches.emplace_back(label);
+                    }
+                    box->setSuggestions(std::move(matches));
+                }
+            });
+        search->addQuerySubmitted(
+            [this](const AutoSuggestQuerySubmittedEventArgs& args)
+            {
+                m_controller.record("Query: " + args.queryText +
+                                    (args.chosenSuggestion ? " (suggestion)" : ""));
+            });
         m_dialog = std::make_shared<ContentDialog>();
         m_dialog->setTitle("Save changes?");
         m_dialog->setContent("Choose Save, Discard, or Cancel.");
@@ -381,7 +419,16 @@ class FluentWindow final : public XamlWindow
             ui.update(GetAppWindow()->getWidth(), GetAppWindow()->getHeight());
             if (previewPanels)
             {
-                if (previewPanels == 4)
+                if (previewPanels == 5)
+                {
+                    const auto editor = ui.templateChild(ui.tree().element(*search), "TextBox");
+                    ui.focus(editor);
+                    search->setIsSuggestionListOpen(true);
+                    if (!editor || !search->isSuggestionListOpen() || ui.focused() != editor ||
+                        search->suggestions().size() != 3)
+                        throw std::runtime_error("AutoSuggestBox startup failed");
+                }
+                else if (previewPanels == 4)
                 {
                     if (tabs->selectedItem() != documentTab || !documentTab->isInTree() ||
                         !documentEditor->isInTree() || welcomeTab->isClosable())
@@ -511,11 +558,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR arguments, int)
                   args.find("--preview-rating") != std::string_view::npos,
                   args.find("--open-commandflyout") != std::string_view::npos,
                   args.find("--preview-choices") != std::string_view::npos,
-                  args.find("--open-dialog") != std::string_view::npos        ? 1
-                  : args.find("--open-teachingtip") != std::string_view::npos ? 2
-                  : args.find("--preview-pages") != std::string_view::npos    ? 3
-                  : args.find("--preview-tabs") != std::string_view::npos     ? 4
-                                                                              : 0);
+                  args.find("--open-dialog") != std::string_view::npos           ? 1
+                  : args.find("--open-teachingtip") != std::string_view::npos    ? 2
+                  : args.find("--preview-pages") != std::string_view::npos       ? 3
+                  : args.find("--preview-tabs") != std::string_view::npos        ? 4
+                  : args.find("--preview-suggestions") != std::string_view::npos ? 5
+                                                                                 : 0);
     try
     {
         return app.Run();

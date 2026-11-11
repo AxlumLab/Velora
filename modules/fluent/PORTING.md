@@ -226,3 +226,13 @@ PageSelector.cpp 与编译模板 PageSelectorView.xaml 为正式 Pivot/FlipView 
 - 集合替换按原选中对象寻找新索引，删除选中项时选择附近项。尝试恢复原焦点对象的新节点，否则回到当前页签/添加按钮。所有标签仍挂载并折叠未选中项，内容环检查覆盖 TabViewItem 的实际 Content；完整失败恢复、重入/焦点/编辑状态及通知契约仍待统一验证。
 - 首版集合仅 C++ setTabItems/removeTab，Header 暂限字符串。未实现通知集合/TabItemsSource、集合和对象内容 XAML、HeaderTemplate/IconSource、TabWidthMode、拖拽/重排/拖放、中键关闭、滚动溢出、完整主题状态/动画/UIA。不能把当前呈现和请求通路计作完整上游兼容。
 - Gallery 增加不可关闭欢迎项、实际编辑项和应用控制的添加/关闭回调；--preview-tabs 只检查初始选择、实际内容及窗口启动/关闭。未新增或执行回归、ASan、截图验收。
+
+## AutoSuggestBox 搜索建议（待统一验证）
+
+正式 AutoSuggestBox.cpp 与两个编译模板 AutoSuggestBoxView/AutoSuggestBoxSuggestionsView 基于固定提交 porting/AutoSuggestBox/AutoSuggestBox_themeresources.xaml 和 AutoSuggestBoxHelper.cpp 的模板依赖边界实现。Helper 仅提供圆角等系统控件辅助行为，上游此目录不含完整 AutoSuggestBox 系统逻辑；交互由 Velora 实现。新派生文件保留 Microsoft MIT 来源。
+
+- 同一 Text 依赖属性接收 C++、编译 XAML 和内部编辑器提交；TextChanged 给出用户输入、程序修改和建议回填原因。Header/PlaceholderText/IsSuggestionListOpen/UpdateTextOnSelect 为实际属性，QueryIconGlyph 是首版 Windows 图标扩展，尚未开放原 QueryIcon 对象 API。
+- C++ setSuggestions 替换 UTF-8 字符串项，输入时刷新列表；SuggestionChosen 通知后按 UpdateTextOnSelect 决定回填，再发布 QuerySubmitted。查询参数含查询快照与可选已选建议，支持 token 退订。按钮点击/Enter 提交，上下预选，Escape 和 Tab 关闭；组合输入进行中不接管建议导航键。
+- 使用既有 Flyout 和滚动服务，新增 PopupOptions.takeFocus=false 保留编辑焦点，同时允许点击建议；非模态弹出可为编辑锚点保留命中穿透。列表项不参与 Tab 停靠，普通应用控件与编辑器继续共用原焦点、树和属性系统。
+- 视口首版最高 200 DIP，全部实现为实际按钮。尚无通知集合/ItemsSource/对象项、ItemTemplate/TextMemberPath、标准 QueryIcon、异步建议源与取消、虚拟化、键盘预选自动滚入、完整焦点离开策略、原圆角/主题状态/UIA。程序修改与建议事件重入、真实 IME、更新期间销毁和完整提交语义仍待统一验证。
+- Gallery 在 UserInput 回调中同步过滤一组示例字符串，--preview-suggestions 只确认列表打开、建议数与焦点保留，然后检查窗口启动/关闭；未新增或执行回归、ASan、截图验收。

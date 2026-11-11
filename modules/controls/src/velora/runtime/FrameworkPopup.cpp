@@ -58,7 +58,7 @@ bool Framework::openPopup(ElementId anchor, ElementId root, std::function<void()
     layoutPopup();
     if (!*alive || popupRoot() != root)
         return false;
-    if (passive)
+    if (passive || !m_popup->options.takeFocus)
         return true;
     focus(0);
     if (!*alive || popupRoot() != root)

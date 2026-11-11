@@ -253,7 +253,8 @@ ElementId Framework::hitTest(float x, float y) const
         {
             const auto parent = m_tree.visualParent(m_popup->passThrough);
             const auto origin = parent ? bounds(parent) : Box{};
-            return hit(m_popup->passThrough, x, y, origin.x, origin.y);
+            if (const auto target = hit(m_popup->passThrough, x, y, origin.x, origin.y))
+                return target;
         }
         if (!m_popup->options.nonModal)
             return 0;

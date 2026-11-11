@@ -35,6 +35,7 @@ struct PopupOptions
     bool lightDismiss = true;
     bool centered = false;
     bool nonModal = false;
+    bool takeFocus = true;
     // Called for Escape or outside-pointer dismissal. False keeps the current popup open.
     std::function<bool()> dismissRequested;
 };

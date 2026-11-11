@@ -223,20 +223,31 @@ Windows Debug Gallery 构建通过；`--preview-pages` 确认 Pivot 初选 Notes
 
 Windows Debug Gallery 构建通过；`--preview-tabs` 确认初选 Document 标签、原编辑器实际挂载和欢迎项不可关闭，原生窗口可见并正常关闭、退出码 0。证据为 `build/dev/tabs-final-build.log`、`build/dev/tabs-startup.json`。CheckStyle、CheckWorkspace、改动文件格式及 diff 检查通过；未新增或执行回归、ASan、截图验收，增删、请求顺序、选择和焦点完整交互仍待统一验证。
 
+### 后续推进：AutoSuggestBox（2026-11-11）
+
+本批接入正式 AutoSuggestBox 类型和两个编译模板，复用实际 TextBox、窗口内 Flyout、按钮与 ScrollViewer。Text/Header/PlaceholderText/IsSuggestionListOpen/UpdateTextOnSelect 是实际依赖属性；首版以 QueryIconGlyph 字符串接入 Windows Segoe MDL2 查询图标，尚非完整 QueryIcon 对象 API。
+
+- C++ setSuggestions 接收 UTF-8 字符串列表，支持输入时替换建议并重新打开呈现器。TextChanged 区分 UserInput/ProgrammaticChange/SuggestionChosen；SuggestionChosen 和 QuerySubmitted 发布选中字符串/查询快照并支持 token 退订。点击或 Enter 可提交，上下键预选、Escape 关闭、Tab 关闭后正常导航；已有组合文本时不接管建议导航键。
+- PopupOptions 增加 takeFocus，建议列表交互命中与保留编辑焦点可同时使用；非模态轻关闭保留指定锚点的命中穿透，输入框和查询按钮不因位于弹出区域外而先被关闭流程吞掉。建议列表滚动、外部点击关闭与卸载退订复用既有服务。
+- 示例在 UserInput 通知中同步过滤一组字符串，并报告查询；框架不内置应用搜索策略。首版建议视口上限固定 200 DIP，全部生成按钮，无虚拟化和键盘预选自动滚入。完整 ItemsSource/对象项/ItemTemplate/TextMemberPath、异步数据源取消、标准 QueryIcon、完整主题/圆角联动/UIA、焦点离开策略和实际 IME 交互仍待完善。
+- 这些输入主要是系统控件模板及圆角 Helper；未将 Helper 当作完整 AutoSuggestBox 系统 C++。当前行为由 Velora 实现，事件参数与导航/提交契约仍待最后统一验收。
+
+Windows Debug Gallery 构建通过；`--preview-suggestions` 确认三条建议、建议列表打开和编辑器焦点保留，原生窗口可见并正常关闭、退出码 0。证据为 `build/dev/auto-suggest-final-build.log`、`build/dev/auto-suggest-startup.json`。源码布局、工作区、改动文件格式和 diff 检查通过；未新增或执行回归、ASan、截图验收，输入、更新/提交、IME、跨控件弹出与生命周期完整交互仍待统一验证。
+
 ### 控件接入数量快照（2026-11-11）
 
 以 StageFluentSources.py 的 49 个源码区域为范围，扣除 Collections、Common、CommonStyles、Effects、IconSource、inc、Interactions、LayoutPanel、Lights、Materials、ResourceHelper 这 11 个支撑区域，跟踪 38 个功能组。此口径不是最终 WinUI 2.3 正式公开类型清单；一个功能组可能包含多个控件，experimental 条件仍需审计。额外系统控件及 Button/TextBox 等通用底座不能用此数推算完整总数。
 
 | 接入状态 | 功能组数 | 范围 |
 | --- | --- | --- |
-| Fluent 部分接入 | 19 | ComboBox、CommandBarFlyout、ContentDialog、DropDownButton、FlipView、MenuBar、MenuFlyout、NumberBox、PersonPicture、Pivot、RadioButtons、RadioMenuFlyoutItem、RatingControl、SplitButton、SplitView、TabView、TeachingTip、ToolTip、TwoPaneView |
+| Fluent 部分接入 | 20 | AutoSuggestBox、ComboBox、CommandBarFlyout、ContentDialog、DropDownButton、FlipView、MenuBar、MenuFlyout、NumberBox、PersonPicture、Pivot、RadioButtons、RadioMenuFlyoutItem、RatingControl、SplitButton、SplitView、TabView、TeachingTip、ToolTip、TwoPaneView |
 | 通用底座部分实现 | 4 | CheckBox、ProgressBar、ScrollViewer、Slider |
-| 尚未接入运行时 | 15 | 下列清单 |
+| 尚未接入运行时 | 14 | 下列清单 |
 | 完整 WinUI 2.3 兼容验收通过 | 0 | 当前接入期未进行最终统一验收 |
 
-剩余 15 组：AnimatedVisualPlayer、AutoSuggestBox、CalendarDatePicker、CalendarView、ColorPicker、DatePicker、NavigationView、ParallaxView、PullToRefresh、Repeater、ScrollBar、Scroller、SwipeControl、TimePicker、TreeView。此数不包含已接入组内部尚缺的 API、模板、主题、输入与辅助功能。
+剩余 14 组：AnimatedVisualPlayer、CalendarDatePicker、CalendarView、ColorPicker、DatePicker、NavigationView、ParallaxView、PullToRefresh、Repeater、ScrollBar、Scroller、SwipeControl、TimePicker、TreeView。此数不包含已接入组内部尚缺的 API、模板、主题、输入与辅助功能。
 
-Fluent 正式 XAML 控件类型现为 26，另有 Flyout/MenuFlyout/ToolTip/CommandBarFlyout/ContentDialog/TeachingTip 等 C++ 服务。完整按类型的历史 Gallery/API 清单仍待固定，不能将“15 个功能组”写成“仅剩 15 个控件”。
+Fluent 正式 XAML 控件类型现为 27，另有 Flyout/MenuFlyout/ToolTip/CommandBarFlyout/ContentDialog/TeachingTip 等 C++ 服务。完整按类型的历史 Gallery/API 清单仍待固定，不能将“14 个功能组”写成“仅剩 14 个控件”。
 
 | 范围 | 当前事实 |
 | --- | --- |
